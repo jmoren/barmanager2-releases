@@ -1,7 +1,7 @@
 {
   "name": "barmanager-app",
   "productName": "barmanager-app",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "author": "Jorge Moreno <jmoren@gmail.com>",
   "description": "An electron-vue project",
   "license": null,
