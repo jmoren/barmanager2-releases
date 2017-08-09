@@ -1,0 +1,242 @@
+<template lang="html">
+  <tr>
+    <td>
+      <div v-if="!tclosed && !tprinted">
+        <popover title="" placement="left" :width="300" trigger="click" :disabled="!!entry.canceled">
+          <button class="is-small button is-danger" :class="{ 'is-loading': loading, 'is-disabled': entry.canceled || tclosed }">
+            <span class="icon is-small"><i class="fa fa-trash"></i></span>
+          </button>
+          <div slot="content">
+            <h1>Seleccione Razon</h1>
+            <hr>
+            <div class="control is-grouped">
+              <div class="select is-fullwidth">
+                <select v-model="cancel_reason">
+                  <option value="">Sin Motivo</option>
+                  <option v-for="reason in reasons" v-bind:value="reason.id">{{ reason.text }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-footer has-text-centered">
+              <button type="button" class="button is-danger" @click="cancel(entry)">Confirmar</button>
+            </div>
+          </div>
+        </popover>
+      </div>
+    </td>
+    <td>
+      <tooltip v-bind:content="entry.type_name" placement="top" trigger="hover">
+        <span>{{ entry.type }}</span>
+      </tooltip>
+    </td>
+    <td>{{ entry.item.code }}</td>
+    <td>{{ entry.quantity }}</td>
+    <td style="width: 50%;">
+      <div>
+        <tooltip v-bind:content="entry.item.description" placement="top" trigger="hover">
+          <i class="fa fa-question-circle fa-floated"></i>
+        </tooltip>
+        {{ entry.item.name }}
+        <div class="is-pulled-right">
+          <popover title="" placement="top" :width="300" trigger="click" v-if="!entry.canceled && !entry.delivered">
+            <span class="is-primary-text" style="cursor: pointer">
+              <i> {{ entry.comment ? entry.comment : 'Agregar nota' }}</i>
+            </span>
+            <div slot="content">
+              <h1>Agregar nota</h1>
+              <hr>
+              <div class="control">
+                <input type="text" v-model="entry.comment" placeholder="Nota" class="input">
+              </div>
+              <div class="form-footer has-text-centered">
+                <button type="button" class="button is-danger" @click="saveRow(entry)">Actualizar</button>
+              </div>
+            </div>
+          </popover>
+          <span style="color: #999" v-else><i>{{ entry.comment || 'Sin comentatrios' }}</i></span>
+          <tooltip v-bind:content="entry.canceled ? 'Pedido Cancelado' : entry.delivered ? 'Pedido Entregado' : 'Entregar pedido completo'">
+            <a @click.prevent="entry.delivered || entry.canceled ? false : deliverAll(entry)" class="button is-small is-light">
+              <span class="icon is-small">
+                <i class="fa fa-circle" :class="{'is-warning': !entry.delivered && !entry.canceled,'is-success': entry.delivered, 'is-danger': entry.canceled }"></i>
+              </span>
+            </a>
+          </tooltip>
+        </div>
+      </div>
+      <div class="sub-items" v-if="entry.show">
+        <ul>
+          <li v-for="item in entry.entry_items">
+            <div class="columns">
+              <div class="column is-6">
+                <span v-if="!tprinted">
+                  <popover title="" placement="left" :width="300" trigger="click" v-if="!item.delivered_at" :disabled="!!item.canceled || tprinted">
+                    <tooltip :content="item.canceled ? item.cancel_reason ? item.cancel_reason.text : 'Sin motivo' : 'Cancelar item'">
+                      <button class="is-small is-light">
+                        <i class="fa fa-floated is-danger" :class="{'fa-trash': !item.canceled, 'fa-commenting-o': item.canceled }"></i>
+                      </button>
+                    </tooltip>
+                    <div slot="content">
+                      <h1>Seleccione Razon</h1>
+                      <hr>
+                      <div class="control is-grouped">
+                        <div class="select is-fullwidth">
+                          <select v-model="cancel_reason">
+                            <option value="">Sin Motivo</option>
+                            <option v-for="reason in reasons" v-bind:value="reason.id">{{ reason.text }}</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-footer has-text-centered">
+                        <button type="button" class="button is-danger" @click.prevent="cancelItem(entry, item)">Confirmar</button>
+                      </div>
+                    </div>
+                  </popover>
+                  <tag class="is-small is-light" v-else><i class="fa fa-check is-success fa-floated"></i></tag>
+                </span>
+                <span>{{ item.item_name }}</span>
+              </div>
+              <div class="column is-6">
+                <div class="is-pulled-right">
+                  <tooltip content="Entregar item" v-if="!item.delivered_at && !item.canceled">
+                    <a @click.prevent="deliverItem(entry, item)" class="button is-small is-light">
+                      {{ item.canceled ? 'Cancelado' : item.delivered_at ? 'Entregado' : 'Entregar' }}
+                      <span class="icon is-small">
+                        <i class="fa fa-circle is-warning"></i>
+                      </span>
+                    </a>
+                  </tooltip>
+                  <div class="button is-small is-light is-not-link" v-else style="cursor: default">
+                    <span>{{ item.delivered_at ? 'Entregado' : '' }}</span>
+                    <span v-if="item.canceled && item.delivered_at">/</span>
+                    <span>{{ item.canceled ? 'Cancelado' : '' }} </span>
+                    <span class="icon is-small"><i class="fa fa-circle" :class="{'is-danger': item.canceled, 'is-success': !item.canceled }"></i></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </td>
+    <td>{{ entry.subtotal }}</td>
+    <td>
+      <div class="is-pulled-right">
+        <tooltip content="Aumentar la cantidad">
+          <a @click.prevent="increase(entry)" class="button is-small is-primary" :class="{'is-disabled': entry.canceled || tclosed }" v-if="!tclosed && !entry.canceled">
+            <span class="icon is-small"><i class="fa fa-plus"></i></span>
+          </a>
+        </tooltip>
+        <tooltip content="Ver cada pedido">
+          <a @click="toggleShow()" class="button is-small is-success">
+            <span class="icon is-small"><i class="fa fa-database"></i></span>
+          </a>
+        </tooltip>
+      </div>
+    </td>
+  </tr>
+</template>
+
+<script>
+import _ from 'lodash'
+
+export default {
+  name: 'TicketRow',
+  props: ['entry', 'tclosed', 'tprinted', 'reasons'],
+  data () {
+    return {
+      loading: false,
+      cancel_reason: null
+    }
+  },
+  methods: {
+    toggleShow () {
+      this.entry.show = !this.entry.show
+    },
+    cancel (entry) {
+      this.loading = true
+      this.$http.put('tickets/' + entry.ticket_id + '/entries/' + entry.id + '/cancel?reason=' + this.cancel_reason).then(
+        () => {
+          entry.canceled = true
+          this.cancel_reason = null
+          this.loading = false
+          this.$emit('reload-content')
+        },
+        error => {
+          this.loading = false
+          console.log(error.data)
+        }
+      )
+    },
+    saveRow (entry) {
+      this.$http.put('tickets/' + entry.ticket_id + '/entries/' + entry.id, { entry: { comment: entry.comment } }).then(
+        response => {
+          console.log(response)
+          this.$notify.open({
+            type: 'success',
+            content: 'Entrada actualizada.'
+          })
+        }
+      )
+    },
+    increase (entry) {
+      this.$http.put('tickets/' + entry.ticket_id + '/entries/' + entry.id + '/increase').then(
+        response => {
+          _.extend(entry, response.data)
+          entry.show = true
+        },
+        error => {
+          console.log(error.data)
+        }
+      )
+    },
+    deliverAll (entry) {
+      this.$http.put('tickets/' + entry.ticket_id + '/entries/' + entry.id + '/deliver').then(
+        response => {
+          _.extend(entry, response.data)
+          entry.show = true
+        },
+        error => {
+          console.log(error.data)
+        }
+      )
+    },
+    deliverItem (entry, item) {
+      this.$http.put('tickets/' + entry.ticket_id + '/entries/' + entry.id + '/deliver?item=' + item.id).then(
+        response => {
+          _.extend(entry, response.data)
+          entry.show = true
+        },
+        error => {
+          console.log(error.data)
+        }
+      )
+    },
+    cancelItem (entry, item) {
+      this.$http.put('tickets/' + entry.ticket_id + '/entries/' + entry.id + '/cancel?item=' + item.id + '&reason=' + this.cancel_reason).then(
+        response => {
+          _.extend(entry, response.data)
+          this.cancel_reason = null
+          entry.show = true
+          this.$emit('reload-content')
+        },
+        error => {
+          console.log(error.data)
+        }
+      )
+    }
+  }
+}
+</script>
+
+<style lang="css">
+  .button span.icon { margin: 0px 5px!important; }
+
+  table .sub-items {
+    border-top: dashed 1px #ccc;
+    padding-top: 5px;
+    margin-top: 10px;
+  }
+  table .sub-items li { padding: 5px 0px; }
+  .comment { color: #616161; }
+  .is-canceled { cursor: none; opacity: 0.8; text-decoration: line-through;}
+</style>
