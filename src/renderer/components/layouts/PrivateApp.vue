@@ -3,7 +3,7 @@
     <section class="hero is-primary is-fixed">
       <div class="hero-head">
         <div class="nav-main">
-          <div class="container">
+          <div class="">
             <nav class="nav">
               <div class="nav-left" v-if="user.profile.role === 'cooker'">
                 <router-link class="nav-item brand" :to="{ name: 'Kitchen' }">Volver a la cocina</router-link>

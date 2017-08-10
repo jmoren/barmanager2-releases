@@ -1,6 +1,6 @@
 <template lang="html">
   <tr>
-    <td>
+    <td class="has-text-centered">
       <div v-if="!tclosed && !tprinted">
         <popover title="" placement="left" :width="300" trigger="click" :disabled="!!entry.canceled">
           <button class="is-small button is-danger" :class="{ 'is-loading': loading, 'is-disabled': entry.canceled || tclosed }">
@@ -24,14 +24,14 @@
         </popover>
       </div>
     </td>
-    <td>
+    <td class="has-text-centered">
       <tooltip v-bind:content="entry.type_name" placement="top" trigger="hover">
         <span>{{ entry.type }}</span>
       </tooltip>
     </td>
-    <td>{{ entry.item.code }}</td>
-    <td>{{ entry.quantity }}</td>
-    <td style="width: 40%;">
+    <td class="has-text-centered">{{ entry.item.code }}</td>
+    <td class="has-text-centered">{{ entry.quantity }}</td>
+    <td style="width: 45%;">
       <div>
         <tooltip v-bind:content="entry.item.description" placement="top" trigger="hover">
           <i class="fa fa-question-circle fa-floated"></i>
@@ -118,8 +118,8 @@
         </ul>
       </div>
     </td>
-    <td>{{ entry.item.price }} </td>
-    <td>{{ entry.subtotal }}</td>
+    <td class="has-text-centered">{{ entry.item.price }} </td>
+    <td class="has-text-centered">{{ entry.subtotal }}</td>
     <td>
       <div class="is-pulled-right">
         <tooltip content="Aumentar la cantidad">

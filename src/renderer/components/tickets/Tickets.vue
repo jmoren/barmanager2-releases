@@ -23,12 +23,13 @@
             </td>
             <td>
               <tooltip v-bind:content="ticket.closed ? 'Ticket Cerrado' : 'Ticket Abierto'">
-                <i class="fa fa-circle" 
+                <i class="fa fa-circle fa-floated" 
                   :class="{'is-success': !ticket.closed, 'is-danger': ticket.closed }"></i>
               </tooltip>
             </td>
             <td>
               <i class="fa fa-floated" :class="{'fa-check is-success': ticket.paid_at, 'fa-exclamation-circle is-warning': !ticket.paid_at }"></i>
+              <span>{{ ticket.paid_at ? 'Pagado' : 'Pendiente' }}</span>
             </td>
             <td>{{ ticket.number }}</td>
             <td>${{ ticket.partial_total }}</td>

@@ -45,12 +45,12 @@
           <table class="table">
             <thead>
               <th></th>
-              <th>Tipo</th>
-              <th>Cod</th>
-              <th>Cant.</th>
+              <th class="has-text-centered">Tipo</th>
+              <th class="has-text-centered">Cod</th>
+              <th class="has-text-centered">Cant.</th>
               <th>Item</th>
-              <th>P.Unidad</th>
-              <th>SubTotal</th>
+              <th class="has-text-centered">P.Unidad</th>
+              <th class="has-text-centered">SubTotal</th>
               <th></th>
             </thead>
             <tbody>
@@ -81,7 +81,7 @@
       </div>
     </div>
     <div class="payments column is-3">
-      <ticket-payment :ticket="ticket" :reasons="reasons" :total="total" @ticket-paid="setPaid" @ticket-not-paid="setNotPaid"></ticket-payment>
+      <ticket-payment :ticket="ticket" :total="total" @ticket-paid="setPaid" @ticket-not-paid="setNotPaid"></ticket-payment>
     </div>
     <b-aside :is-show="isShow" :width="400" :show-footer="false" placement="right" title="Favoritos" @close="isShow=false">
       <h1><b>ITEMS</b></h1>

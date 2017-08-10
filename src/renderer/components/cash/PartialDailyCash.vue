@@ -42,7 +42,7 @@
               <p class="tag-label">TOTAL TARJETA</p>
             </div>
             <div class="column is-3 has-text-centered">
-              <tag type="warning" class="big" rounded>{{ cash.tickets_count || 0 }}</tag>
+              <tag type="warning" class="big" rounded>{{ cash.tickets_count }}</tag>
               <p class="tag-label">TICKETS <br>(Generados)</p>
             </div>
           </div>

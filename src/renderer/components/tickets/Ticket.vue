@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="container">
+  <div class="">
     <div v-if="loading">
       loading ticket...
     </div>
@@ -146,10 +146,20 @@
           </div>
           <div class="column is-8"><b>${{ ticket.total }}</b></div>
         </div>
+        <div class="columns modal-row">
+          <div class="column is-4">Pagar</div>
+          <div class="column is-8">
+            <radio-group v-model="ticket.pay">
+              <radio val="efectivo">Efectivo</radio>
+              <radio val="tarjeta"> Tarjeta</radio>
+              <radio val="empty"> No pagar</radio>
+            </radio-group>
+          </div>
+        </div>
         <hr>
         <div class="columns">
           <div class="column is-4 is-offset-2">
-            <a @click.prevent="closeTicket()" class="button is-success is-medium is-fullwidth" :class="{'is-disabled': !canBeClosed }">Cerrar</a>
+            <a @click.prevent="closeTicket()" class="button is-success is-medium is-fullwidth" :class="{'is-disabled': !canBeClosed && ticket.pay === 'empty'}">Cerrar</a>
           </div>
           <div class="column is-4"><a @click.prevent="closeModal" class="button is-light is-medium is-fullwidth">Cancelar</a></div>
         </div>
@@ -209,7 +219,8 @@ export default {
         total: 0.0,
         full_delivered: false,
         closed: false,
-        paid: false
+        paid: false,
+        pay: 'empty'
       },
       new_table_id: '',
       new_client_id: ''
@@ -284,7 +295,7 @@ export default {
       )
     },
     closeTicket () {
-      this.$http.post('tickets/' + this.$route.params.id + '/close', { ticket: { status: 'closed' } }).then(
+      this.$http.post('tickets/' + this.$route.params.id + '/close', { ticket: { status: 'closed', pay: this.ticket.pay } }).then(
         response => {
           this.isOpen = false
           _.extend(this.ticket, response.data)

@@ -157,7 +157,7 @@
       this.loadPayments()
     },
     watch: {
-      'ticket': 'loadPayments'
+      'ticket.closed': 'loadPayments'
     },
     methods: {
       loadPayments () {
