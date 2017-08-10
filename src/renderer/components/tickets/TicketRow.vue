@@ -31,7 +31,7 @@
     </td>
     <td>{{ entry.item.code }}</td>
     <td>{{ entry.quantity }}</td>
-    <td style="width: 50%;">
+    <td style="width: 40%;">
       <div>
         <tooltip v-bind:content="entry.item.description" placement="top" trigger="hover">
           <i class="fa fa-question-circle fa-floated"></i>
@@ -118,6 +118,7 @@
         </ul>
       </div>
     </td>
+    <td>{{ entry.item.price }} </td>
     <td>{{ entry.subtotal }}</td>
     <td>
       <div class="is-pulled-right">

@@ -49,6 +49,7 @@
               <th>Cod</th>
               <th>Cant.</th>
               <th>Item</th>
+              <th>P.Unidad</th>
               <th>SubTotal</th>
               <th></th>
             </thead>
