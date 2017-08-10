@@ -25,7 +25,7 @@
             </span>
           </div>
           <div class="info">
-            <div>Mesa {{ item.id }} - {{ item.description }}</div>
+            <div>{{ item.description }}</div>
             <small>{{ item.closed ? 'Cerrada' : 'Abierta: Ticket ' + item.current.number }}</small>
           </div>
         </li>

@@ -147,7 +147,13 @@
           <div class="column is-8"><b>${{ ticket.total }}</b></div>
         </div>
         <div class="columns modal-row">
-          <div class="column is-4">Pagar</div>
+          <div class="column is-4">
+            <i class="fa fa-dollar fa-floated"></i> Pendiente
+          </div>
+          <div class="column is-8"><b>${{ ticket.paid ? 0 : ticket.pending }}</b></div>
+        </div>
+        <div class="columns modal-row" v-if="!ticket.paid">
+          <div class="column is-4">Abonar Pendiente</div>
           <div class="column is-8">
             <radio-group v-model="ticket.pay">
               <radio val="efectivo">Efectivo</radio>
@@ -256,7 +262,7 @@ export default {
     }
   },
   methods: {
-    fetchTicket (openModal) {
+    fetchTicket () {
       this.loading = true
       this.$http.get('tickets/' + this.$route.params.id).then(
         response => {
@@ -309,11 +315,13 @@ export default {
         }
       )
     },
-    setPaid () {
+    setPaid (value) {
       this.ticket.paid = true
+      this.ticket.pending = value
     },
-    setNotPaid () {
+    setNotPaid (value) {
       this.ticket.paid = false
+      this.ticket.pending = value
     },
     reopenTicket () {
       this.$http.post('tickets/' + this.ticket.id + '/reopen', { ticket: { status: 'open' } }).then(

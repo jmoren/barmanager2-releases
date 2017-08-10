@@ -1,7 +1,7 @@
 <template lang="html">
   <tr>
     <td class="has-text-centered">
-      <div v-if="!tclosed && !tprinted">
+      <div v-if="!tclosed">
         <popover title="" placement="left" :width="300" trigger="click" :disabled="!!entry.canceled">
           <button class="is-small button is-danger" :class="{ 'is-loading': loading, 'is-disabled': entry.canceled || tclosed }">
             <span class="icon is-small"><i class="fa fa-trash"></i></span>

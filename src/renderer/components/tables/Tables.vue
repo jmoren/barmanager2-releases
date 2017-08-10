@@ -57,7 +57,6 @@
         </h1>
         <hr>
         <div class="box">
-          {{ newCash }}
           <div class="control">
             <input type="number" class="input" step="0.01" placeholder="Monto inicial" v-model="newCash.init_amount">
           </div>

@@ -235,11 +235,11 @@
           }
         )
       },
-      setPaid () {
-        this.$emit('ticket-paid')
+      setPaid (value) {
+        this.$emit('ticket-paid', value)
       },
-      setNotPaid () {
-        this.$emit('ticket-not-paid')
+      setNotPaid (value) {
+        this.$emit('ticket-not-paid', value)
       }
     }
   }

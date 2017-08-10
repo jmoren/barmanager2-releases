@@ -127,9 +127,9 @@
       pending () {
         let value = this.total - this.subtotal
         if (value > 0) {
-          this.$emit('ticket-not-paid')
+          this.$emit('ticket-not-paid', value)
         } else {
-          this.$emit('ticket-paid')
+          this.$emit('ticket-paid', value)
         }
         return value
       },
