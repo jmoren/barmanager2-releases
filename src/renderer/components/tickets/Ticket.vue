@@ -87,6 +87,11 @@
               </span>
             </pop-confirm>
           </tooltip>
+          <tooltip content="Enviar a la impresora fiscal">
+            <a class="button is-light" @click.prevent="printFiscalTicket">
+              <span class="icon is-small"><i class="fa fa-file-o"></i></span>
+            </a>
+          </tooltip>
           <tooltip content="Eliminar ticket">
             <button class="button is-light" @click.prevent="deleteTicket">
               <span class="icon is-small"><i class="fa fa-times"></i></span>
@@ -101,6 +106,76 @@
           Usuario: <b>{{ ticket.user.name }}</b> - {{ ticket.user.role | uppercase }} - {{ ticket.user.email }}
         </div>
       </div>
+      <modal  :title="'Ticket Nro. ' + ticket.number" :show-footer="false" :on-cancel="closePrintModal" :is-show="isPrintOpen" transition="zoom">
+        <form>
+          <div class="columns">
+            <div class="column is-5"><input class="input" type="text" v-model="print.customer_name" placeholder="Nombre"></div>
+            <div class="column is-7"><input class="input" type="text" v-model="print.customer_address" placeholder="Direccion"></div>
+          </div>
+          <div class="columns">
+            <div class="column is-5">
+              <div class="select is-fullwidth">
+                <select class="input" v-model="print.customer_doc_type">
+                  <option value=''>Seleccione tipo</option>
+                  <option value="C">CUIT</option>
+                  <option value="0">LE</option>
+                  <option value="1">LC</option>
+                  <option value="2">DNI</option>
+                  <option value="3">Pasaporte</option>
+                  <option value="4">CE</option>
+                  <option value="5">S/C</option>
+                </select>
+              </div>
+            </div>
+            <div class="column is-7"><input class="input" type="text" v-model="print.customer_doc_nbr" placeholder="Numero"></div>
+          </div>
+          <div class="columns">
+            <div class="column is-5">
+              <div class="select is-fullwidth">
+                <select class="input" v-model="print.ticket_type">
+                  <option value=''>Seleccione tipo</option>
+                  <option value="A">Factura A</option>
+                  <option value="B">Factura B</option>
+                </select>
+              </div>
+            </div>
+            <div class="column is-4">
+              <div class="select is-fullwidth">
+                <select class="is-expanded" v-model="print.iva_type">
+                  <option value=''>Seleccione tipo iva</option>
+                  <option value="I">Responsable inscripto</option>
+                  <option value="N">Responsable no inscripto</option>
+                  <option value="E">Exento</option>
+                  <option value="A">No Responsable</option>
+                  <option value="M">Responsable Monotributo</option>
+                  <option value="T">No categorizado</option>
+                  <option value="V">Pequeño contribuyente</option>
+                  <option value="S">Monotributista social</option>
+                  <option value="F">Consumidor final</option>
+                </select>
+              </div>
+            </div>
+            <div class="column is-3">
+              <div class="select is-fullwidth">
+                <select class="is-expanded" v-model="print.iva">
+                  <option value=''>Iva</option>
+                  <option value="10.5">10.5%</option>
+                  <option value="21">21%</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <div class="columns">
+            <div class="column is-4 is-offset-2">
+              <button @click.prevent="fiscalPrint" class="button is-success is-fullwidth">Imprimir</button>
+            </div>
+            <div class="column is-4">
+              <button @click.prevent="closePrintModal" class="button is-light is-fullwidth">Cancelar</button>
+            </div>
+          </div>
+        </form>
+      </modal>
       <modal :title="'TICKET Nro. ' + ticket.number" :show-footer="false" :on-cancel="closeModal" :is-show="isOpen" :ok-loading="true" transition="zoom">
         <div class="columns modal-row with-border">
           <div class="column is-4">
@@ -216,6 +291,17 @@ export default {
       loadingTables: false,
       clients: [],
       isOpen: false,
+      isPrintOpen: false,
+      print: {
+        ticket_id: null,
+        ticket_type: '',
+        customer_name: '',
+        customer_address: '',
+        customer_doc_nbr: '',
+        customer_doc_type: '',
+        iva_type: '',
+        iva: ''
+      },
       ticket: {
         client: {},
         table_id: null,
@@ -410,8 +496,28 @@ export default {
     cancelPrint () {
       this.$notify.open({content: 'Impresion cancelada'})
     },
+    fiscalPrint () {
+      this.$http.post('fiscal_printer/print', { ticket_id: this.ticket.id, print: this.print }).then(
+        response => {
+          this.$notify.open({ type: 'success', content: 'Se envio a la impresora fiscal' })
+          this.isPrintOpen = false
+        },
+        error => {
+          this.alert('danger', error.data)
+        }
+      )
+    },
+    printFiscalTicket () {
+      this.isPrintOpen = true
+    },
+    cancelFiscalPrint () {
+      this.$notify.open({content: 'Impresion fiscal cancelada'})
+    },
     closeModal () {
       this.isOpen = false
+    },
+    closePrintModal () {
+      this.isPrintOpen = false
     },
     loadClients () {
       if (this.clients.length < 1) {
