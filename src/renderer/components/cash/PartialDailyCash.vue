@@ -3,26 +3,36 @@
     <div v-if="loading">Loading...</div>
     <div v-else>
       <div class="columns">
-        <div class="column is-3">
+        <div class="column is-1">
           <tooltip content="Caja Numero" placement="left"><tag class="tag-header is-pulled-left" rounded>{{ cash.id }}</tag></tooltip>
           <tag v-if="cash.daily_cash_id" class="tag-header is-pulled-left" rounded>{{ cash.id }}</tag>
         </div>
-        <div class="column is-5 has-text-centered">
+        <div class="column is-4 has-text-centered">
           <span class="button is-light is-medium is-not-link"><span>INICIAL: <b>${{ cash.init_amount }}</b></span></span>
           <span class="button is-white is-not-link"><span class="icon"><i class="fa fa-angle-right"></i></span></span>
           <span class="button is-light is-medium is-not-link"><span>ACTUAL: <b>${{ realCash }}</b></span></span>
         </div>
-        <div class="column is-4">
-          <tooltip content="Estado y Responsable de la caja">
-            <div class="control has-addons is-pulled-right">
-              <span class="button is-medium is-not-link" :class="{'is-success': !cash.closed_at, 'is-primary': cash.closed_at}">
-                Caja {{ cash.closed_at ? 'Cerrada' : 'Abierta' }}
-              </span>
-              <span class="button is-medium is-light is-not-link">
-                <span class="icon is-small"><i class="fa fa-user-o"></i></span><span><b>{{ cash.user.name }}</b></span>
-              </span>
-            </div>
-          </tooltip>
+        <div class="column is-7">
+          <div class="control has-addons is-pulled-right">
+            <span class="button is-medium is-not-link" :class="{'is-success': !cash.closed_at, 'is-primary': cash.closed_at}">
+              Caja {{ cash.closed_at ? 'Cerrada' : 'Abierta' }}
+            </span>
+            <span class="button is-medium is-light is-not-link">
+              <span class="icon is-small"><i class="fa fa-user-o"></i></span><span><b>{{ cash.user.name }}</b></span>
+            </span>
+            <pop-confirm content="Imprimir el cierre de la caja parcial" icon="question-circle-o" :on-ok="fiscalPrintCash" :on-cancel="cancelPrint">
+              <a class="button is-medium is-danger">
+                <span class="icon is-small"><i class="fa fa-print"></i></span>
+                <span>C. Caja</span>
+              </a>
+            </pop-confirm>
+            <pop-confirm content="Imprimir el cierre diario" icon="question-circle-o" :on-ok="fiscalPrintDay" :on-cancel="cancelPrint">
+              <a class="button is-medium is-danger">
+                <span class="icon is-small"><i class="fa fa-print"></i></span>
+                <span>C. Diario</span>
+              </a>
+            </pop-confirm>
+          </div>          
         </div>
       </div>
       <hr>
@@ -295,6 +305,7 @@
   import Auth from '../../auth'
   import _ from 'lodash'
   import autocomplete from '../utils/admin/SupplierAutocomplete'
+  import alert from '../../mixins/Alert'
 
   export default {
     name: 'PartialDailyCash',
@@ -305,6 +316,7 @@
         next()
       }
     },
+    mixins: [alert],
     components: { autocomplete },
     data () {
       return {
@@ -524,6 +536,31 @@
             }
           )
         }
+      },
+      fiscalPrintCash () {
+        this.$http.post('fiscal_printer/close_partial_daily_cash').then(
+          response => {
+            this.$notify.open({ type: 'success', content: 'Se envio a la impresora fiscal' })
+            this.isPrintOpen = false
+          },
+          error => {
+            this.alert('danger', error.data)
+          }
+        )
+      },
+      fiscalPrintDay () {
+        this.$http.post('fiscal_printer/close').then(
+          response => {
+            this.$notify.open({ type: 'success', content: 'Se envio a la impresora fiscal' })
+            this.isPrintOpen = false
+          },
+          error => {
+            this.alert('danger', error.data)
+          }
+        )
+      },
+      cancelPrint () {
+        this.$notify.open({ content: 'Se cancelo la impresion fiscal de la caja parcial' })
       }
     }
   }

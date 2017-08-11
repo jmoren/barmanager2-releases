@@ -293,7 +293,6 @@ export default {
       isOpen: false,
       isPrintOpen: false,
       print: {
-        ticket_id: null,
         ticket_type: '',
         customer_name: '',
         customer_address: '',
@@ -497,7 +496,7 @@ export default {
       this.$notify.open({content: 'Impresion cancelada'})
     },
     fiscalPrint () {
-      this.$http.post('fiscal_printer/print', { ticket_id: this.ticket.id, print: this.print }).then(
+      this.$http.post('fiscal_printer/print', { ticket_id: this.ticket.id, fiscal_printer: this.print }).then(
         response => {
           this.$notify.open({ type: 'success', content: 'Se envio a la impresora fiscal' })
           this.isPrintOpen = false
