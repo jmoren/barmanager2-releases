@@ -65,7 +65,7 @@
       </div>
     </b-aside>
     <h1 class="header">
-      <i class="fa fa-lightbulb-o fa-floated"></i> 
+      <i class="fa fa-lightbulb-o fa-floated"></i>
       Promociones
       <div class="control has-addons is-pulled-right">
         <input type="text" class="input" v-model="query" @keyup.prevent="fetchPromotions" placeholder="Filtrar promos">
@@ -92,7 +92,7 @@
               <li v-for="item in promotion.promotion_items" :key="item.id" style="margin-bottom: 10px">
                 <div class="columns">
                   <div class="column is-10">
-                    <tag style="font-size: 14px;" type="warning"><b>{{item.size}}</b></tag> 
+                    <tag style="font-size: 14px;" type="warning"><b>{{item.size}}</b></tag>
                     <tag style="font-size: 14px;">{{ item.name }}</tag>
                   </div>
                   <div class="column is-2 is-pulled-right" v-if="item.kitchen">
@@ -120,7 +120,7 @@
         </tr>
       </tbody>
     </table>
-    <pagination layout="pager" align="left" :page-size="20" :total="meta.total" :change="fetchPromotions"></pagination>
+    <pagination layout="pager" align="left" :page-size="20" :total="meta.total" :change="pageChange"></pagination>
   </div>
 </template>
 
@@ -139,6 +139,7 @@ export default {
       newPromotion: { name: '', promotion_items: [], day_price: null, night_price: null, favorite: false },
       newItem: { item: {}, quantity: null },
       newItems: [],
+      page: 1,
       promotions: [],
       items: [],
       isShow: false,
@@ -150,10 +151,14 @@ export default {
     this.fetchItems()
   },
   methods: {
+    pageChange (page) {
+      this.page = page
+      this.fetchPromotions()
+    },
     fetchPromotions () {
-      let url = 'admin/promotions'
+      let url = 'admin/promotions?page=' + this.page
       if (this.query && this.query.length > 2) {
-        url = url + '?query=' + this.query
+        url = url + '&query=' + this.query
       }
       this.$http.get(url).then(
         response => {

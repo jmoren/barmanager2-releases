@@ -16,7 +16,7 @@
         }
       },
       alert: function (type, message, position) {
-        let p = 'top-right'
+        let p = 'bottom-center'
         if (position) { p = position }
         let msgs = this.parseMessage(message)
         _.map(msgs, (m) => {

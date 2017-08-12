@@ -55,8 +55,8 @@
       </div>
     </b-aside>
     <h1 class="header">
-      <i class="fa fa-bars fa-floated"></i> 
-      Items 
+      <i class="fa fa-bars fa-floated"></i>
+      Items
       <div class="control has-addons is-pulled-right">
         <input type="text" class="input" v-model="query" @keyup.prevent="fetchItems" placeholder="Filtrar items">
         <a @click.prevent="openForm" class="button is-light is-pulled-right">Nuevo Item</a>
@@ -107,7 +107,7 @@
         </tr>
       </tbody>
     </table>
-    <pagination layout="pager" align="left" :page-size="20" :total="meta.total" :change="fetchItems"></pagination>
+    <pagination layout="pager" align="left" :page-size="20" v-model="page" :total="meta.total" :change="pageChange"></pagination>
   </div>
 </template>
 
@@ -122,6 +122,7 @@ export default {
     return {
       meta: {},
       query: undefined,
+      page: 1,
       newItem: { name: null, description: null, code: null, category_id: '', day_price: null, night_price: null, favorite: false },
       items: [],
       categories: [],
@@ -131,15 +132,19 @@ export default {
     }
   },
   created () {
-    this.fetchItems()
+    this.fetchItems(1)
     this.fetchCategories()
   },
   methods: {
+    pageChange (page) {
+      this.page = page
+      this.fetchItems()
+    },
     fetchItems () {
       this.loading = true
-      let url = 'admin/items'
+      let url = 'admin/items?page=' + this.page
       if (this.query && this.query.length > 2) {
-        url = url + '?query=' + this.query
+        url = url + '&query=' + this.query
       }
       this.$http.get(url).then(
         response => {

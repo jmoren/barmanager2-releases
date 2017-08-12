@@ -57,7 +57,7 @@
               <tr v-if="entries.length < 1">
                 <td colspan="6"><div class="empty-message">No hay entradas</div></td>
               </tr>
-              <ticket-row v-else v-for="entry in entries" :key="entry.id" :entry="entry" :reasons="reasons" :tclosed="ticket.closed" 
+              <ticket-row v-else v-for="entry in entries" :key="entry.id" :entry="entry" :reasons="reasons" :tclosed="ticket.closed"
                       :tprinted="ticket.printed" @reload-content="fetchEntries"></ticket-row>
             </tbody>
           </table>
@@ -89,7 +89,7 @@
       <ul>
         <li v-for="item in favoriteData.items" style="margin-bottom: 10px;">
           <tag type="warning"><i class="fa fa-star"></i></tag>
-          <tag><b>{{ item.code }}</b></tag> 
+          <tag><b>{{ item.code }}</b></tag>
           <tag><i v-if="item.category.kitchen" class="fa fa-cutlery" style="margin-right: 10px;"></i> {{ item.name }}</tag>
         </li>
       </ul>
@@ -99,7 +99,7 @@
       <ul>
         <li v-for="promotion in favoriteData.promotions" style="margin-bottom: 10px;">
           <tag type="warning"><i class="fa fa-star"></i></tag>
-          <tag><b>{{ promotion.code }}</b></tag> 
+          <tag><b>{{ promotion.code }}</b></tag>
           <tag>{{ promotion.name }}</tag>
         </li>
       </ul>
@@ -211,13 +211,23 @@
 
         this.$http.post('tickets/' + this.ticket.id + '/entries', { entry: params }).then(
           response => {
+            var index = this.entries.findIndex(function (entry) {
+              console.log(entry)
+              console.log(response.data)
+              console.log('comparing' + entry.ticketable_id + '/' + response.data.ticketable_id)
+              return entry.id === response.data.id
+            })
+            console.log(index)
+            if (index > -1) {
+              this.entries.splice(index, 1)
+            }
             this.entries.push(response.data)
             this.toggleEntry('Item')
             document.getElementById('code').focus()
           },
           error => {
             this.$notify.open({
-              content: error.data,
+              content: error.data || 'Error agregando Item',
               duration: 3000,
               type: 'danger'
             })
