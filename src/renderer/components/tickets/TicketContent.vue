@@ -65,8 +65,10 @@
       </div>
       <div class="resume">
         <div class="columns resume-header">
-          <div class="column is-8">TOTAL</div>
-          <div class="column is-4">$ {{ total }}</div>
+          <div class="column is-4">TOTAL</div>
+          <div class="column is-2">$ {{ total }}</div>
+          <div class="column is-4">PENDIENTE</div>
+          <div class="column is-2">$ {{ pending }}</div>
         </div>
         <div class="columns resume-sub-row">
           <div class="column is-6">
@@ -138,10 +140,12 @@
         promotions: [],
         entries: [],
         isShow: false,
-        loading: false
+        loading: false,
+        pending: 0
       }
     },
     created () {
+      this.pending = this.ticket.pending
       this.populateData()
       this.fetchEntries()
       this.focusCode()
@@ -248,9 +252,12 @@
       },
       setPaid (value) {
         this.$emit('ticket-paid', value)
+        this.pending = value
       },
       setNotPaid (value) {
+        console.log(value)
         this.$emit('ticket-not-paid', value)
+        this.pending = value
       }
     }
   }
