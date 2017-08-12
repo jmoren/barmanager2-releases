@@ -212,6 +212,7 @@
         this.$http.post('tickets/' + this.ticket.id + '/entries', { entry: params }).then(
           response => {
             this.entries.push(response.data)
+            this.toggleEntry('Item')
             document.getElementById('code').focus()
           },
           error => {
@@ -253,8 +254,6 @@
     overflow: auto;
     border: 1px solid rgb(236, 236, 236);
     border: 1px solid rgba(236, 236, 236, .5);
-    -webkit-background-clip: padding-box; /* for Safari */
-    background-clip: padding-box; /* for IE9+, Firefox 4+, Opera, Chrome */
   }
   .ticket-form { padding: 5px; }
   .ticket-form hr:last-child { margin-bottom: 5px; }
@@ -267,5 +266,6 @@
   @media print {
     .ticket-form, .payments.column.is-3, .resume .resume-sub-row, a.button, button.button { display: none; }
     .fa.fa-question-circle { display: none; }
+    .ticket-lines { height: 100%; overflow: none; border: none; }
   }
 </style>

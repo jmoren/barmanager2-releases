@@ -17,9 +17,9 @@
         </thead>
         <tbody>
           <router-link tag="tr" v-for="ticket in tickets" :key="ticket.id" :to="{ name: 'Ticket', params: { id: ticket.id } }">
-            <td>
-              <tag type="primary" rounded v-if="ticket.table_id"><b>Mesa {{ ticket.table_id }}</b></tag>
-              <tag rounded v-else><b>Delivery</b></tag>
+            <td style="width: 15%;">
+              <tag rounded type="primary" v-if="ticket.table_id"><b>{{ ticket.table.description }}</b></tag>
+              <tag rounded type="light" v-else><b>Delivery</b></tag>
             </td>
             <td>
               <tooltip v-bind:content="ticket.closed ? 'Ticket Cerrado' : 'Ticket Abierto'">

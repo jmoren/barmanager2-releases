@@ -11,7 +11,7 @@
          @focus="focused = true"
          @keydown.esc='reset'
          @blur="reset"
-         v-shortkey="['ctrl', 's']"
+         v-shortkey="['ctrl', 'g']"
          @shortkey="setFocus"/>
       <ul v-show="focused" id="queryList">
         <!-- for vue@1.0 use: ($item, item) -->

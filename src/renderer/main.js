@@ -44,7 +44,7 @@ Vue.use(VueShortkey)
 Vue.use(VeeValidate, veeConfig)
 Vue.use(VueChartkick, { Chartkick })
 
-Vue.http.options.root = 'http://localhost:3003/api/'
+Vue.http.options.root = 'http://localhost:3000/api/'
 Vue.http.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('id_token')
 
 export default Vue

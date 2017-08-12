@@ -23,7 +23,7 @@
                   </a>
                 </div>
                 <div class="nav-item">|</div>
-                <div class="nav-item"><a class="button is-primary" v-shortkey="['ctrl', 'a']" @shortkey="isOpen = true" @click.prevent="isOpen = true">Mesas abiertas</a></div>
+                <div class="nav-item"><a class="button is-primary" v-shortkey="['ctrl', 'a']" @shortkey="isOpen = true" @click.prevent="isOpen = true">Mesas abiertas <tag rounded>{{ openTables.length }}</tag>  </a></div>
               </div>
               <span class="nav-toggle" v-if="user.profile.role !== 'cooker'">
                 <span></span>
@@ -33,7 +33,7 @@
               <div class="nav-right" v-if="user.profile.role !== 'cooker'">
                 <div class="nav-item"><table-autocomplete :tables="tables" :class="{'is-disabled': !dailyCash.id }"></table-autocomplete></div>
                 <div class="nav-item">
-                  <popover title="Mi Cuenta" placement="bottom" :width="300" trigger="hover">
+                  <popover title="Mi Cuenta" placement="bottom" :width="300" trigger="click">
                     <button class="button is-primary">{{ user.profile.name }}</button>
                     <div slot="content">
                       <div class="columns" style="margin-bottom: 0px;">

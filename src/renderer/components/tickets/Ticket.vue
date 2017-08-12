@@ -1,11 +1,12 @@
 <template lang="html">
-  <div class="">
+  <div class="" v-shortkey.once="['ctrl', 'p']" @shortkey="printTicket()">
     <div v-if="loading">
       loading ticket...
     </div>
     <div v-else>
       <div id="ticket-options" class="columns is-marginless">
         <div class="column is-4 is-paddingless">
+          <span class="only-print" v-if="ticket.table">Mesa {{ ticket.table.description }}</span>
           <h1 class="header">TICKET # {{ ticket.number }}</h1>
         </div>
         <div class="column is-5 is-paddingless">
@@ -333,7 +334,7 @@ export default {
     },
     currentTable () {
       if (this.ticket.table_id) {
-        return 'Mesa #' + this.ticket.table_id
+        return this.ticket.table.description
       } else {
         return 'Ticket Delivery'
       }
@@ -442,7 +443,7 @@ export default {
           if (oldTable) {
             this.$store.dispatch('closeTable', oldTable)
           }
-          message = this.ticket.table_id ? 'Nueva Mesa asignada: ' + this.ticket.table_id : 'Ticket Delivery'
+          message = this.ticket.table_id ? 'Nueva Mesa asignada: ' + this.ticket.table.description : 'Ticket Delivery'
           this.alert(kind, message)
         },
         error => {
@@ -556,8 +557,9 @@ export default {
   li.active { background: #F5F5F5; }
   .ticket-footer { margin: 10px 5px; border-top: solid 2px #f1f1f1; }
   .ticket-footer .content { margin-top: 10px; padding: 10px 15px; background: #f9f9f9; }
-
+  .only-print { display: none }
   @media print {
+    .only-print { display: block; }
     .hero.is-primary.is-fixed, #ticket-options .column.is-5, #ticket-options .column.is-3{ display: none; }
   }
 </style>

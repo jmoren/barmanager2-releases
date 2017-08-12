@@ -1,0 +1,11 @@
+{
+  ubuntu: {
+    api: 'localhost:3003/api'
+  },
+  windows: {
+    api: '192.168.0.100:3003/api'
+  },
+  development: {
+    api: 'localhost:3000/api'
+  }
+}

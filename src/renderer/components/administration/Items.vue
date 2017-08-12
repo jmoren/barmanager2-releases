@@ -57,7 +57,10 @@
     <h1 class="header">
       <i class="fa fa-bars fa-floated"></i> 
       Items 
-      <a @click.prevent="openForm" class="is-pulled-right button is-light">Nuevo Item</a>
+      <div class="control has-addons is-pulled-right">
+        <input type="text" class="input" v-model="query" @keyup.prevent="fetchItems" placeholder="Filtrar items">
+        <a @click.prevent="openForm" class="button is-light is-pulled-right">Nuevo Item</a>
+      </div>
     </h1>
     <hr>
     <table class="table">
@@ -104,6 +107,7 @@
         </tr>
       </tbody>
     </table>
+    <pagination layout="pager" align="left" :page-size="20" :total="meta.total" :change="fetchItems"></pagination>
   </div>
 </template>
 
@@ -116,6 +120,8 @@ export default {
   mixins: [alert],
   data () {
     return {
+      meta: {},
+      query: undefined,
       newItem: { name: null, description: null, code: null, category_id: '', day_price: null, night_price: null, favorite: false },
       items: [],
       categories: [],
@@ -131,10 +137,15 @@ export default {
   methods: {
     fetchItems () {
       this.loading = true
-      this.$http.get('admin/items').then(
+      let url = 'admin/items'
+      if (this.query && this.query.length > 2) {
+        url = url + '?query=' + this.query
+      }
+      this.$http.get(url).then(
         response => {
           this.loading = false
-          this.items = response.data
+          this.items = response.data.items
+          this.meta = response.data.meta
         },
         error => {
           this.alert('danger', error.data)

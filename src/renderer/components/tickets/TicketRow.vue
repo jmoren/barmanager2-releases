@@ -1,5 +1,5 @@
 <template lang="html">
-  <tr>
+  <tr :class="{'not-print': !!entry.canceled }">
     <td class="has-text-centered">
       <div v-if="!tclosed">
         <popover title="" placement="left" :width="300" trigger="click" :disabled="!!entry.canceled">
@@ -230,8 +230,12 @@ export default {
 </script>
 
 <style lang="css">
-  .button span.icon { margin: 0px 5px!important; }
+  @media print {
+    .not-print { display: none; }
+  }
 
+  .button span.icon { margin: 0px 5px!important; }
+  
   table .sub-items {
     border-top: dashed 1px #ccc;
     padding-top: 5px;

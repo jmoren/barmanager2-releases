@@ -67,7 +67,10 @@
     <h1 class="header">
       <i class="fa fa-lightbulb-o fa-floated"></i> 
       Promociones
-      <a @click.prevent="openForm" class="button is-light is-pulled-right">Nueva Promocion</a>
+      <div class="control has-addons is-pulled-right">
+        <input type="text" class="input" v-model="query" @keyup.prevent="fetchPromotions" placeholder="Filtrar promos">
+        <a @click.prevent="openForm" class="button is-light is-pulled-right">Nueva Promocion</a>
+      </div>
     </h1>
     <hr>
     <table class="table">
@@ -117,6 +120,7 @@
         </tr>
       </tbody>
     </table>
+    <pagination layout="pager" align="left" :page-size="20" :total="meta.total" :change="fetchPromotions"></pagination>
   </div>
 </template>
 
@@ -130,6 +134,8 @@ export default {
   mixins: [alert],
   data () {
     return {
+      meta: {},
+      query: undefined,
       newPromotion: { name: '', promotion_items: [], day_price: null, night_price: null, favorite: false },
       newItem: { item: {}, quantity: null },
       newItems: [],
@@ -145,9 +151,14 @@ export default {
   },
   methods: {
     fetchPromotions () {
-      this.$http.get('admin/promotions').then(
+      let url = 'admin/promotions'
+      if (this.query && this.query.length > 2) {
+        url = url + '?query=' + this.query
+      }
+      this.$http.get(url).then(
         response => {
-          this.promotions = response.data
+          this.promotions = response.data.promotions
+          this.meta = response.data.meta
         },
         error => {
           this.alert('danger', error.data)
@@ -156,7 +167,7 @@ export default {
     },
     fetchItems () {
       this.loading = true
-      this.$http.get('admin/items').then(
+      this.$http.get('admin/items?paginate=1').then(
         response => {
           this.loading = false
           this.items = response.data
