@@ -58,7 +58,7 @@
                 <td colspan="6"><div class="empty-message">No hay entradas</div></td>
               </tr>
               <ticket-row v-else v-for="entry in entries" :key="entry.id" :entry="entry" :reasons="reasons" :tclosed="ticket.closed"
-                      :tprinted="ticket.printed" @reload-content="fetchEntries"></ticket-row>
+                      :tprinted="ticket.printed" @reload-content="fetchEntries" :kitchenView="kitchenView"></ticket-row>
             </tbody>
           </table>
         </div>
@@ -120,7 +120,7 @@
 
   export default {
     name: 'TicketContent',
-    props: ['ticket', 'reasons'],
+    props: ['ticket', 'reasons', 'kitchenView'],
     components: {
       TicketRow,
       TicketPayment,

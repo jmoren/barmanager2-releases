@@ -1,5 +1,5 @@
 <template lang="html">
-  <tr :class="{'not-print': !!entry.canceled , 'kitchen-row': entry.item.kitchen }">
+  <tr :class="{'not-print': !!entry.canceled , 'kitchen-row': entry.item.kitchen, 'not-kitchen-row': !entry.item.kitchen }" v-if="!(kitchenView && !entry.item.kitchen)">
     <td class="has-text-centered">
       <div v-if="!tclosed">
         <popover title="" placement="left" :width="300" trigger="click" :disabled="!!entry.canceled">
@@ -143,7 +143,7 @@ import _ from 'lodash'
 
 export default {
   name: 'TicketRow',
-  props: ['entry', 'tclosed', 'tprinted', 'reasons'],
+  props: ['entry', 'tclosed', 'tprinted', 'reasons', 'kitchenView'],
   data () {
     return {
       loading: false,

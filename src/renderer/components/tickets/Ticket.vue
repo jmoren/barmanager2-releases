@@ -88,6 +88,11 @@
               </span>
             </pop-confirm>
           </tooltip>
+          <tooltip content="Imprimir ticket de cocina">
+            <a class="button is-light" @click.prevent="toggleKitchenView">
+              <span class="icon is-small"><i class="fa fa-cutlery"></i></span>
+            </a>
+          </tooltip>
           <tooltip content="Enviar a la impresora fiscal">
             <a class="button is-light" @click.prevent="printFiscalTicket">
               <span class="icon is-small"><i class="fa fa-file-o"></i></span>
@@ -101,7 +106,7 @@
         </div>
       </div>
       <hr>
-      <ticket-content :ticket="ticket" :reasons="reasons" @ticket-paid="setPaid" @ticket-not-paid="setNotPaid"></ticket-content>
+      <ticket-content :ticket="ticket" :reasons="reasons" @ticket-paid="setPaid" @ticket-not-paid="setNotPaid" :kitchenView="kitchenView"></ticket-content>
       <div class="ticket-footer" v-if="ticket.user">
         <div class="content">
           Ud ha sido atendido por: <b>{{ ticket.user.name }}</b>
@@ -290,6 +295,7 @@ export default {
       loading: false,
       loadingClients: false,
       loadingTables: false,
+      kitchenView: false,
       clients: [],
       isOpen: false,
       isPrintOpen: false,
@@ -478,6 +484,10 @@ export default {
         }
       )
     },
+    toggleKitchenView () {
+      this.kitchenView = !this.kitchenView
+      setTimeout(this.printTicket, 500)
+    },
     printTicket () {
       if (this.ticket.printed_at) {
         window.print()
@@ -492,6 +502,7 @@ export default {
           }
         )
       }
+      this.kitchenView = false
     },
     cancelPrint () {
       this.$notify.open({content: 'Impresion cancelada'})
