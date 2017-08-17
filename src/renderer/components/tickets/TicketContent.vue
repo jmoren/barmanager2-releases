@@ -284,5 +284,6 @@
     .ticket-form, .payments.column.is-3, .resume .resume-sub-row, a.button, button.button { display: none; }
     .fa.fa-question-circle { display: none; }
     .ticket-lines { height: 100%; overflow: none; border: none; }
+    .column { float: left; }
   }
 </style>

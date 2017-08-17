@@ -1,5 +1,5 @@
 <template lang="html">
-  <tr :class="{'not-print': !!entry.canceled }">
+  <tr :class="{'not-print': !!entry.canceled , 'kitchen-row': entry.item.kitchen }">
     <td class="has-text-centered">
       <div v-if="!tclosed">
         <popover title="" placement="left" :width="300" trigger="click" :disabled="!!entry.canceled">
@@ -37,8 +37,9 @@
           <i class="fa fa-question-circle fa-floated"></i>
         </tooltip>
         {{ entry.item.name }}
+        <i v-if="entry.item.kitchen" class="fa fa-cutlery fa-floated"></i>
         <div class="is-pulled-right">
-          <popover title="" placement="top" :width="300" trigger="click" v-if="!entry.canceled && !entry.delivered">
+          <popover title="" placement="top" :width="300" trigger="click" v-if="!entry.canceled && !entry.delivered" class="not-print">
             <span class="is-primary-text" style="cursor: pointer">
               <i> {{ entry.comment ? entry.comment : 'Agregar nota' }}</i>
             </span>
@@ -235,7 +236,7 @@ export default {
   }
 
   .button span.icon { margin: 0px 5px!important; }
-  
+
   table .sub-items {
     border-top: dashed 1px #ccc;
     padding-top: 5px;

@@ -82,7 +82,7 @@
             </a>
           </tooltip>
           <tooltip v-bind:content=" ticket.printed_at ? 'Ticket impreso. Imprimir nuevamente' : 'Imprimir ticket'">
-            <pop-confirm content="Despues de imprimir, no se podra modificar el ticket. Seguro de seguir?" icon="question-circle-o" :on-ok="printTicket" :on-cancel="cancelPrint">
+            <pop-confirm content="Despues de imprimir, no se podra modificar el ticket. Seguro de seguir?" icon="question-circle-o" :on-ok="printTicket" :on-cancel="cancelPrint" class="not-print">
               <span class="button is-light">
                 <span class="icon is-small"><i class="fa fa-print"></i></span>
               </span>
@@ -104,7 +104,7 @@
       <ticket-content :ticket="ticket" :reasons="reasons" @ticket-paid="setPaid" @ticket-not-paid="setNotPaid"></ticket-content>
       <div class="ticket-footer" v-if="ticket.user">
         <div class="content">
-          Usuario: <b>{{ ticket.user.name }}</b> - {{ ticket.user.role | uppercase }} - {{ ticket.user.email }}
+          Ud ha sido atendido por: <b>{{ ticket.user.name }}</b>
         </div>
       </div>
       <modal  :title="'Ticket Nro. ' + ticket.number" :show-footer="false" :on-cancel="closePrintModal" :is-show="isPrintOpen" transition="zoom">
@@ -553,7 +553,7 @@ export default {
   .modal .columns.modal-row span { font-size: 15px; }
   .modal .columns.modal-row.with-border { border-bottom: dashed 1px #eee; }
   .modal .columns.modal-row .ticket-help { margin-top: 5px; }
-  
+
   li.active { background: #F5F5F5; }
   .ticket-footer { margin: 10px 5px; border-top: solid 2px #f1f1f1; }
   .ticket-footer .content { margin-top: 10px; padding: 10px 15px; background: #f9f9f9; }
@@ -561,5 +561,6 @@ export default {
   @media print {
     .only-print { display: block; }
     .hero.is-primary.is-fixed, #ticket-options .column.is-5, #ticket-options .column.is-3{ display: none; }
+    .popover { display: none !important; }
   }
 </style>
