@@ -28,7 +28,7 @@
   .is-orange.is-active, .is-orange:hover { background-color: #f26202; color: #fff; }
 
   .header { font-size: 25px; font-weight: bolder; margin: 0px !important;}
-  .main { padding: 80px 15px !important; }
+  .main { padding: 80px 15px 0px !important; }
   h1.header { font-size: 25px; font-weight: bolder; margin-bottom: 20px;}
   .daily-cash-form {
     width: 40%;

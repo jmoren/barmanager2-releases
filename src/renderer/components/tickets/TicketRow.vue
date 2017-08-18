@@ -31,13 +31,13 @@
     </td>
     <td class="has-text-centered">{{ entry.item.code }}</td>
     <td class="has-text-centered">{{ entry.quantity }}</td>
+    <td class="has-text-centered"><i v-if="entry.item.kitchen" class="fa fa-cutlery fa-floated"></i></td>
     <td style="width: 45%;">
       <div>
         <tooltip v-bind:content="entry.item.description" placement="top" trigger="hover">
           <i class="fa fa-question-circle fa-floated"></i>
         </tooltip>
         {{ entry.item.name }}
-        <i v-if="entry.item.kitchen" class="fa fa-cutlery fa-floated"></i>
         <div class="is-pulled-right">
           <popover title="" placement="top" :width="300" trigger="click" v-if="!entry.canceled && !entry.delivered" class="not-print">
             <span class="is-primary-text" style="cursor: pointer">

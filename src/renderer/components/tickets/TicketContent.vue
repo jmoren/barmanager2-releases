@@ -48,6 +48,7 @@
               <th class="has-text-centered">Tipo</th>
               <th class="has-text-centered">Cod</th>
               <th class="has-text-centered">Cant.</th>
+              <th class="has-text-centered">Cocina</th>
               <th>Item</th>
               <th class="has-text-centered">P.Unidad</th>
               <th class="has-text-centered">SubTotal</th>
@@ -266,7 +267,7 @@
 <style lang="css">
 
   .ticket-lines {
-    height: 350px;
+    height: 450px;
     margin: 0 5px;
     overflow: auto;
     border: 1px solid rgb(236, 236, 236);
@@ -275,7 +276,7 @@
   .ticket-form { padding: 5px; }
   .ticket-form hr:last-child { margin-bottom: 5px; }
   .ticket-sub-header { padding: 10px 5px; font-weight: bold; font-size: 18px; border-bottom: solid 1px #eee; margin-bottom: 10px; }
-  .ticket .resume { margin: 30px 15px 0px;}
+  .ticket .resume { margin: 30px 15px 0px 15px; }
   .ticket .resume .resume-header { padding: 5px 0px; background: #F3F4F4; border-bottom: solid 1px #ccc; font-size: 20px; font-weight: 400; }
   .ticket .resume .resume-sub-row { padding: 5px 0px; background: #F6F6F6; font-size: 15px; font-weight: 100; }
 
