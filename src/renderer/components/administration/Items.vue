@@ -107,7 +107,7 @@
         </tr>
       </tbody>
     </table>
-    <pagination layout="pager" align="left" :page-size="20" v-model="page" :total="meta.total" :change="pageChange"></pagination>
+    <pagination layout="pager" align="left" :page-size="10" v-model="page" :total="meta.total" :change="pageChange"></pagination>
   </div>
 </template>
 
@@ -121,7 +121,7 @@ export default {
   data () {
     return {
       meta: {},
-      query: undefined,
+      query: '',
       page: 1,
       newItem: { name: null, description: null, code: null, category_id: '', day_price: null, night_price: null, favorite: false },
       items: [],
@@ -132,7 +132,7 @@ export default {
     }
   },
   created () {
-    this.fetchItems(1)
+    this.fetchItems()
     this.fetchCategories()
   },
   methods: {

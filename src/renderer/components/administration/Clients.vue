@@ -11,7 +11,11 @@
     <h1 class="header">
       <i class="fa fa-users fa-floated"></i>
       Clientes 
-      <a @click.prevent="isShow = true" class="button is-light is-pulled-right">Nuevo Cliente</a>
+      <div class="control has-addons is-pulled-right">
+        <input type="text" class="input" v-model="query" @keyup.prevent="reloadClients" placeholder="Filtrar clientes">
+        <a @click.prevent="isShow = true" class="button is-light is-pulled-right">Nuevo Cliente</a>
+      </div>
+      
     </h1>
     <hr>
     <table class="table">
@@ -39,6 +43,7 @@
         </tr>
       </tbody>
     </table>
+    <pagination layout="pager" align="left" :page-size="12" v-model="page" :total="meta.total" :change="pageChange"></pagination>
   </div>
 </template>
 
@@ -53,17 +58,38 @@ export default {
       newClient: { name: null, phone: null },
       originalClient: { id: null, name: null, phone: null },
       clients: [],
-      isShow: false
+      isShow: false,
+      meta: {},
+      query: '',
+      page: 1
     }
   },
   created () {
     this.fetchClients()
   },
   methods: {
+    pageChange (page) {
+      this.page = page
+      this.fetchClients()
+    },
+    reloadClients () {
+      this.page = 1
+      let isEmpty = this.query.length === 0
+      if (isEmpty) {
+        this.fetchClients()
+      } else if (!isEmpty && this.query.length > 2) {
+        this.fetchClients()
+      }
+    },
     fetchClients () {
-      this.$http.get('admin/clients').then(
+      let url = 'admin/clients?page=' + this.page
+      if (this.query && this.query.length > 2) {
+        url = url + '&query=' + this.query
+      }
+      this.$http.get(url).then(
         response => {
-          this.clients = response.data
+          this.clients = response.data.clients
+          this.meta = response.data.meta
         },
         error => {
           this.alert('danger', error.data)

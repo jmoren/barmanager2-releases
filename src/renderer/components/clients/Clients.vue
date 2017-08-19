@@ -1,6 +1,12 @@
 <template lang="html">
   <div class="container">
-    <h1 class="header"><tag id="header-icon" rounded><i class="fa fa-users"></i></tag> Clientes</h1>
+    <h1 class="header">
+      <tag id="header-icon" rounded><i class="fa fa-users"></i></tag> 
+      Clientes
+      <div class="control has-addons is-pulled-right">
+        <input type="text" class="input" v-model="query" @keyup.prevent="reloadClients" placeholder="Filtrar clientes">
+      </div>
+    </h1>
     <hr>
     <div v-if="loading">
       <Loader></Loader>
@@ -25,6 +31,7 @@
           </tr>
         </tbody>
       </table>
+      <pagination layout="pager" align="left" :page-size="12" v-model="page" :total="meta.total" :change="pageChange"></pagination>
     </div>
   </div>
 </template>
@@ -48,19 +55,41 @@
     data () {
       return {
         clients: [],
-        loading: false
+        loading: false,
+        meta: {},
+        query: '',
+        page: 1
       }
     },
     created () {
       this.fetchClients()
     },
     methods: {
+      pageChange (page) {
+        this.page = page
+        this.fetchClients()
+      },
+      reloadClients () {
+        this.page = 1
+        let isEmpty = this.query.length === 0
+        if (isEmpty) {
+          this.fetchClients()
+        } else if (!isEmpty && this.query.length > 2) {
+          this.fetchClients()
+        }
+      },
       fetchClients () {
-        this.loading = true
-        this.$http.get('clients').then(
+        let url = 'clients?page=' + this.page
+        if (this.query && this.query.length > 2) {
+          url = url + '&query=' + this.query
+        }
+        this.$http.get(url).then(
           response => {
-            this.clients = response.data
-            this.loading = false
+            this.clients = response.data.clients
+            this.meta = response.data.meta
+          },
+          error => {
+            this.alert('danger', error.data)
           }
         )
       },
