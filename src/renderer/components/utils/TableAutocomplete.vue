@@ -24,7 +24,7 @@
               <i class="fa fa-circle" :class="{'is-danger-text': item.closed, 'is-success-text': !item.closed }"></i>
             </span>
           </div>
-          <div class="info">
+          <div class="info" :class="item.color">
             <div>{{ item.description }}</div>
             <small>{{ item.closed ? 'Cerrada' : 'Abierta: Ticket ' + item.current.number }}</small>
           </div>
@@ -174,5 +174,8 @@
     padding: 10px;
   }
   .autocomplete-dropdown .control ul li .indicator { float:left; width: 10%; text-align: left; }
-  .autocomplete-dropdown .control ul li .info { float:left; color: #333; width: 90%; text-align: left; }
+  .autocomplete-dropdown .control ul li .info { float:left; color: #333; width: 90%; padding: 5px 10px; text-align: left; }
+  .autocomplete-dropdown .control ul li .info.is-danger { border: solid 1px #f56954; }
+  .autocomplete-dropdown .control ul li .info.is-success { border: solid 1px #6cc788; }
+  .autocomplete-dropdown .control ul li .info.is-warning { border: solid 1px #f39c12; }
 </style>

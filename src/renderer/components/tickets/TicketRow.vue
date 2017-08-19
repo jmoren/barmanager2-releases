@@ -129,7 +129,7 @@
           </a>
         </tooltip>
         <tooltip content="Ver cada pedido">
-          <a @click="toggleShow()" class="button is-small is-success">
+          <a @click="toggleShow()" class="button is-small is-success" v-if="!entry.canceled">
             <span class="icon is-small"><i class="fa fa-database"></i></span>
           </a>
         </tooltip>

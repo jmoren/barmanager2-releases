@@ -485,24 +485,21 @@ export default {
       )
     },
     toggleKitchenView () {
-      this.kitchenView = !this.kitchenView
-      setTimeout(this.printTicket, 500)
+      this.kitchenView = true
+      this.printTicket()
     },
     printTicket () {
-      if (this.ticket.printed_at) {
-        window.print()
-      } else {
-        this.$http.put('tickets/' + this.ticket.id, { ticket: { printed_at: new Date() } }).then(
-          response => {
-            this.ticket = response.data
-            window.print()
-          },
-          error => {
-            this.alert('danger', error.data)
-          }
-        )
-      }
-      this.kitchenView = false
+      this.$http.put('tickets/' + this.ticket.id, { ticket: { printed_at: new Date() } }).then(
+        response => {
+          this.ticket = response.data
+          window.print()
+          this.kitchenView = false
+        },
+        error => {
+          this.alert('danger', error.data)
+          this.kitchenView = false
+        }
+      )
     },
     cancelPrint () {
       this.$notify.open({content: 'Impresion cancelada'})
