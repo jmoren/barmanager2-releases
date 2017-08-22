@@ -17,6 +17,12 @@ import Highcharts from 'highcharts'
 import 'vue-blu/dist/css/vue-blu.min.css'
 import Auth from './auth'
 
+const Config = require('electron-config')
+const config = new Config()
+if (config.get('api_url', null) === null) {
+  config.set('api_url', 'http://localhost:3000/api/')
+}
+
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.config.productionTip = false
 
@@ -44,7 +50,7 @@ Vue.use(VueShortkey)
 Vue.use(VeeValidate, veeConfig)
 Vue.use(VueChartkick, { Chartkick })
 
-Vue.http.options.root = 'http://localhost:3000/api/'
+Vue.http.options.root = config.get('api_url')
 Vue.http.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('id_token')
 
 export default Vue
