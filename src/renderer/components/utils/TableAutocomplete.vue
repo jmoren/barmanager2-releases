@@ -74,7 +74,7 @@
         if (this.action === 'assign') {
           this.$emit('set-table', item)
           this.focused = false
-          this.query = item.id + ' ' + item.description
+          this.query = item.description
         } else {
           if (!item.closed && item.current.id) {
             this.$router.push({ name: 'Ticket', params: { id: item.current.id } })

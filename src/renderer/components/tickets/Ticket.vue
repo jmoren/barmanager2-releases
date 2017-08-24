@@ -42,7 +42,7 @@
                 <div slot="content">
                   <h1>Seleccione cliente</h1>
                   <hr>
-                  <clients-autocomplete :clients="clients" @set-client="client => new_client_id = client.id"></clients-autocomplete>
+                  <clients-autocomplete :clients="clients.clients" @set-client="client => new_client_id = client.id"></clients-autocomplete>
                   <div class="form-footer has-text-centered">
                     <button type="button" class="button is-success" @click="assignClient()">Actualizar</button>
                   </div>

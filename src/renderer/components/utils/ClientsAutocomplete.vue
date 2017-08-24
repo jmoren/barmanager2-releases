@@ -30,13 +30,17 @@
     props: [ 'clients', 'model' ],
     computed: {
       filteredClients () {
-        if (this.item.name) {
-          let regex = new RegExp(this.item.name.toLowerCase())
-          return this.clients.filter((client) => {
-            return regex.test(client.name.toLowerCase())
-          })
+        if (this.clients) {
+          if (this.item.name) {
+            let regex = new RegExp(this.item.name.toLowerCase())
+            return this.clients.filter((client) => {
+              return regex.test(client.name.toLowerCase())
+            })
+          } else {
+            return this.clients
+          }
         } else {
-          return this.clients
+          return []
         }
       }
     },
