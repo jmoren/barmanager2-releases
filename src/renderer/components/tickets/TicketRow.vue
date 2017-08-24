@@ -1,6 +1,6 @@
 <template lang="html">
   <tr :class="{'not-print': !!entry.canceled , 'kitchen-row': entry.item.kitchen, 'not-kitchen-row': !entry.item.kitchen }" v-if="!(kitchenView && !entry.item.kitchen)">
-    <td class="has-text-centered">
+    <td class="has-text-centered not-print">
       <div v-if="!tclosed">
         <popover title="" placement="left" :width="300" trigger="click" :disabled="!!entry.canceled">
           <button class="is-small button is-danger" :class="{ 'is-loading': loading, 'is-disabled': entry.canceled || tclosed }">
@@ -24,14 +24,14 @@
         </popover>
       </div>
     </td>
-    <td class="has-text-centered">
+    <td class="has-text-centered not-print">
       <tooltip v-bind:content="entry.type_name" placement="top" trigger="hover">
         <span>{{ entry.type }}</span>
       </tooltip>
     </td>
-    <td class="has-text-centered">{{ entry.item.code }}</td>
+    <td class="has-text-centered not-print">{{ entry.item.code }}</td>
     <td class="has-text-centered">{{ entry.quantity }}</td>
-    <td class="has-text-centered"><i v-if="entry.item.kitchen" class="fa fa-cutlery fa-floated"></i></td>
+    <td class="has-text-centered not-print"><i v-if="entry.item.kitchen" class="fa fa-cutlery fa-floated"></i></td>
     <td style="width: 45%;">
       <div>
         <tooltip v-bind:content="entry.item.description" placement="top" trigger="hover">
@@ -54,7 +54,7 @@
               </div>
             </div>
           </popover>
-          <span style="color: #999" v-else><i>{{ entry.comment || 'Sin comentatrios' }}</i></span>
+          <span class="not-print" style="color: #999" v-else><i>{{ entry.comment || 'Sin comentatrios' }}</i></span>
           <tooltip v-bind:content="entry.canceled ? 'Pedido Cancelado' : entry.delivered ? 'Pedido Entregado' : 'Entregar pedido completo'">
             <a @click.prevent="entry.delivered || entry.canceled ? false : deliverAll(entry)" class="button is-small is-light">
               <span class="icon is-small">
@@ -119,7 +119,7 @@
         </ul>
       </div>
     </td>
-    <td class="has-text-centered">{{ entry.item.price }} </td>
+    <td class="has-text-centered not-print">{{ entry.item.price }} </td>
     <td class="has-text-centered">{{ entry.subtotal }}</td>
     <td>
       <div class="is-pulled-right">

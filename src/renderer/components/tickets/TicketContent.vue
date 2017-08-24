@@ -44,13 +44,13 @@
         <div v-else>
           <table class="table">
             <thead>
-              <th></th>
-              <th class="has-text-centered">Tipo</th>
-              <th class="has-text-centered">Cod</th>
+              <th class="hide"></th>
+              <th class="has-text-centered hide">Tipo</th>
+              <th class="has-text-centered hide">Cod</th>
               <th class="has-text-centered">Cant.</th>
-              <th class="has-text-centered">Cocina</th>
+              <th class="has-text-centered hide">Cocina</th>
               <th>Item</th>
-              <th class="has-text-centered">P.Unidad</th>
+              <th class="has-text-centered hide">P.Unidad</th>
               <th class="has-text-centered">SubTotal</th>
               <th></th>
             </thead>
@@ -286,5 +286,7 @@
     .fa.fa-question-circle { display: none; }
     .ticket-lines { height: 100%; overflow: none; border: none; }
     .resume .column { float: left; }
+    table thead th.hide { display: none !important; }
+    table tbody tr td { text-align: left !important;}
   }
 </style>
