@@ -106,7 +106,7 @@ const mutations = {
     state.tables.closed = state.tables.all.filter((t) => { return t.closed })
   },
   [DELETE_TABLE] (state, table) {
-    let index = state.all.indexOf(table)
+    let index = state.tables.all.indexOf(table)
     state.tables.all.splice(index, 1)
     state.tables.open = state.tables.all.filter((t) => { return !t.closed })
     state.tables.closed = state.tables.all.filter((t) => { return t.closed })

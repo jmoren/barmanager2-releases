@@ -116,6 +116,7 @@
     width: 100%;
     box-shadow: 0 2px 3px hsla(0,0%,4%,.1), 0 0 0 1px hsla(0,0%,4%,.1);
   }
-  li { padding: 5px 10px; }
-  li.active { background: #0099ff; }
+  li { font-weight: 500; padding: 5px 10px; }
+  li.active { background: #3c81df; }
+  li.active { color: #fff;}
 </style>

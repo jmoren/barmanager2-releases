@@ -1,7 +1,6 @@
 <template>
   <div v-if="ticket.id">
     <div class="is-clearfix" style="margin-bottom: -8px;">
-      <button class="button is-danger is-not-link" v-if="ticket.status === 'open'">Abierto</button>
       <button class="button is-light is-not-link">
         <span>Nro. <b>{{ ticket.number }}</b></span>
       </button>

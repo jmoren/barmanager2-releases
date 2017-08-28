@@ -52,7 +52,7 @@
         if (this.query) {
           let regex = new RegExp(this.query.toLowerCase())
           return this.tables.filter((table) => {
-            return regex.test(table.id) || regex.test(table.description.toLowerCase())
+            return regex.test(table.description.toLowerCase())
           })
         } else {
           return this.tables
@@ -162,18 +162,16 @@
     width: 100%;
   }
   .autocomplete-dropdown .control input { width: 300px; }
-  .autocomplete-dropdown .control input:focus { background: #0099ff; }
+  .autocomplete-dropdown .control input:focus { background: #fff; }
   .autocomplete-dropdown .control ul li:first-child { margin-top: 0px !important; }
   .autocomplete-dropdown .control ul li:last-child { margin-bottom: 0px !important; }
-  .autocomplete-dropdown .control ul li.active { background: #0099ff; }
+  .autocomplete-dropdown .control ul li.active { background: #3c81df; }
   .autocomplete-dropdown .control ul li.empty-item:hover { background: #fff; }
   .autocomplete-dropdown .control ul li.empty-item {
     font-weight: 400;
     padding: 10px;
   }
   .autocomplete-dropdown .control ul li .indicator { float:left; width: 10%; text-align: left; }
-  .autocomplete-dropdown .control ul li .info { float:left; color: #333; width: 90%; padding: 5px 10px; text-align: left; }
-  .autocomplete-dropdown .control ul li .info.is-danger { border: solid 1px #f56954; }
-  .autocomplete-dropdown .control ul li .info.is-success { border: solid 1px #6cc788; }
-  .autocomplete-dropdown .control ul li .info.is-warning { border: solid 1px #f39c12; }
+  .autocomplete-dropdown .control ul li .info { float:left; font-weight: 500; color: #333; width: 90%; padding: 5px 10px; text-align: left; }
+  .autocomplete-dropdown .control ul li.active .info { color: #fff;}
 </style>

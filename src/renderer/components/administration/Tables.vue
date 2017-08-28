@@ -19,34 +19,41 @@
       <a @click.prevent="isShow=true" class="is-pulled-right button is-light">Nuevo Mesa</a>
     </h1>
     <hr>
-    <table class="table">
-      <thead>
-        <th># Numero</th>
-        <th>Color</th>
-        <th>Descripcion</th>
-        <th></th>
-      </thead>
-      <tbody>
-        <tr v-for="table in tables" :key="table.id">
-          <td>
-            <router-link :to="{ name: 'AdminTable', params: { id: table.id } }"># {{ table.id }}</router-link>
-          </td>
-          <td><i class="fa fa-circle" v-bind:class="table.color"></i></td>
-          <td>{{ table.description }}</td>
-          <td>
-            <div class="control has-addons">
-              <a @click.prevent="removeTable(table)" class="button is-light">
-                 <span class="icon is-small"><i class="fa fa-trash"></i></span>
-              </a>
-              <a @click.prevent="setToEdit(table)" class="button is-light">
-                 <span class="icon is-small"><i class="fa fa-pencil"></i></span>
-              </a>
-            </div>
-            
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <data-table :data="filteredTables">
+      <table-toolbar>
+        <template slot="right">
+          <div class="level-item">
+            <p class="control has-addons">
+              <input class="input" type="text" v-model="query" placeholder="Filtrar mesas">
+              <button class="button">Filtrar</button>
+            </p>
+          </div>
+        </template>
+      </table-toolbar>
+      <column label="ID" field="id" sorter="custom">
+        <template scope="row">
+          <router-link :to="{ name: 'AdminTable', params: { id: row.id } }"># {{ row.id }}</router-link>
+        </template>
+      </column>
+      <column label="Color" field="color" sorter="custom">
+        <template scope="row">
+          <i class="fa fa-circle" :class="row.color"></i>
+        </template>
+      </column>
+      <column label="Descripcion" field="description" sorter="custom"></column>
+      <column label="">
+        <template scope="row">
+          <div class="control has-addons">
+            <a @click.prevent="removeTable(row)" class="button is-light">
+               <span class="icon is-small"><i class="fa fa-trash"></i></span>
+            </a>
+            <a @click.prevent="setToEdit(row)" class="button is-light">
+               <span class="icon is-small"><i class="fa fa-pencil"></i></span>
+            </a>
+          </div>
+        </template>
+      </column>
+    </data-table>
   </div>
 </template>
 
@@ -59,6 +66,7 @@ export default {
   mixins: [alert],
   data () {
     return {
+      query: '',
       newTable: { name: '', phone: '', address: '' },
       originalTable: { id: null, name: '', phone: '', address: '' },
       isShow: false,
@@ -68,7 +76,17 @@ export default {
   computed: {
     ...mapGetters({
       tables: 'allTables'
-    })
+    }),
+    filteredTables () {
+      if (this.query) {
+        let regex = new RegExp(this.query.toLowerCase())
+        return this.tables.filter((table) => {
+          return regex.test(table.description.toLowerCase())
+        })
+      } else {
+        return this.tables
+      }
+    }
   },
   methods: {
     saveTable () {
@@ -106,7 +124,7 @@ export default {
       )
     },
     removeTable (table) {
-      this.$http.delete('tables/' + table.id).then(
+      this.$http.delete('admin/tables/' + table.id).then(
         () => {
           this.$store.dispatch('deleteTable', table)
         },
