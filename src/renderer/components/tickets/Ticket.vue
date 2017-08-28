@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="" v-shortkey.once="['ctrl', 'p']" @shortkey="printTicket()">
+  <div class="">
     <div v-if="loading">
       loading ticket...
     </div>
@@ -77,7 +77,7 @@
           </tooltip>
           <tooltip v-bind:content=" ticket.printed_at ? 'Ticket impreso. Imprimir nuevamente' : 'Imprimir ticket'">
             <pop-confirm content="Despues de imprimir, no se podra modificar el ticket. Seguro de seguir?" icon="question-circle-o" :on-ok="printTicket" :on-cancel="cancelPrint" class="not-print">
-              <span class="button is-light">
+              <span class="button is-light" v-shortkey.once="['ctrl', 'p']" @shortkey="printTicket()">
                 <span class="icon is-small"><i class="fa fa-print"></i></span>
               </span>
             </pop-confirm>
