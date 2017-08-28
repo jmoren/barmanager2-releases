@@ -119,7 +119,7 @@
         </ul>
       </div>
     </td>
-    <td class="has-text-centered not-print">{{ entry.item.price }} </td>
+    <td class="has-text-centered">{{ entry.item.price }} </td>
     <td class="has-text-centered">{{ entry.subtotal }}</td>
     <td>
       <div class="is-pulled-right">
