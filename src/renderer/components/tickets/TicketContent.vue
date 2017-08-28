@@ -56,7 +56,7 @@
             </thead>
             <tbody>
               <tr v-if="entries.length < 1">
-                <td colspan="6"><div class="empty-message">No hay entradas</div></td>
+                <td colspan="9"><div class="empty-message">No hay entradas</div></td>
               </tr>
               <ticket-row v-else v-for="entry in entries" :key="entry.id" :entry="entry" :reasons="reasons" :tclosed="ticket.closed"
                       :tprinted="ticket.printed" @reload-content="fetchEntries" :kitchenView="kitchenView"></ticket-row>

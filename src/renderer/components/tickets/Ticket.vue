@@ -22,10 +22,7 @@
                 <div slot="content">
                   <h1>Seleccione mesa</h1>
                   <hr>
-                  <table-autocomplete :tables="tables" action="assign" @set-table="table => new_table_id = table.id"></table-autocomplete>
-                  <div class="form-footer has-text-centered">
-                    <button type="button" class="button is-success" @click="traslateTicket()">Actualizar</button>
-                  </div>
+                  <table-autocomplete :tables="tables" action="assign" @set-table="table => traslateTicket(table.id)"></table-autocomplete>
                 </div>
               </popover>
               <button v-if="this.ticket.table_id" class="button is-primary" @click.prevent="removeTable"><i class="fa fa-times"></i></button>
@@ -42,10 +39,7 @@
                 <div slot="content">
                   <h1>Seleccione cliente</h1>
                   <hr>
-                  <clients-autocomplete :clients="clients" @set-client="client => new_client_id = client.id"></clients-autocomplete>
-                  <div class="form-footer has-text-centered">
-                    <button type="button" class="button is-success" @click="assignClient()">Actualizar</button>
-                  </div>
+                  <clients-autocomplete :clients="clients" @set-client="client => assignClient(client.id)"></clients-autocomplete>
                 </div>
               </popover>
               <button v-if="this.ticket.client_id" class="button is-primary" @click.prevent="removeClient"><i class="fa fa-times"></i></button>
@@ -427,21 +421,18 @@ export default {
       )
     },
     removeTable () {
-      this.new_table_id = null
       this.traslateTicket()
     },
-    traslateTicket () {
+    traslateTicket (newTableId) {
       let message = null
       let kind = null
       let oldTable = this.ticket.table
-      let newTable = null
-      let params = { table_id: this.new_table_id }
+      let params = { table_id: newTableId }
       this.$http.post('tickets/' + this.ticket.id + '/traslate', params).then(
         response => {
-          newTable = response.data.table
+          let newTable = response.data.table
           _.extend(this.ticket, response.data)
           kind = 'success'
-          this.new_table_id = null
           if (newTable) {
             this.$store.dispatch('updateTable', newTable)
           }
@@ -461,8 +452,8 @@ export default {
       this.new_client_id = null
       this.assignClient()
     },
-    assignClient () {
-      let params = { client_id: this.new_client_id }
+    assignClient (newClientId) {
+      let params = { client_id: newClientId }
 
       this.$http.post('tickets/' + this.ticket.id + '/assign', params).then(
         response => {
