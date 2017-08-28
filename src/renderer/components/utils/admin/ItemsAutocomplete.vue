@@ -3,7 +3,7 @@
     <div class="control">
       <input type="search" class="input is-expanded"
          autocomplete="off"
-         placeholder="Buscardor..." 
+         placeholder="Buscardor..."
          v-model="query"
          @keydown.down='down'
          @keydown.up='up'
@@ -140,11 +140,11 @@
     width: 100%;
   }
   .autocomplete-dropdown .control input { width: 300px; }
-  .autocomplete-dropdown .control input:focus { background: #f5f5f5; }
+  .autocomplete-dropdown .control input:focus { background: #0099ff; }
   .autocomplete-dropdown .control ul li:first-child { margin-top: 0px !important; }
   .autocomplete-dropdown .control ul li:last-child { margin-bottom: 0px !important; }
   .autocomplete-dropdown .control ul li.active {
-    background: #f5f5f5
+    background: #0099ff
   }
   .autocomplete-dropdown .control ul li.empty-item:hover { background: #fff; }
   .autocomplete-dropdown .control ul li.empty-item {

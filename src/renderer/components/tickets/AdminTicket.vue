@@ -171,12 +171,12 @@
     font-weight: bold;
     border-bottom: solid 2px #ccc;
     margin: 10px 5px;
-    padding: 10px 0px; 
+    padding: 10px 0px;
   }
   .entries-footer {
     font-weight: bold;
-    padding: 10px 0px; 
-    background: #f5f5f5;
+    padding: 10px 0px;
+    background: #0099ff;
     margin: 10px 1px;
   }
   .entries-row {

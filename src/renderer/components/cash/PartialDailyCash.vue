@@ -32,7 +32,7 @@
                 <span>C. Diario</span>
               </a>
             </pop-confirm>
-          </div>          
+          </div>
         </div>
       </div>
       <hr>
@@ -134,7 +134,7 @@
             <div class="box">
               <alert class="debit-message">TOTAL <span class="is-danger-text">${{ totalGasto }}</span></alert>
               <div class="ticket-form" v-if="!cash.closed_at">
-                <div class="debit-help is-primary-text"> 
+                <div class="debit-help is-primary-text">
                   <tag><span class="icon is-small"><i class="fa fa-exclamation"></i></span> Es gasto si:</tag>
                   <p>Si la plata sale de la caja del turno para pagar gastos del bar (ej: proveedores, mozas, etc)</p>
                 </div>
@@ -268,7 +268,7 @@
         <div class="is-pulled-left">
           <span class="icon is-small" style="margin: 2px;"><i class="fa fa-exclamation is-danger"></i></span>
           <span>
-            <b v-if="lastCash">Cierre de caja y cierre diario</b> 
+            <b v-if="lastCash">Cierre de caja y cierre diario</b>
             <b v-else>Cierre y Apertura de nuevo turno</b>
           </span>
         </div>
@@ -573,33 +573,33 @@
     margin: 20px 0px 10px;
   }
 
-  .resume .tag-label { 
-    padding: 5px 0px; 
+  .resume .tag-label {
+    padding: 5px 0px;
     font-weight: bold;
     text-align: center;
     margin-top: 5px;
   }
 
-  .tag-header { 
+  .tag-header {
     padding: 15px 20px;
     height: 55px;
-    width: 55px; 
+    width: 55px;
     font-weight: 500;
-    font-size: 20px; 
+    font-size: 20px;
     margin-top: -5px;
   }
-  .resume .tag.medium { 
+  .resume .tag.medium {
     padding: 15px 25px;
     height: 90px;
-    width: 90px; 
+    width: 90px;
     font-weight: 500;
-    font-size: 20px; 
+    font-size: 20px;
   }
-  
-  .resume .tag.big { 
+
+  .resume .tag.big {
     padding: 15px 25px;
     height: 110px;
-    width: 110px; 
+    width: 110px;
     font-weight: 500;
     font-size: 20px;
   }
@@ -610,7 +610,7 @@
   }
 
   .debit-help {
-    border: solid 2px #f5f5f5;
+    border: solid 2px #0099ff;
     border-radius: 4px;
     padding: 10px;
     margin-bottom: 10px;
@@ -625,13 +625,13 @@
     margin-bottom: 20px;
   }
   .header-icon {
-    height: 44px; 
-    font-size: 20px; 
+    height: 44px;
+    font-size: 20px;
     padding-left: 12px;
     padding-right: 12px;
     margin-top: -5px;
   }
-  input.disabled { background: #f5f5f5; }
+  input.disabled { background: #0099ff; }
   tr.total td { font-size: 25px; }
   tr.subtotal td { background: #F5F5F5; }
   td.row-value { font-weight: bold; }

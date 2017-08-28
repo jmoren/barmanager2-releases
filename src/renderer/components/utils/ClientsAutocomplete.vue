@@ -3,7 +3,7 @@
     <div class="control">
       <input type="search" class="input is-expanded" id="search-clients"
          autocomplete="off"
-         placeholder="Filtrar..." 
+         placeholder="Filtrar..."
          v-model="item.name"
          @keydown.down='down'
          @keydown.up='up'
@@ -103,7 +103,7 @@
 
 <style scoped>
   input[type=search] { border-radius: 4px; }
-  ul { 
+  ul {
     position: absolute;
     max-height: 300;
     overflow: auto;
@@ -117,5 +117,5 @@
     box-shadow: 0 2px 3px hsla(0,0%,4%,.1), 0 0 0 1px hsla(0,0%,4%,.1);
   }
   li { padding: 5px 10px; }
-  li.active { background: #f5f5f5; }
+  li.active { background: #0099ff; }
 </style>

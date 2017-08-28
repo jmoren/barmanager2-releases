@@ -59,7 +59,7 @@
               </td>
               <td>
                 <div v-for="(entry, id) in ticket.entries" class="entry-row">
-                  <div class="entry-comment" v-if="entry.comment"> 
+                  <div class="entry-comment" v-if="entry.comment">
                     <i class="fa fa-exclamation-circle fa-floated"></i> {{ entry.comment | titleize }}
                   </div>
                   <div class="columns">
@@ -231,6 +231,6 @@
   }
   .kitchen .entry-row.danger { border-color: #f56954; }
   .kitchen .request-row { margin-bottom: 5px; }
-  .kitchen .entry-comment { font-weight: bold; background: #f5f5f5; color: #333; padding: 6px; margin-bottom: 10px; border-radius: 4px;}
+  .kitchen .entry-comment { font-weight: bold; background: #0099ff; color: #333; padding: 6px; margin-bottom: 10px; border-radius: 4px;}
   .kitchen .empty-message { font-size: 20px; }
 </style>
