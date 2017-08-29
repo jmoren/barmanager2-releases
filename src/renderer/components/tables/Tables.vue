@@ -21,10 +21,15 @@
         </div>
         <div class="column is-9">
           <div v-if="tablesOpen.length > 0" style="margin-bottom: 40px;">
-            <h1 class="header">Mesas Abiertas</h1>
+            <h1 class="header">
+              Mesas Abiertas
+              <div class="control has-addons is-pulled-right">
+                <input type="text" class="input" v-model="queryOpen" placeholder="Filtrar mesas abiertas">
+              </div>
+            </h1>
             <hr>
             <div class="columns is-multiline">
-              <div class="column is-3" v-for="table in tablesOpen" :key="table.id">
+              <div class="column is-3" v-for="table in filteredOpenTables" :key="table.id">
                 <div class="is-clearfix">
                   <tooltip v-bind:content="'T. ' + table.current.number">
                     <router-link class="table-button button is-fullwidth is-medium" :class="table.color" :to="{ name: 'Ticket', params: { id: table.current.id } }">
@@ -36,10 +41,15 @@
             </div>
           </div>
           <div v-if="tablesClosed.length > 0">
-            <h1 class="header">Mesas Cerradas</h1>
+            <h1 class="header">
+              Mesas Cerradas
+              <div class="control has-addons is-pulled-right">
+                <input type="text" class="input" v-model="queryClosed" placeholder="Filtrar mesas cerradas">
+              </div>
+            </h1>
             <hr>
             <div class="columns is-multiline">
-              <div class="column is-3" v-for="table in tablesClosed" :key="table.id">
+              <div class="column is-3" v-for="table in filteredClosedTables" :key="table.id">
                 <div class="is-clearfix">
                   <a class="table-button button is-fullwidth is-outlined is-medium" :class="table.color" @click.prevent="openTable(table)">
                     {{ table.description}}
@@ -95,6 +105,8 @@ export default {
   },
   data () {
     return {
+      queryOpen: '',
+      queryClosed: '',
       delivery: [],
       newCash: { init_amount: null, user_id: '' }
     }
@@ -106,6 +118,26 @@ export default {
       current: 'currentCash',
       users: 'allUsers'
     }),
+    filteredOpenTables () {
+      if (this.queryOpen) {
+        let regex = new RegExp(this.queryOpen.toLowerCase())
+        return this.tablesOpen.filter((table) => {
+          return regex.test(table.description.toLowerCase())
+        })
+      } else {
+        return this.tablesOpen
+      }
+    },
+    filteredClosedTables () {
+      if (this.queryClosed) {
+        let regex = new RegExp(this.queryClosed.toLowerCase())
+        return this.tablesClosed.filter((table) => {
+          return regex.test(table.description.toLowerCase())
+        })
+      } else {
+        return this.tablesClosed
+      }
+    },
     tablesOpen () {
       return this.tables.filter((t) => { return !t.closed })
     },

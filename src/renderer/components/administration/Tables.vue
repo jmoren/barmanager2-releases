@@ -16,7 +16,7 @@
     <h1 class="header">
       <i class="fa fa-address-book-o fa-floated"></i> 
       Mesas
-      <a @click.prevent="isShow=true" class="is-pulled-right button is-light">Nuevo Mesa</a>
+      <a @click.prevent="isShow=true" class="is-pulled-right button is-light">Nueva Mesa</a>
     </h1>
     <hr>
     <data-table :data="filteredTables">
