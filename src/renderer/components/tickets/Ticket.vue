@@ -6,8 +6,8 @@
     <div v-else>
       <div id="ticket-options" class="columns is-marginless">
         <div class="column is-4 is-paddingless">
-          <span class="only-print" v-if="ticket.table">Mesa {{ ticket.table.description }}</span>
-          <h1 class="header">TICKET # {{ ticket.number }}</h1>
+          <h2 class="">TICKET # {{ ticket.number }}</h2>
+          <h1 class="header only-print" v-if="ticket.table">{{ ticket.table.description }}</h1>
         </div>
         <div class="column is-5 is-paddingless">
           <div v-if="!ticket.closed">

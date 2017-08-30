@@ -34,7 +34,7 @@
     <td class="has-text-centered not-print"><i v-if="entry.item.kitchen" class="fa fa-cutlery fa-floated"></i></td>
     <td style="width: 45%;">
       <div>
-        <tooltip v-bind:content="entry.item.description" placement="top" trigger="hover">
+        <tooltip v-bind:content="entry.item.description + ' - ' + entry.updated_time" placement="top" trigger="hover">
           <i class="fa fa-question-circle fa-floated"></i>
         </tooltip>
         {{ entry.item.name }}
