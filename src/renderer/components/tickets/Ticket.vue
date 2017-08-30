@@ -312,7 +312,7 @@ export default {
         full_delivered: false,
         closed: false,
         paid: false,
-        pay: 'empty'
+        pay: 'efectivo'
       },
       new_table_id: '',
       new_client_id: ''

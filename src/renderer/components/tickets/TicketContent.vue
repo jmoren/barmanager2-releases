@@ -69,7 +69,7 @@
           <div class="column is-4">TOTAL</div>
           <div class="column is-2">$ {{ total }}</div>
           <div class="column is-4">PENDIENTE</div>
-          <div class="column is-2">$ {{ pending }}</div>
+          <div class="column is-2">$ {{ pending || 0}}</div>
         </div>
         <div class="columns resume-sub-row">
           <div class="column is-6">
