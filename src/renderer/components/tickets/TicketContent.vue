@@ -220,12 +220,8 @@
         this.$http.post('tickets/' + this.ticket.id + '/entries', { entry: params }).then(
           response => {
             var index = this.entries.findIndex(function (entry) {
-              console.log(entry)
-              console.log(response.data)
-              console.log('comparing' + entry.ticketable_id + '/' + response.data.ticketable_id)
               return entry.id === response.data.id
             })
-            console.log(index)
             if (index > -1) {
               this.entries.splice(index, 1)
             }

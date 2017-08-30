@@ -139,8 +139,8 @@
         )
       },
       removeTicket (ticket) {
-        let index = this.tickets.indexOf(ticket)
-        this.tickets.splice(index, 1)
+        delete this.tickets[ticket.id]
+        this.$notify.open({ content: 'Ticket enviado', type: 'success' })
       }
     }
   }

@@ -8,7 +8,7 @@
     </td>
     <td style="width:15%">
       <tooltip content="Enviar todo lo pendiente">
-        <a @click.prevent="deliverTicket(ticket)" class="button is-success" :class="{ 'is-loading': loading || removed }">
+        <a @click.prevent="deliverTicket()" class="button is-success" :class="{ 'is-loading': loading || removed }">
           <span class="icon is-small"><i class="fa fa-reply"></i></span>
           <span><b>{{ ticket.number }}</b></span>
         </a>
@@ -22,7 +22,7 @@
         <div class="columns">
           <div class="column is-2">
             <tooltip content="Sacar Entrada completa">
-              <a class="button is-fullwidth is-light" @click="deliverEntry(ticket, entry)" :class="{'is-disabled is-success': entry.delivered, 'is-loading': loading }">
+              <a class="button is-fullwidth is-light" @click="deliverEntry(entry)" :class="{'is-disabled is-success': entry.delivered, 'is-loading': loading }">
                 <span class="icon is-small"><i class="fa fa-reply"></i></span>
                 <span>Enviar Grupo</span>
               </a>
@@ -54,7 +54,8 @@
     props: ['ticket'],
     data () {
       return {
-        loading: false
+        loading: false,
+        removed: false
       }
     },
     methods: {
@@ -71,12 +72,16 @@
           }
         )
       },
-      deliverEntry (ticket, entry) {
+      deliverEntry (entry) {
         this.loading = true
         this.$http.post('kitchen/deliver_entry', { entry_id: entry.id }).then(
           response => {
-            delete ticket.entries[entry.id]
             this.loading = false
+            delete this.ticket.entries[entry.id]
+            if (Object.keys(this.ticket.entries).length === 0) {
+              this.removed = true
+              this.$emit('remove-ticket', this.ticket)
+            }
           },
           error => {
             console.log(error.data)
@@ -84,11 +89,11 @@
           }
         )
       },
-      deliverTicket (ticket) {
+      deliverTicket () {
         this.loading = true
-        this.$http.post('kitchen/deliver_ticket', { ticket_id: ticket.id }).then(
+        this.$http.post('kitchen/deliver_ticket', { ticket_id: this.ticket.id }).then(
           response => {
-            this.$emit('remove-ticket', ticket)
+            this.$emit('remove-ticket', this.ticket)
             this.removed = true
             this.loading = false
           },
