@@ -17,10 +17,10 @@
       <div class="column is-8">
         <div class="control is-grouped">
           <div class="control is-expanded">
-            <input class="input is-medium" :disabled="status" type="text" placeholder="Nota o comentario" v-model="entry.comment">
+            <autocomplete @item-selected="setPromotion" :name="promotion.name" :items="promotions"></autocomplete>
           </div>
           <div class="control is-expanded">
-            <autocomplete @item-selected="setPromotion" :name="promotion.name" :items="promotions"></autocomplete>
+            <input class="input is-medium" :disabled="status" type="text" placeholder="Nota o comentario" v-model="entry.comment">
           </div>
         </div>
       </div>
