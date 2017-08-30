@@ -65,11 +65,14 @@
         </div>
       </div>
       <div class="resume">
-        <div class="columns resume-header">
+        <div class="columns resume-header print">
           <div class="column is-4">TOTAL</div>
           <div class="column is-2">$ {{ total }}</div>
           <div class="column is-4">PENDIENTE</div>
           <div class="column is-2">$ {{ pending || 0}}</div>
+        </div>
+        <div class="print">
+          </br></br><p>TICKET NO VALIDO COMO FACTURA.</p>
         </div>
         <div class="columns resume-sub-row">
           <div class="column is-6">
@@ -265,7 +268,7 @@
 </script>
 
 <style lang="css">
-
+  .print { display: none; }
   .ticket-lines {
     height: 450px;
     margin: 0 5px;
@@ -287,6 +290,7 @@
     .ticket-lines { height: 100%; overflow: none; border: none; }
     .resume .column { float: left; }
     table thead th.hide { display: none !important; }
-    table tbody tr td { text-align: left !important;}
+    table tbody tr td { text-align: left !important; }
+    .print { display: block; float: none; }
   }
 </style>
