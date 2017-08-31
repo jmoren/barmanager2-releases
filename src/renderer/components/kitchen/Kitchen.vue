@@ -42,52 +42,7 @@
             <th>Pedido</th>
           </thead>
           <tbody>
-            <tr v-for="ticket in currentTickets" :key="ticket.id">
-              <td style="width:15%">
-                <span v-if="ticket.table_id" class="table-id button is-fullwidth is-danger">
-                  <b>#{{ ticket.table_id }}</b>
-                </span>
-                <span v-else class="button is-primary"><b>DELIVERY</b></span>
-              </td>
-              <td style="width:15%">
-                <tooltip content="Enviar todo lo pendiente">
-                  <a @click.prevent="deliverTicket(ticket)" class="button is-success">
-                    <span class="icon is-small"><i class="fa fa-reply"></i></span>
-                    <span><b>{{ ticket.number }}</b></span>
-                  </a>
-                </tooltip>
-              </td>
-              <td>
-                <div v-for="(entry, id) in ticket.entries" class="entry-row">
-                  <div class="entry-comment" v-if="entry.comment">
-                    <i class="fa fa-exclamation-circle fa-floated"></i> {{ entry.comment | titleize }}
-                  </div>
-                  <div class="columns">
-                    <div class="column is-2">
-                      <tooltip content="Sacar Entrada completa">
-                        <a class="button is-fullwidth is-light" @click="deliverEntry(ticket, entry)" :class="{'is-disabled is-success': entry.delivered }">
-                          <span class="icon is-small"><i class="fa fa-reply"></i></span>
-                          <span>Enviar Grupo</span>
-                        </a>
-                      </tooltip>
-                    </div>
-                    <div class="column is-10">
-                      <div v-for="req in entry.items" class="request-row">
-                        <tooltip content="Sacar pedido">
-                          <a class="button is-light" @click="deliverItem(req)" :class="{'is-disabled is-success': req.delivered_at }">
-                            <i class="fa" :class="{'fa-check': req.delivered_at, 'fa-reply': !req.delivered_at }"></i>
-                          </a>
-                        </tooltip>
-                        <span class="button is-light is-not-link">{{ req.name }}</span>
-                        <div class="is-pulled-right button is-white is-not-link">
-                          Pedido {{ req.created_at | moment("from") }}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
+            <kitchen-row v-for="(ticket, id) in currentTickets" :ticket="ticket" :key="id" @remove-ticket="removeTicket(ticket)"></kitchen-row>
             <tr v-if="currentTickets.length === 0">
               <td colspan="3">
                 <p class="empty-message has-text-centered is-danger-text">No hay item en la cocina</p></td>
@@ -103,9 +58,11 @@
   import moment from 'moment'
   import _ from 'lodash'
   import Auth from '../../auth'
+  import KitchenRow from './KitchenRow'
 
   export default {
     name: 'Kitchen',
+    components: { KitchenRow },
     data () {
       return {
         tickets: [],
@@ -182,36 +139,9 @@
           }
         )
       },
-      deliverItem (item) {
-        this.$http.post('kitchen/deliver_item', { entry_item_id: item.id }).then(
-          response => {
-            _.extend(item, response.data)
-          },
-          error => {
-            console.log(error.data)
-          }
-        )
-      },
-      deliverEntry (ticket, entry) {
-        this.$http.post('kitchen/deliver_entry', { entry_id: entry.id }).then(
-          response => {
-            delete ticket.entries[entry.id]
-          },
-          error => {
-            console.log(error.data)
-          }
-        )
-      },
-      deliverTicket (ticket) {
-        this.$http.post('kitchen/deliver_ticket', { ticket_id: ticket.id }).then(
-          response => {
-            let index = this.tickets.indexOf(ticket)
-            this.tickets.splice(index, 1)
-          },
-          error => {
-            console.log(error.data)
-          }
-        )
+      removeTicket (ticket) {
+        delete this.tickets[ticket.id]
+        this.$notify.open({ content: 'Ticket enviado', type: 'success' })
       }
     }
   }
