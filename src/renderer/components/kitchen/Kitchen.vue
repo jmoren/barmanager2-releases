@@ -93,7 +93,7 @@
         return this.loading
       },
       currentTickets () {
-        return _.sortBy(this.tickets, 'first_entry').reverse()
+        return _.sortBy(this.tickets, 'first_entry')
       },
       currentTime () {
         return this.current
