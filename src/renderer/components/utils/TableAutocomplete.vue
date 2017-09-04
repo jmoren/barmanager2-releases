@@ -10,7 +10,6 @@
          @keydown.enter='hit'
          @focus="focused = true"
          @keydown.esc='reset'
-         @blur="reset"
          v-shortkey="['ctrl', this.shortkey]"
          @shortkey="setFocus"/>
       <ul v-show="focused" id="queryList">
@@ -38,6 +37,10 @@
   export default {
     name: 'TableAutocomplete',
     props: {
+      query: {
+        type: String,
+        default: null
+      },
       shortkey: {
         type: String,
         default: 'g'
@@ -69,7 +72,6 @@
     },
     data () {
       return {
-        query: null,
         current: -1,
         focused: false
       }
@@ -132,6 +134,8 @@
         children[this.current].scrollIntoView(false)
       },
       setFocus () {
+        this.query = null
+        this.focused = true
         document.getElementById(this.idInput).focus()
       },
       setActive (index) {

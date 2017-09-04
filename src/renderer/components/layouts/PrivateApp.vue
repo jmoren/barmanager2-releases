@@ -135,6 +135,30 @@
                             <div class="column is-8"> Ver Favoritos</div>
                           </div>
                         </li>
+                        <li style="margin-bottom: 5px;">
+                          <div class="columns">
+                            <div class="column is-4">
+                              <span class="button is-small is-fullwidth is-light is-not-link"><b>Ctrl + c</b></span>
+                            </div>
+                            <div class="column is-8"> Cerrar ticket</div>
+                          </div>
+                        </li>
+                        <li style="margin-bottom: 5px;">
+                          <div class="columns">
+                            <div class="column is-4">
+                              <span class="button is-small is-fullwidth is-light is-not-link"><b>Ctrl + p</b></span>
+                            </div>
+                            <div class="column is-8"> Imprimir ticket</div>
+                          </div>
+                        </li>
+                        <li style="margin-bottom: 5px;">
+                          <div class="columns">
+                            <div class="column is-4">
+                              <span class="button is-small is-fullwidth is-light is-not-link"><b>Ctrl + m</b></span>
+                            </div>
+                            <div class="column is-8"> Cambiar mesa</div>
+                          </div>
+                        </li>
                       </ul>
                     </div>
                   </popover>

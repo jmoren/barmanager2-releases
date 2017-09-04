@@ -9,27 +9,15 @@
         TICKET # {{ ticket.number }}
       </h2>
       <div id="ticket-options" class="columns is-marginless not-print">
-        <div class="column is-5 is-paddingless">
+        <div class="column is-3 is-paddingless">
           <h2 class="header">TICKET # {{ ticket.number }}</h2>
         </div>
         <div class="column is-4 is-paddingless">
-          <div v-if="!ticket.closed">
-            <tooltip content="Cambiar de mesa o asignar una">
-              <popover title="" placement="top" trigger="click">
-                <button class="button" :class="{'is-disabled': ticket.closed || loadingTables, 'is-primary': ticket.table_id, 'is-light': !ticket.table_id }">
-                  <span class="icon is-small">
-                    <i class="fa" :class="{'fa-circle-o-notch fa-spin': loadingTables, 'fa-cutlery': !loadingTables }"></i>
-                  </span>
-                  <b>{{ currentTable }}</b>
-                </button>
-                <div slot="content">
-                  <h1>Seleccione mesa</h1>
-                  <hr>
-                  <table-autocomplete :tables="tables" id-input="assign_table" action="assign" @set-table="table => traslateTicket(table.id)" :shortkey="'c'"></table-autocomplete>
-                </div>
-              </popover>
-              <button v-if="this.ticket.table_id" class="button is-primary" @click.prevent="removeTable"><i class="fa fa-times"></i></button>
-            </tooltip>
+          <div v-if="!ticket.closed" class="columns">
+            <table-autocomplete :class="{'is-disabled': ticket.closed || loadingTables, 'is-primary': ticket.table_id, 'is-light': !ticket.table_id, 'column is-5 is-paddingless': true }"
+              :query="currentTable" :tables="tables" id-input="assign_table" action="assign" @set-table="table => traslateTicket(table.id)"
+              :shortkey="'m'"></table-autocomplete>
+            <button v-if="this.ticket.table_id" class="button is-primary column is-1 is-paddingless" @click.prevent="removeTable"><i class="fa fa-times"></i></button>
 
             <tooltip content="Asignar o cambiar de cliente">
               <popover title="" placement="top" trigger="click">
@@ -69,7 +57,8 @@
             </div>
           </tooltip>
           <tooltip content="Cerrar ticket" v-if="!closed">
-            <a @click.prevent="reloadTicket" class="button is-light">
+            <a @click.prevent="reloadTicket" class="button is-light" v-shortkey="['ctrl', 'c']"
+             @shortkey="reloadTicket">
               <span class="icon is-small"><i class="fa fa-lock"></i></span>
             </a>
           </tooltip>
