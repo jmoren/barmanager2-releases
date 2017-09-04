@@ -13,6 +13,7 @@ import moment from 'moment'
 import Chartkick from 'chartkick'
 import VueChartkick from 'vue-chartkick'
 import Highcharts from 'highcharts'
+import VueBarcode from 'vue-barcode'
 
 import 'vue-blu/dist/css/vue-blu.min.css'
 import Auth from './auth'
@@ -49,6 +50,7 @@ Vue.use(VueMoment, { moment })
 Vue.use(VueShortkey)
 Vue.use(VeeValidate, veeConfig)
 Vue.use(VueChartkick, { Chartkick })
+Vue.component('barcode', VueBarcode)
 
 Vue.http.options.root = config.get('api_url')
 Vue.http.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('id_token')

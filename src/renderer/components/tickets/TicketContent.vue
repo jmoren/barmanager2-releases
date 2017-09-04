@@ -71,9 +71,6 @@
           <div class="column is-4">PENDIENTE</div>
           <div class="column is-2">$ {{ pending || 0}}</div>
         </div>
-        <div class="print">
-          </br></br><p>TICKET NO VALIDO COMO FACTURA.</p>
-        </div>
         <div class="columns resume-sub-row">
           <div class="column is-6">
             <div> Pedidos Confirmados</div>
@@ -86,7 +83,7 @@
         </div>
       </div>
     </div>
-    <div class="payments column is-3">
+    <div class="column is-3 payments">
       <ticket-payment :ticket="ticket" :total="total" @ticket-paid="setPaid" @ticket-not-paid="setNotPaid"></ticket-payment>
     </div>
     <b-aside :is-show="isShow" :width="400" :show-footer="false" placement="right" title="Favoritos" @close="isShow=false">
@@ -264,7 +261,6 @@
 </script>
 
 <style lang="css">
-  .print { display: none; }
   .ticket-lines {
     height: 450px;
     margin: 0 5px;
@@ -287,6 +283,5 @@
     .resume .column { float: left; }
     table thead th.hide { display: none !important; }
     table tbody tr td { text-align: left !important; }
-    .print { display: block; float: none; }
   }
 </style>

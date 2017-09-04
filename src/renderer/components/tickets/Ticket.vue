@@ -4,12 +4,15 @@
       loading ticket...
     </div>
     <div v-else>
-      <div id="ticket-options" class="columns is-marginless">
-        <div class="column is-4 is-paddingless">
-          <h2 class="">TICKET # {{ ticket.number }}</h2>
-          <h1 class="header only-print" v-if="ticket.table">{{ ticket.table.description }}</h1>
-        </div>
+      <h2 class="print" style="font-weight: 300; font-size: 25px">
+        <span v-if="ticket.table">MESA: {{ ticket.table.description }} -</span>
+        TICKET # {{ ticket.number }}
+      </h2>
+      <div id="ticket-options" class="columns is-marginless not-print">
         <div class="column is-5 is-paddingless">
+          <h2 class="header">TICKET # {{ ticket.number }}</h2>
+        </div>
+        <div class="column is-4 is-paddingless">
           <div v-if="!ticket.closed">
             <tooltip content="Cambiar de mesa o asignar una">
               <popover title="" placement="top" trigger="click">
@@ -101,11 +104,25 @@
       </div>
       <hr>
       <ticket-content :ticket="ticket" :reasons="reasons" @ticket-paid="setPaid" @ticket-not-paid="setNotPaid" :kitchenView="kitchenView"></ticket-content>
-      <div class="ticket-footer" v-if="ticket.user">
-        <div class="content">
-          Ud ha sido atendido por: <b>{{ ticket.user.name }}</b>
+      <div class="ticket-footer">
+        <div class="columns content">
+          <div class="column is-9">
+            <div class="columns">
+              <div class="column is-8 is-marginless print-center">
+                <div class="print"><p>TICKET NO VALIDO COMO FACTURA.</p></div>
+                <barcode :value="ticket.number" :options="{ displayValue: true, height: 25, width: 2, background: 'transparent' }"></barcode>
+              </div>
+              <div class="column is-4 not-print" style="text-align: right;" v-if="ticket.user">
+                Ud ha sido atendido por: <b>{{ ticket.user.name }}</b>
+              </div>
+            </div>
+          </div>
+          <div class="column is-3 not-print" style="padding-left: 30px">
+            {{ date | moment('DD, MMMM YYYY, HH:mm A') | uppercase }}
+          </div>
         </div>
       </div>
+
       <modal  :title="'Ticket Nro. ' + ticket.number" :show-footer="false" :on-cancel="closePrintModal" :is-show="isPrintOpen" transition="zoom">
         <form>
           <div class="columns">
@@ -293,6 +310,7 @@ export default {
       clients: [],
       isOpen: false,
       isPrintOpen: false,
+      date: Date.now(),
       print: {
         ticket_type: '',
         customer_name: '',
@@ -556,10 +574,12 @@ export default {
   li.active { background: #F5F5F5; }
   .ticket-footer { margin: 10px 5px; border-top: solid 2px #f1f1f1; }
   .ticket-footer .content { margin-top: 10px; padding: 10px 15px; background: #f9f9f9; }
-  .only-print { display: none }
+  .print { display: none; }
   @media print {
-    .only-print { display: block; }
-    .hero.is-primary.is-fixed, #ticket-options .column.is-5, #ticket-options .column.is-3{ display: none; }
+    .hero.is-primary.is-fixed { display: none; }
     .popover { display: none !important; }
+    .not-print { display: none; }
+    .print-center { text-align: center; }
+    .print { display: block; }
   }
 </style>
