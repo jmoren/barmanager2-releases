@@ -148,6 +148,10 @@ export default {
       return this.$parent.loading
     }
   },
+  mounted () {
+    console.log('mounted')
+    document.getElementById('search').focus()
+  },
   created () {
     this.loadDelivery()
   },
