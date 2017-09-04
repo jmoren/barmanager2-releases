@@ -25,7 +25,7 @@
                 <div slot="content">
                   <h1>Seleccione mesa</h1>
                   <hr>
-                  <table-autocomplete :tables="tables" id-input="assign_table" action="assign" @set-table="table => traslateTicket(table.id)"></table-autocomplete>
+                  <table-autocomplete :tables="tables" id-input="assign_table" action="assign" @set-table="table => traslateTicket(table.id)" :shortkey="'c'"></table-autocomplete>
                 </div>
               </popover>
               <button v-if="this.ticket.table_id" class="button is-primary" @click.prevent="removeTable"><i class="fa fa-times"></i></button>

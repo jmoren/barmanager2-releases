@@ -11,7 +11,7 @@
          @focus="focused = true"
          @keydown.esc='reset'
          @blur="reset"
-         v-shortkey="['ctrl', 'g']"
+         v-shortkey="['ctrl', this.shortkey]"
          @shortkey="setFocus"/>
       <ul v-show="focused" id="queryList">
         <!-- for vue@1.0 use: ($item, item) -->
@@ -38,6 +38,10 @@
   export default {
     name: 'TableAutocomplete',
     props: {
+      shortkey: {
+        type: String,
+        default: 'g'
+      },
       tables: {
         type: Array,
         default: []
@@ -104,7 +108,7 @@
       reset () {
         this.query = null
         this.focused = false
-        document.getElementById('search').blur()
+        document.getElementById(this.idInput).blur()
       },
       up (events) {
         if (this.current > 0) {
@@ -128,7 +132,7 @@
         children[this.current].scrollIntoView(false)
       },
       setFocus () {
-        document.getElementById('search').focus()
+        document.getElementById(this.idInput).focus()
       },
       setActive (index) {
         this.current = index
