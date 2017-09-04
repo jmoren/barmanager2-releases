@@ -1,7 +1,7 @@
 <template>
   <div class="autocomplete-dropdown" style="position:relative">
     <div class="control">
-      <input type="search" class="input is-expanded" id="search"
+      <input type="search" class="input is-expanded" :id="idInput"
          autocomplete="off"
          placeholder="Buscardor..."
          v-model="query"
@@ -45,6 +45,10 @@
       action: {
         type: String,
         default: 'open'
+      },
+      idInput: {
+        type: String,
+        default: 'search'
       }
     },
     computed: {

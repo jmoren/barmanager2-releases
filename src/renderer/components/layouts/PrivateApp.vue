@@ -86,7 +86,7 @@
                         <li style="margin-bottom: 5px;">
                           <div class="columns">
                             <div class="column is-4">
-                              <span class="button is-small is-fullwidth is-light is-not-link"><b>Ctrl + s</b></span>
+                              <span class="button is-small is-fullwidth is-light is-not-link"><b>Ctrl + g</b></span>
                             </div>
                             <div class="column is-8"> Ir al buscador de mesas</div>
                           </div>
