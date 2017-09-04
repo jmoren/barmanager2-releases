@@ -59,6 +59,7 @@
   import _ from 'lodash'
   import Auth from '../../auth'
   import KitchenRow from './KitchenRow'
+  import Vue from 'vue'
 
   export default {
     name: 'Kitchen',
@@ -140,7 +141,7 @@
         )
       },
       removeTicket (ticket) {
-        delete this.tickets[ticket.id]
+        Vue.delete(this.tickets, ticket.id)
         this.$notify.open({ content: 'Ticket enviado', type: 'success' })
       }
     }
