@@ -8,33 +8,23 @@
         <span v-if="ticket.table">MESA: {{ ticket.table.description }} -</span>
         TICKET # {{ ticket.number }}
       </h2>
-      <div id="ticket-options" class="columns is-marginless not-print">
-        <div class="column is-3 is-paddingless">
+      <div id="ticket-options" class="columns not-print">
+        <div class="column is-3">
           <h2 class="header">TICKET # {{ ticket.number }}</h2>
         </div>
-        <div class="column is-4 is-paddingless">
-          <div v-if="!ticket.closed" class="columns">
-            <table-autocomplete :class="{'is-disabled': ticket.closed || loadingTables, 'is-primary': ticket.table_id, 'is-light': !ticket.table_id, 'column is-5 is-paddingless': true }"
-              :query="currentTable" :tables="tables" id-input="assign_table" action="assign" @set-table="table => traslateTicket(table.id)"
-              :shortkey="'m'"></table-autocomplete>
-            <button v-if="this.ticket.table_id" class="button is-primary column is-1 is-paddingless" @click.prevent="removeTable"><i class="fa fa-times"></i></button>
-
-            <tooltip content="Asignar o cambiar de cliente">
-              <popover title="" placement="top" trigger="click">
-                <button class="button" @click.prevent="loadClients" :class="{'is-disabled': ticket.closed || loadingClients, 'is-primary': ticket.client_id, 'is-light': !ticket.client_id }">
-                  <span class="icon is-small">
-                    <i class="fa" :class="{'fa-circle-o-notch fa-spin': loadingClients, 'fa-user': !loadingClients }"></i>
-                  </span>
-                  <b>{{ currentClient }}</b>
-                </button>
-                <div slot="content">
-                  <h1>Seleccione cliente</h1>
-                  <hr>
-                  <clients-autocomplete :clients="clients" @set-client="client => assignClient(client.id)"></clients-autocomplete>
-                </div>
-              </popover>
-              <button v-if="this.ticket.client_id" class="button is-primary" @click.prevent="removeClient"><i class="fa fa-times"></i></button>
-            </tooltip>
+        <div class="column is-6">
+          <div class="columns" v-if="!ticket.closed" >
+            <div class="column is-6">
+              <tooltip content="Asignar o cambiar mesa">
+                <table-autocomplete :class="{'is-disabled': ticket.closed || loadingTables, 'is-primary': ticket.table_id, 'is-light': !ticket.table_id, 'column is-5 is-paddingless': true }"
+                :query="currentTable" :tables="tables" :ticket="ticket" @remove-table="removeTable" @set-table="table => traslateTicket(table.id)"></table-autocomplete>
+              </tooltip>
+            </div>
+            <div class="column is-6">
+              <tooltip content="Asignar o cambiar de cliente">
+                <clients-autocomplete :ticket="ticket" :clients="clients" @remove-client="removeClient" @set-client="client => assignClient(client.id)"></clients-autocomplete>
+              </tooltip>
+            </div>
           </div>
           <div v-else>
             <div class="control has-addons" >
@@ -49,7 +39,7 @@
             </div>
           </div>
         </div>
-        <div class="column is-3 is-paddingless has-text-right">
+        <div class="column is-3 has-text-right">
           <tooltip v-bind:content="ticket.paid ? 'Ticket Pago' : 'Ticket Sin Pagar'">
             <div class="button" :class="{'is-danger': closed && ticket.paid, 'is-success': !closed, 'is-warning': closed && !ticket.paid}">
               <span class="icon is-small"><i class="fa" :class="{'fa-check': ticket.paid, 'fa-exclamation-circle': !ticket.paid }"></i></span>
@@ -92,7 +82,9 @@
         </div>
       </div>
       <hr>
-      <ticket-content :ticket="ticket" :reasons="reasons" @ticket-paid="setPaid" @ticket-not-paid="setNotPaid" :kitchenView="kitchenView"></ticket-content>
+      <div>
+        <ticket-content :ticket="ticket" :reasons="reasons" @ticket-paid="setPaid" @ticket-not-paid="setNotPaid" :kitchenView="kitchenView"></ticket-content>
+      </div>
       <div class="ticket-footer">
         <div class="columns content">
           <div class="column is-9">
@@ -258,7 +250,7 @@
 <script>
 import TicketContent from './TicketContent'
 import ClientsAutocomplete from '@/components/utils/ClientsAutocomplete'
-import TableAutocomplete from '@/components/utils/TableAutocomplete'
+import TableAutocomplete from '@/components/utils/TableAutocompleteAssign'
 import { mapGetters } from 'vuex'
 import _ from 'lodash'
 import Auth from '../../auth'
@@ -524,22 +516,6 @@ export default {
     },
     closePrintModal () {
       this.isPrintOpen = false
-    },
-    loadClients () {
-      if (this.clients.length < 1) {
-        this.loadingClients = true
-        this.$http.get('clients?paginate=false').then(
-          response => {
-            this.clients = response.data
-            this.loadingClients = false
-          },
-          error => {
-            this.alert('danger', error.data)
-            this.loadingClients = false
-          }
-        )
-      }
-      document.getElementById('search-clients').focus()
     }
   }
 }

@@ -1,25 +1,29 @@
 <template>
-  <div class="autocomplete-dropdown" style="position:relative">
-    <div class="control">
+  <div class="autocomplete-dropdown" style="position:relative;">
+    <div class="control has-addons">
       <input type="search" class="input is-expanded" id="search-clients"
+         :class="{'is-disabled': ticket.closed || loadingClients }"
          autocomplete="off"
          placeholder="Filtrar..."
-         v-model="item.name"
-         @keydown.down='down'
-         @keydown.up='up'
-         @keydown.enter='hit'
-         @focus="focused = true"
-         @keydown.esc='reset'/>
-
-      <ul v-show="focused" id="queryListClient">
-        <li class="empty-item is-danger-text" v-if="filteredClients.length === 0">
-          No se encontro ningun resultado
-        </li>
-        <li v-for="(item, $item) in filteredClients" :key="item.id" :class="activeClass($item)" @mousemove="setActive($item)" @click.prevent="hit">
-          {{ item.name }}
-        </li>
-      </ul>
+         v-model="query"
+         @keydown.down.prevent='down'
+         @keydown.up.prevent='up'
+         @keydown.enter.prevent='hit'
+         @keydown.esc.prevent='reset'
+         @focus="setFocus"
+         @blur="setBlur"/>
+      <a class="button is-primary" :class="{'is-disabled': !ticket.client_id }" @click.prevent="removeClient">
+        <i class="fa fa-times"></i>
+      </a>
     </div>
+    <ul v-show="focused" id="queryListClient">
+      <li class="empty-item is-danger-text" v-if="filteredClients.length === 0">
+        No se encontro ningun resultado
+      </li>
+      <li v-for="(item, $item) in filteredClients" :key="item.id" :class="activeClass($item)" @mousemove="setActive($item)" @click.prevent="hit">
+        {{ item.name }}
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -27,30 +31,30 @@
   import _ from 'lodash'
   export default {
     name: 'ClientsAutocomplete',
-    props: [ 'clients', 'model' ],
+    props: ['ticket'],
     computed: {
       filteredClients () {
-        if (this.clients) {
-          if (this.item.name) {
-            let regex = new RegExp(this.item.name.toLowerCase())
-            return this.clients.filter((client) => {
-              return regex.test(client.name.toLowerCase())
-            })
-          } else {
-            return this.clients
-          }
+        if (this.query) {
+          let regex = new RegExp(this.query.toLowerCase())
+          return this.clients.filter((client) => {
+            return regex.test(client.name.toLowerCase())
+          })
         } else {
-          return []
+          return this.clients
         }
       }
     },
     data () {
       return {
-        query: null,
+        query: this.ticket.client.name,
         current: -1,
         focused: false,
-        item: { name: null }
+        loadingClients: false,
+        clients: []
       }
+    },
+    mounted () {
+      this.loadClients()
     },
     methods: {
       hit () {
@@ -58,10 +62,14 @@
         this.item = _.clone(this.filteredClients[index])
         this.$emit('set-client', this.item)
         this.focused = false
+        this.query = this.item.name
         document.getElementById('search-clients').blur()
       },
+      removeTable () {
+        this.$emit('remove-client')
+        this.query = ''
+      },
       reset () {
-        this.query = null
         this.focused = false
         document.getElementById('search-clients').blur()
       },
@@ -87,7 +95,17 @@
         children[this.current].scrollIntoView(false)
       },
       setFocus () {
+        this.query = ''
+        this.focused = true
         document.getElementById('search-clients').focus()
+      },
+      setBlur () {
+        console.log(this.query)
+        if (this.ticket.client_id) {
+          this.query = this.ticket.client.name
+        }
+        this.focused = false
+        console.log(this.query)
       },
       setActive (index) {
         this.current = index
@@ -95,6 +113,21 @@
       activeClass (index) {
         return {
           active: this.current === index
+        }
+      },
+      loadClients () {
+        if (this.clients.length < 1) {
+          this.loadingClients = true
+          this.$http.get('clients?paginate=false').then(
+            response => {
+              this.clients = response.data
+              this.loadingClients = false
+            },
+            error => {
+              this.alert('danger', error.data)
+              this.loadingClients = false
+            }
+          )
         }
       }
     }
@@ -105,7 +138,8 @@
   input[type=search] { border-radius: 4px; }
   ul {
     position: absolute;
-    max-height: 300;
+    min-height: 10px;
+    max-height: 600px;
     overflow: auto;
     top: 35px;
     z-index: 1000;

@@ -1,7 +1,7 @@
 <template>
   <div class="autocomplete-dropdown" style="position:relative">
     <div class="control">
-      <input type="search" class="input is-expanded" :id="idInput"
+      <input type="search" class="input is-expanded" id="search"
          autocomplete="off"
          placeholder="Buscardor..."
          v-model="query"
@@ -10,8 +10,9 @@
          @keydown.enter='hit'
          @focus="focused = true"
          @keydown.esc='reset'
-         v-shortkey="['ctrl', this.shortkey]"
-         @shortkey="setFocus"/>
+         v-shortkey="['ctrl', 'g']"
+         @shortkey="setFocus"
+         @blur="focused = false"/>
       <ul v-show="focused" id="queryList">
         <!-- for vue@1.0 use: ($item, item) -->
         <li class="empty-item is-danger-text" v-if="filteredTables.length === 0">
@@ -37,25 +38,9 @@
   export default {
     name: 'TableAutocomplete',
     props: {
-      query: {
-        type: String,
-        default: null
-      },
-      shortkey: {
-        type: String,
-        default: 'g'
-      },
       tables: {
         type: Array,
         default: []
-      },
-      action: {
-        type: String,
-        default: 'open'
-      },
-      idInput: {
-        type: String,
-        default: 'search'
       }
     },
     computed: {
@@ -63,7 +48,8 @@
         if (this.query) {
           let regex = new RegExp(this.query.toLowerCase())
           return this.tables.filter((table) => {
-            return regex.test(table.description.toLowerCase())
+            let tnumber = table.current.id ? table.current.number : ''
+            return regex.test(table.description.toLowerCase()) || regex.test(tnumber.toLowerCase())
           })
         } else {
           return this.tables
@@ -73,44 +59,38 @@
     data () {
       return {
         current: -1,
-        focused: false
+        focused: false,
+        query: ''
       }
     },
     methods: {
       hit () {
         let index = this.filteredTables.length === 1 ? 0 : this.current
         let item = this.filteredTables[index]
-
-        if (this.action === 'assign') {
-          this.$emit('set-table', item)
-          this.focused = false
-          this.query = item.description
+        if (!item.closed && item.current.id) {
+          this.$router.push({ name: 'Ticket', params: { id: item.current.id } })
+          this.reset()
         } else {
-          if (!item.closed && item.current.id) {
-            this.$router.push({ name: 'Ticket', params: { id: item.current.id } })
-            this.reset()
-          } else {
-            this.$http.post('tables/' + item.id + '/open').then(
-              response => {
-                this.$store.dispatch('updateTable', response.data)
-                this.$router.push({ name: 'Ticket', params: { id: response.data.current.id } })
-                this.reset()
-              },
-              error => {
-                this.$notify.open({
-                  type: 'Danger',
-                  title: 'Error',
-                  content: error.data
-                })
-              }
-            )
-          }
+          this.$http.post('tables/' + item.id + '/open').then(
+            response => {
+              this.$store.dispatch('updateTable', response.data)
+              this.$router.push({ name: 'Ticket', params: { id: response.data.current.id } })
+              this.reset()
+            },
+            error => {
+              this.$notify.open({
+                type: 'Danger',
+                title: 'Error',
+                content: error.data
+              })
+            }
+          )
         }
       },
       reset () {
-        this.query = null
+        this.query = ''
         this.focused = false
-        document.getElementById(this.idInput).blur()
+        document.getElementById('search').blur()
       },
       up (events) {
         if (this.current > 0) {
@@ -134,9 +114,9 @@
         children[this.current].scrollIntoView(false)
       },
       setFocus () {
-        this.query = null
+        this.query = ''
         this.focused = true
-        document.getElementById(this.idInput).focus()
+        document.getElementById('search').focus()
       },
       setActive (index) {
         this.current = index
@@ -154,7 +134,7 @@
   input[type=search] { border-radius: 4px; }
   .autocomplete-dropdown ul {
     position: absolute;
-    max-height: 300;
+    max-height: 600px;
     overflow: auto;
     top: 35px;
     z-index: 1000;
