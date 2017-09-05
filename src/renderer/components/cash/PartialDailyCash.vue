@@ -10,7 +10,7 @@
         <div class="column is-4 has-text-centered">
           <span class="button is-light is-medium is-not-link"><span>INICIAL: <b>${{ cash.init_amount }}</b></span></span>
           <span class="button is-white is-not-link"><span class="icon"><i class="fa fa-angle-right"></i></span></span>
-          <span class="button is-light is-medium is-not-link"><span>ACTUAL: <b>${{ realCash }}</b></span></span>
+          <span class="button is-light is-medium is-not-link"><span>ACTUAL: <b>${{ total }}</b></span></span>
         </div>
         <div class="column is-7">
           <div class="control has-addons is-pulled-right">
@@ -248,9 +248,13 @@
             <td>Sub a favor</td>
             <td class="row-value"><span class="is-primary-text">${{ totalInFavor | withDecimals }}</span></td>
           </tr>
+          <tr class="subtotal">
+            <td>EFECTIVO EN CAJA <span style="font-size: 17px; color: #999">(Sub Efectivo - Gastos - Retirado)</span></td>
+            <td class="row-value"><span class="is-success-text">${{ realCash | withDecimals }}</span></td>
+          </tr>
           <tr class="total">
             <td>CAJA REAL <span style="font-size: 17px; color: #999">(Sub Efectivo + Sub Tarjeta - Gastos - Retirado)</span></td>
-            <td class="row-value"><span class="is-success-text">${{ realCash | withDecimals }}</span></td>
+            <td class="row-value"><span class="is-success-text">${{ total | withDecimals }}</span></td>
           </tr>
         </table>
         <div class="box" v-if="!cash.closed_at">
@@ -371,6 +375,9 @@
         return parseFloat(this.cash.cash_amount) + parseFloat(this.cash.debt_cash)
       },
       realCash () {
+        return parseFloat(this.subCash) + parseFloat(this.cash.init_amount) - parseFloat(this.debitos) + parseFloat(this.totalInFavor)
+      },
+      total () {
         return parseFloat(this.subCard) + parseFloat(this.subCash) + parseFloat(this.cash.init_amount) - parseFloat(this.debitos) + parseFloat(this.totalInFavor)
       },
       onlyCash () {
