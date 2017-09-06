@@ -375,7 +375,7 @@
         return parseFloat(this.cash.cash_amount) + parseFloat(this.cash.debt_cash)
       },
       realCash () {
-        return parseFloat(this.subCash) + parseFloat(this.cash.init_amount) - parseFloat(this.debitos) + parseFloat(this.totalInFavor)
+        return parseFloat(this.subCash) + parseFloat(this.cash.init_amount) - parseFloat(this.debitos) + parseFloat(this.cash.favor_cash)
       },
       total () {
         return parseFloat(this.subCard) + parseFloat(this.subCash) + parseFloat(this.cash.init_amount) - parseFloat(this.debitos) + parseFloat(this.totalInFavor)
