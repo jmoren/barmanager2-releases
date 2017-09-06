@@ -1,17 +1,19 @@
 <template>
   <div class="autocomplete-dropdown" style="position:relative;">
     <div class="control has-addons">
-      <input type="search" class="input is-expanded" id="search-clients"
+      <input type="search" class="input" id="search-clients"
          :class="{'is-disabled': ticket.closed || loadingClients }"
          autocomplete="off"
-         placeholder="Filtrar..."
+         placeholder="Asignar cliente..."
          v-model="query"
          @keydown.down.prevent='down'
          @keydown.up.prevent='up'
          @keydown.enter.prevent='hit'
-         @keydown.esc.prevent='reset'
+         @keydown.esc.prevent='setBlur'
          @focus="setFocus"
-         @blur="setBlur"/>
+         @blur="setBlur"
+         v-shortkey="['ctrl', 'n']"
+         @shortkey="setFocus"/>
       <a class="button is-primary" :class="{'is-disabled': !ticket.client_id }" @click.prevent="removeClient">
         <i class="fa fa-times"></i>
       </a>
@@ -20,7 +22,8 @@
       <li class="empty-item is-danger-text" v-if="filteredClients.length === 0">
         No se encontro ningun resultado
       </li>
-      <li v-for="(item, $item) in filteredClients" :key="item.id" :class="activeClass($item)" @mousemove="setActive($item)" @click.prevent="hit">
+      <li v-for="(item, $item) in filteredClients" :key="item.id" :class="activeClass($item)" @key.enter="hit" @mousemove="setActive($item)" 
+            @mousedown.prevent="hit">
         {{ item.name }}
       </li>
     </ul>
@@ -59,19 +62,15 @@
     methods: {
       hit () {
         let index = this.filteredClients.length === 1 ? 0 : this.current
-        this.item = _.clone(this.filteredClients[index])
-        this.$emit('set-client', this.item)
+        let item = _.clone(this.filteredClients[index])
+        this.$emit('set-client', item)
         this.focused = false
-        this.query = this.item.name
-        document.getElementById('search-clients').blur()
+        this.query = item.name
       },
-      removeTable () {
+      removeClient () {
         this.$emit('remove-client')
         this.query = ''
-      },
-      reset () {
         this.focused = false
-        document.getElementById('search-clients').blur()
       },
       up (events) {
         if (this.current > 0) {
@@ -100,12 +99,10 @@
         document.getElementById('search-clients').focus()
       },
       setBlur () {
-        console.log(this.query)
+        this.focused = false
         if (this.ticket.client_id) {
           this.query = this.ticket.client.name
         }
-        this.focused = false
-        console.log(this.query)
       },
       setActive (index) {
         this.current = index

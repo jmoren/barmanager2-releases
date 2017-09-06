@@ -1,10 +1,10 @@
 <template>
   <div class="autocomplete-dropdown" style="position:relative; width: 100%;">
     <div class="control has-addons">
-      <input type="search" class="input is-expanded" id="assign-input"
+      <input type="search" class="input" id="assign-input"
          :class="{'is-disabled': ticket.closed }"
          autocomplete="off"
-         placeholder="Buscardor..."
+         placeholder="Asignar Mesa..."
          v-model="query"
          @keydown.down.prevent='down'
          @keydown.up.prevent='up'
@@ -18,7 +18,7 @@
         <i class="fa fa-times"></i>
       </a>
     </div>
-    <ul v-show="focused" id="tableList">
+    <ul v-show="focused" id="assignTableList">
       <!-- for vue@1.0 use: ($item, item) -->
       <li class="empty-item is-danger-text" v-if="filteredTables.length === 0">
         No se encontro ningun resultado
@@ -74,10 +74,6 @@
         this.focused = false
         this.query = ''
       },
-      reset () {
-        this.focused = false
-        document.getElementById('assign-input').blur()
-      },
       up (events) {
         if (this.current > 0) {
           this.current--
@@ -85,7 +81,7 @@
           this.current = this.filteredTables.length - 1
         }
 
-        let parent = document.getElementById('tableList')
+        let parent = document.getElementById('assignTableList')
         let children = parent.getElementsByTagName('li')
         children[this.current].scrollIntoView(false)
       },
@@ -95,7 +91,7 @@
         } else {
           this.current = 0
         }
-        let parent = document.getElementById('tableList')
+        let parent = document.getElementById('assignTableList')
         let children = parent.getElementsByTagName('li')
         children[this.current].scrollIntoView(false)
       },

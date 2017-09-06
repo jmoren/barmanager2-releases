@@ -17,7 +17,7 @@
       <div class="column is-8">
         <div class="control is-grouped">
           <div class="control is-expanded">
-            <autocomplete @item-selected="getItem" :name="item.name" :items="items"></autocomplete>
+            <autocomplete @item-selected="getItem" :status="status" :name="item.name" :items="items"></autocomplete>
           </div>
           <div class="control is-expanded">
             <input class="input is-medium" :disabled="status" type="text" placeholder="Nota o comentario" v-model="entry.comment">

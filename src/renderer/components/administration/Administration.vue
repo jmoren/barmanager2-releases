@@ -15,15 +15,20 @@
           <menu-item icon="bars" :to="{ name: 'AdminItems'}">Items</menu-item>
           <menu-item icon="lightbulb-o" :to="{ name: 'AdminPromotions'}">Promociones</menu-item>
           <menu-item icon="paperclip" :to="{ name: 'AdminCategories'}">Categorias</menu-item>
-          <div class="divider"></div>
           <menu-item icon="users" :to="{ name: 'AdminClients'}">Clientes</menu-item>
           <menu-item icon="address-book-o" :to="{ name: 'AdminSuppliers'}">Proveedores</menu-item>
-          <menu-item icon="cog" :to="{ name: 'AdminUsers'}">Usuarios</menu-item>
-          <div class="divider"></div>
           <menu-item icon="cutlery" :to="{ name: 'AdminTables'}">Mesas</menu-item>
           <menu-item icon="hashtag" :to="{ name: 'AdminCancelReasons'}">Razones</menu-item>
-          <menu-item icon="dollar" :to="{ name: 'AdminDailyCashes'}">Cajas</menu-item>
-          <menu-item icon="bar-chart" :to="{ name: 'AdminReports'}">Reportes</menu-item>
+          <div v-if="profile.role !== 'manager'">
+            <div class="divider"></div>
+            <h2 style="font-weight:300;padding: 10px; color: #f56954">
+              <span class="icon"><i class="fa fa-exclamation-circle"></i></span> <span>Admin</span>
+            </h2>
+            <div class="divider"></div>
+            <menu-item icon="cog" :to="{ name: 'AdminUsers'}">Usuarios</menu-item>
+            <menu-item icon="dollar" :to="{ name: 'AdminDailyCashes'}">Cajas</menu-item>
+            <menu-item icon="bar-chart" :to="{ name: 'AdminReports'}">Reportes</menu-item>
+          </div>
         </menus>
       </div>
       <div class="column is-10">
@@ -44,6 +49,11 @@ export default {
       dailyCash: 'currentCash'
     })
   },
+  data () {
+    return {
+      profile: Auth.user.profile
+    }
+  },
   beforeRouteEnter (to, from, next) {
     if (['manager', 'admin'].indexOf(Auth.user.profile.role) === -1) {
       next(vm => vm.$router.push({ name: 'NotFound' }))
@@ -58,4 +68,5 @@ export default {
   #admin-content { font-size: 18px; }
   #admin-content .is-button-text-left { justify-content: left !important; }
   #admin-content .switchery { margin-top: 5px; }
+  li .router-link-exact-active.router-link-active { color: #6cc788; font-weight: 500; }
 </style>

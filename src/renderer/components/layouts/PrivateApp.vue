@@ -73,7 +73,7 @@
                   <popover title="Ayuda" :width="300" placement="bottom">
                     <div class="button is-primary"><i class="fa fa-question-circle"></i></div>
                     <div slot="content">
-                      <h2 style="margin-bottom: 10px; background: #0099ff; padding: 5px;" class="has-text-centered"><b>General</b></h2>
+                      <h2 style="margin-bottom: 10px; color:#fff; background: #0099ff; padding: 5px;" class="has-text-centered"><b>General</b></h2>
                       <ul>
                         <li style="margin-bottom: 5px;">
                           <div class="columns">
@@ -101,7 +101,7 @@
                         </li>
                       </ul>
                       <hr>
-                      <h2 style="margin-bottom: 10px; background: #0099ff; padding: 5px;" class="has-text-centered"><b>Ticket</b></h2>
+                      <h2 style="margin-bottom: 10px; color:#fff; background: #0099ff; padding: 5px;" class="has-text-centered"><b>Ticket</b></h2>
                       <ul>
                         <li style="margin-bottom: 5px;">
                           <div class="columns">
@@ -157,6 +157,14 @@
                               <span class="button is-small is-fullwidth is-light is-not-link"><b>Ctrl + m</b></span>
                             </div>
                             <div class="column is-8"> Cambiar mesa</div>
+                          </div>
+                        </li>
+                        <li style="margin-bottom: 5px;">
+                          <div class="columns">
+                            <div class="column is-4">
+                              <span class="button is-small is-fullwidth is-light is-not-link"><b>Ctrl + n</b></span>
+                            </div>
+                            <div class="column is-8"> Cambiar cliente</div>
                           </div>
                         </li>
                       </ul>

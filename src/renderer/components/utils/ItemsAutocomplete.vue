@@ -10,7 +10,8 @@
          @keydown.enter='hit'
          @focus="focused = true"
          @keydown.esc='reset'
-         @blur="reset"/>
+         @blur="reset"
+         :disabled="status"/>
       <ul v-show="focused" id="queryList">
         <!-- for vue@1.0 use: ($item, item) -->
         <li class="empty-item is-danger-text" v-if="filteredItems.length === 0">
@@ -30,14 +31,8 @@
   export default {
     name: 'ItemAutocomplete',
     props: {
-      items: {
-        type: Array,
-        default: []
-      },
-      action: {
-        type: String,
-        default: 'open'
-      },
+      items: { type: Array, default: [] },
+      status: { type: Boolean, default: false },
       name: null
     },
     watch: {

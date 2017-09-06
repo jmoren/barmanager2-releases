@@ -9,21 +9,17 @@
         TICKET # {{ ticket.number }}
       </h2>
       <div id="ticket-options" class="columns not-print">
-        <div class="column is-3">
+        <div class="column is-4">
           <h2 class="header">TICKET # {{ ticket.number }}</h2>
         </div>
-        <div class="column is-6">
+        <div class="column is-4">
           <div class="columns" v-if="!ticket.closed" >
             <div class="column is-6">
-              <tooltip content="Asignar o cambiar mesa">
-                <table-autocomplete :class="{'is-disabled': ticket.closed || loadingTables, 'is-primary': ticket.table_id, 'is-light': !ticket.table_id, 'column is-5 is-paddingless': true }"
-                :query="currentTable" :tables="tables" :ticket="ticket" @remove-table="removeTable" @set-table="table => traslateTicket(table.id)"></table-autocomplete>
-              </tooltip>
+              <table-autocomplete :class="{'is-disabled': ticket.closed || loadingTables, 'is-primary': ticket.table_id, 'is-light': !ticket.table_id, 'column is-5 is-paddingless': true }"
+              :query="currentTable" :tables="tables" :ticket="ticket" @remove-table="removeTable" @set-table="table => traslateTicket(table.id)"></table-autocomplete>
             </div>
             <div class="column is-6">
-              <tooltip content="Asignar o cambiar de cliente">
-                <clients-autocomplete :ticket="ticket" :clients="clients" @remove-client="removeClient" @set-client="client => assignClient(client.id)"></clients-autocomplete>
-              </tooltip>
+              <clients-autocomplete :ticket="ticket" :clients="clients" @remove-client="removeClient" @set-client="client => assignClient(client.id)"></clients-autocomplete>
             </div>
           </div>
           <div v-else>
@@ -39,25 +35,20 @@
             </div>
           </div>
         </div>
-        <div class="column is-3 has-text-right">
+        <div class="column is-4 has-text-right">
           <tooltip v-bind:content="ticket.paid ? 'Ticket Pago' : 'Ticket Sin Pagar'">
             <div class="button" :class="{'is-danger': closed && ticket.paid, 'is-success': !closed, 'is-warning': closed && !ticket.paid}">
               <span class="icon is-small"><i class="fa" :class="{'fa-check': ticket.paid, 'fa-exclamation-circle': !ticket.paid }"></i></span>
               <span><b>{{ formattedStatus }}</b></span>
             </div>
           </tooltip>
-          <tooltip content="Cerrar ticket" v-if="!closed">
-            <a @click.prevent="reloadTicket" class="button is-light" v-shortkey="['ctrl', 'c']"
-             @shortkey="reloadTicket">
+          <tooltip content="Cerrar ticket (ctrl + c)" v-if="!closed">
+            <a @click.prevent="closeTicketModal" class="button is-light" v-shortkey="['ctrl', 'c']"
+             @shortkey="closeTicketModal">
               <span class="icon is-small"><i class="fa fa-lock"></i></span>
             </a>
           </tooltip>
-          <tooltip content="Abrir ticket" v-if="closed">
-            <a @click.prevent="reopenTicket" class="button is-light">
-              <span class="icon is-small"><i class="fa fa-unlock"></i></span>
-            </a>
-          </tooltip>
-          <tooltip v-bind:content=" ticket.printed_at ? 'Ticket impreso. Imprimir nuevamente' : 'Imprimir ticket'">
+          <tooltip v-bind:content=" ticket.printed_at ? 'Ticket impreso. Imprimir nuevamente' : 'Imprimir ticket (ctrl + p)'">
             <pop-confirm content="Despues de imprimir, no se podra modificar el ticket. Seguro de seguir?" icon="question-circle-o" :on-ok="printTicket" :on-cancel="cancelPrint" class="not-print">
               <span class="button is-light" v-shortkey.once="['ctrl', 'p']" @shortkey="printTicket()">
                 <span class="icon is-small"><i class="fa fa-print"></i></span>
@@ -361,7 +352,7 @@ export default {
         }
       )
     },
-    reloadTicket () {
+    closeTicketModal () {
       this.isOpen = true
     },
     deleteTicket () {

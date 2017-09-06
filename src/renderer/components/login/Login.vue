@@ -7,11 +7,11 @@
         <div v-if="!loading">
           <div class="control has-icon has-icon-right">
             <i class="fa fa-envelope"></i>
-            <input type="text" placeholder="Email" v-model="credentials.email" class="input is-medium">
+            <input type="text" placeholder="Email" @keydown.enter.prevent="submit()" v-model="credentials.email" class="input is-medium">
           </div>
           <div class="control has-icon has-icon-right">
           <i class="fa fa-lock"></i>
-            <input type="password" placeholder="Password" v-model="credentials.password" class="input is-medium">  
+            <input type="password" placeholder="Password" @keydown.enter.prevent="submit()" v-model="credentials.password" class="input is-medium">  
           </div>
           <hr>
           <div class="columns">
