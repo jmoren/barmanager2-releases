@@ -11,7 +11,6 @@
          @keydown.enter.prevent='hit'
          @keydown.esc.prevent='setBlur'
          @focus="setFocus"
-         @blur="setBlur"
          v-shortkey="['ctrl', 'm']"
          @shortkey="setFocus"/>
       <a class="button is-primary" :class="{'is-disabled': !ticket.table_id }" @click.prevent="removeTable">
@@ -39,6 +38,7 @@
 </template>
 
 <script>
+  import Vue from 'vue'
   export default {
     name: 'TableAutocomplete',
     props: ['ticket', 'tables'],
@@ -68,6 +68,10 @@
         this.$emit('set-table', item)
         this.focused = false
         this.query = item.description
+
+        Vue.nextTick(() => {
+          document.getElementById('assign-input').blur()
+        })
       },
       removeTable () {
         this.$emit('remove-table')
@@ -99,12 +103,6 @@
         this.query = ''
         this.focused = true
         document.getElementById('assign-input').focus()
-      },
-      setBlur () {
-        this.focused = false
-        if (this.ticket.table_id) {
-          this.query = this.ticket.table.description
-        }
       },
       setActive (index) {
         this.current = index

@@ -11,7 +11,6 @@
          @keydown.enter.prevent='hit'
          @keydown.esc.prevent='setBlur'
          @focus="setFocus"
-         @blur="setBlur"
          v-shortkey="['ctrl', 'n']"
          @shortkey="setFocus"/>
       <a class="button is-primary" :class="{'is-disabled': !ticket.client_id }" @click.prevent="removeClient">
@@ -31,6 +30,7 @@
 </template>
 
 <script>
+  import Vue from 'vue'
   import _ from 'lodash'
   export default {
     name: 'ClientsAutocomplete',
@@ -66,6 +66,9 @@
         this.$emit('set-client', item)
         this.focused = false
         this.query = item.name
+        Vue.nextTick(() => {
+          document.getElementById('search-clients').blur()
+        })
       },
       removeClient () {
         this.$emit('remove-client')
@@ -97,12 +100,6 @@
         this.query = ''
         this.focused = true
         document.getElementById('search-clients').focus()
-      },
-      setBlur () {
-        this.focused = false
-        if (this.ticket.client_id) {
-          this.query = this.ticket.client.name
-        }
       },
       setActive (index) {
         this.current = index
