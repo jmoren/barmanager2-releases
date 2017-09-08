@@ -16,7 +16,7 @@
         <tbody>
           <tr v-for="payment in payments" :key="payment.id">
             <td style="width: 15%;">
-              <tag rounded :class="payment.ticket.table.color" v-if="payment.ticket.table.id"><b>{{ payment.ticket.table.description }}</b></tag>
+              <tag rounded :class="payment.ticket.table.color" v-if="payment.ticket.table"><b>{{ payment.ticket.table.description }}</b></tag>
               <tag rounded type="light" v-else><b>Delivery</b></tag>
             </td>
             <td>
