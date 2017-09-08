@@ -36,29 +36,6 @@
         </div>
       </div>
       <hr>
-      <div class="resume">
-        <div class="box">
-          <div class="columns">
-            <div class="column is-3 has-text-centered">
-              <tag type="success" class="big" rounded>${{ cash.total_sells }}</tag>
-              <p class="tag-label">TOTAL VENTAS</p>
-            </div>
-            <div class="column is-3 has-text-centered">
-              <tag class="big" rounded>${{ cash.cash_amount }}</tag>
-              <p class="tag-label">TOTAL EFECTIVO</p>
-            </div>
-            <div class="column is-3 has-text-centered">
-              <tag class="big" rounded>${{ cash.credit_amount }}</tag>
-              <p class="tag-label">TOTAL TARJETA</p>
-            </div>
-            <div class="column is-3 has-text-centered">
-              <tag type="warning" class="big" rounded>{{ cash.tickets_count }}</tag>
-              <p class="tag-label">TICKETS <br>(Generados)</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <hr>
       <div class="columns">
         <div class="column is-6">
           <div class="resume">
@@ -219,20 +196,30 @@
           </tr>
           <tr>
             <td>Pago Tarjeta</td>
-            <td class="row-value"><span class="is-success-text">${{ cash.credit_amount | withDecimals }}</span></td></tr>
+            <td class="row-value">
+              <router-link :to="{ name: 'Payments', params: { partial_daily_cash_id: cash.id, payment_type: 'tarjeta', payment_favor: false } }" class="is-success-text">${{ cash.credit_amount | withDecimals }}</router-link>
+            </td>
+          </tr>
           <tr>
             <td>Pago Deuda Tarjeta</td>
-            <td class="row-value"><span>${{ cash.debt_credit | withDecimals }}</span></td></tr>
+            <td class="row-value">
+              <router-link :to="{ name: 'Payments', params: { partial_daily_cash_id: cash.id, payment_type: 'tarjeta', payment_favor: true } }" class="is-success-text">${{ cash.debt_credit | withDecimals }}</router-link>
+            </td>
+          </tr>
           <tr class="subtotal">
             <td>Sub Tarjeta</td>
             <td class="row-value"><span class="is-success-text">${{ subCard | withDecimals }}</span></td></tr>
           <tr>
             <td>Pago Efectivo</td>
-            <td class="row-value"><span class="is-success-text">${{ cash.cash_amount }}</span></td>
+            <td class="row-value">
+              <router-link :to="{ name: 'Payments', params: { partial_daily_cash_id: cash.id, payment_type: 'efectivo', payment_favor: false } }" class="is-success-text">${{ cash.cash_amount | withDecimals }}</router-link>
+            </td>
           </tr>
           <tr>
             <td>Pago Deuda Efectivo</td>
-            <td class="row-value"><span>${{ cash.debt_cash | withDecimals }}</span></td>
+            <td class="row-value">
+              <router-link :to="{ name: 'Payments', params: { partial_daily_cash_id: cash.id, payment_type: 'efectivo', payment_favor: true } }" class="is-success-text">${{ cash.debt_cash | withDecimals}}</router-link>
+            </td>
           </tr>
           <tr class="subtotal">
             <td>Sub Efectivo</td>

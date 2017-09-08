@@ -8,6 +8,7 @@ import PrivateApp from '@/components/layouts/PrivateApp'
 import Ticket from '@/components/tickets/Ticket'
 import AdminTicket from '@/components/tickets/AdminTicket'
 import Tickets from '@/components/tickets/Tickets'
+import Payments from '@/components/payments/Payments'
 import Tables from '@/components/tables/Tables'
 import AdminTable from '@/components/tables/AdminTable'
 import Clients from '@/components/clients/Clients'
@@ -64,6 +65,11 @@ const router = new Router({
         { path: 'tickets',
           name: 'Tickets',
           component: Tickets
+        },
+        { path: 'pagos',
+          name: 'Payments',
+          component: Payments,
+          props: (route) => ({ query: route.query.q })
         },
         { path: 'administracion',
           component: Administration,

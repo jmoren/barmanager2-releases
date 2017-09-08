@@ -8,7 +8,7 @@
     </td>
     <td style="width:15%">
       <tooltip content="Enviar todo lo pendiente">
-        <a @click.prevent="deliverTicket()" class="button is-success" :class="{ 'is-loading': loading || removed }">
+        <a @click.prevent="deliverTicket()" class="button is-success" :class="{ 'is-loading': loading }">
           <span class="icon is-small"><i class="fa fa-reply"></i></span>
           <span><b>{{ ticket.number }}</b></span>
         </a>
@@ -16,7 +16,7 @@
     </td>
     <td>
       <div v-for="(entry, id) in ticket.entries" class="entry-row">
-        <div class="entry-comment" v-if="entry.comment"> 
+        <div class="entry-comment" v-if="entry.comment">
           <i class="fa fa-exclamation-circle fa-floated"></i> {{ entry.comment | titleize }}
         </div>
         <div class="columns">
@@ -49,6 +49,7 @@
 
 <script>
   import _ from 'lodash'
+  import Vue from 'vue'
   export default {
     name: 'KitchenRow',
     props: ['ticket'],
@@ -77,7 +78,7 @@
         this.$http.post('kitchen/deliver_entry', { entry_id: entry.id }).then(
           response => {
             this.loading = false
-            delete this.ticket.entries[entry.id]
+            Vue.delete(this.ticket.entries, entry.id)
             if (Object.keys(this.ticket.entries).length === 0) {
               this.removed = true
               this.$emit('remove-ticket', this.ticket)

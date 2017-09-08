@@ -9,9 +9,21 @@
                 <router-link class="nav-item brand" :to="{ name: 'Kitchen' }">Volver a la cocina</router-link>
               </div>
               <div class="nav-left" v-if="user.profile.role !== 'cooker'">
-                <router-link class="nav-item is-brand" :to="{ name: 'Tables' }">Mesas</router-link>
-                <router-link class="nav-item" :to="{ name: 'Clients'}">Clientes</router-link>
-                <router-link class="nav-item" :to="{ name: 'Tickets'}">Tickets</router-link>
+                <div class="nav-item">
+                  <router-link class="nav-item is-brand" :to="{ name: 'Tables' }">Mesas</router-link>
+                </div>
+                <div class="nav-item">|</div>
+                <div class="nav-item">
+                  <router-link class="nav-item" :to="{ name: 'Clients'}">Clientes</router-link>
+                </div>
+                <div class="nav-item">|</div>
+                <div class="nav-item">
+                  <router-link class="nav-item" :to="{ name: 'Tickets'}">Tickets</router-link>
+                </div>
+                <div class="nav-item">|</div>
+                <div class="nav-item">
+                  <router-link class="nav-item" :to="{ name: 'Payments'}">Pagos</router-link>
+                </div>
                 <div class="nav-item">|</div>
                 <div class="nav-item">
                   <router-link class="button is-primary" :to="{ name: 'Kitchen'}">Cocina</router-link>

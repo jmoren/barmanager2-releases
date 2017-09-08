@@ -11,7 +11,7 @@
           <th>Mesa</th>
           <th>Estado</th>
           <th>Pagado</th>
-          <th>Numbero</th>
+          <th>Numero</th>
           <th>Total</th>
           <th>Fecha</th>
         </thead>
@@ -23,7 +23,7 @@
             </td>
             <td>
               <tooltip v-bind:content="ticket.closed ? 'Ticket Cerrado' : 'Ticket Abierto'">
-                <i class="fa fa-circle fa-floated" 
+                <i class="fa fa-circle fa-floated"
                   :class="{'is-success': !ticket.closed, 'is-danger': ticket.closed }"></i>
               </tooltip>
             </td>
