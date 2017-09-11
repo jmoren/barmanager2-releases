@@ -12,29 +12,23 @@
                 <div class="nav-item">
                   <router-link class="nav-item is-brand" :to="{ name: 'Tables' }">Mesas</router-link>
                 </div>
-                <div class="nav-item">|</div>
                 <div class="nav-item">
                   <router-link class="nav-item" :to="{ name: 'Clients'}">Clientes</router-link>
                 </div>
-                <div class="nav-item">|</div>
                 <div class="nav-item">
                   <router-link class="nav-item" :to="{ name: 'Tickets'}">Tickets</router-link>
                 </div>
-                <div class="nav-item">|</div>
                 <div class="nav-item">
                   <router-link class="nav-item" :to="{ name: 'Payments'}">Pagos</router-link>
                 </div>
-                <div class="nav-item">|</div>
                 <div class="nav-item">
                   <router-link class="button is-primary" :to="{ name: 'Kitchen'}">Cocina</router-link>
                 </div>
-                <div class="nav-item">|</div>
                 <div class="nav-item">
                   <a class="button is-primary" :class="{'is-disabled': !dailyCash.id }" v-shortkey="['ctrl', 'd']" @shortkey="openDeliveryTicket" @click.prevent="openDeliveryTicket">
                     Abrir Delivery
                   </a>
                 </div>
-                <div class="nav-item">|</div>
                 <div class="nav-item"><a class="button is-primary" v-shortkey="['ctrl', 'a']" @shortkey="isOpen = true" @click.prevent="isOpen = true">Mesas abiertas <tag rounded>{{ openTables.length }}</tag>  </a></div>
               </div>
               <span class="nav-toggle" v-if="user.profile.role !== 'cooker'">
@@ -344,4 +338,5 @@
 
   .empty-message { color: #f56954; text-align: center; font-size: 15px;}
   .nav-right { flex-grow: initial; }
+  .nav-item { padding: 5px; }
 </style>

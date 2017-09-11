@@ -197,13 +197,13 @@
           <tr>
             <td>Pago Tarjeta</td>
             <td class="row-value">
-              <router-link :to="{ name: 'Payments', params: { partial_daily_cash_id: cash.id, payment_type: 'tarjeta', payment_favor: false } }" class="is-success-text">${{ cash.credit_amount | withDecimals }}</router-link>
+              <router-link :to="{ name: 'Payments', params: { partial_daily_cash_id: cash.id, payment_type: 'tarjeta' } }" class="is-success-text">${{ cash.credit_amount | withDecimals }}</router-link>
             </td>
           </tr>
           <tr>
             <td>Pago Deuda Tarjeta</td>
             <td class="row-value">
-              <router-link :to="{ name: 'Payments', params: { partial_daily_cash_id: cash.id, payment_type: 'tarjeta', payment_favor: true } }" class="is-success-text">${{ cash.debt_credit | withDecimals }}</router-link>
+              <router-link :to="{ name: 'Payments', params: { partial_daily_cash_id: 'not_current', payment_type: 'tarjeta' } }" class="is-success-text">${{ cash.debt_credit | withDecimals }}</router-link>
             </td>
           </tr>
           <tr class="subtotal">
@@ -212,13 +212,13 @@
           <tr>
             <td>Pago Efectivo</td>
             <td class="row-value">
-              <router-link :to="{ name: 'Payments', params: { partial_daily_cash_id: cash.id, payment_type: 'efectivo', payment_favor: false } }" class="is-success-text">${{ cash.cash_amount | withDecimals }}</router-link>
+              <router-link :to="{ name: 'Payments', params: { partial_daily_cash_id: cash.id, payment_type: 'efectivo' } }" class="is-success-text">${{ cash.cash_amount | withDecimals }}</router-link>
             </td>
           </tr>
           <tr>
             <td>Pago Deuda Efectivo</td>
             <td class="row-value">
-              <router-link :to="{ name: 'Payments', params: { partial_daily_cash_id: cash.id, payment_type: 'efectivo', payment_favor: true } }" class="is-success-text">${{ cash.debt_cash | withDecimals}}</router-link>
+              <router-link :to="{ name: 'Payments', params: { partial_daily_cash_id: 'not_current', payment_type: 'efectivo' } }" class="is-success-text">${{ cash.debt_cash | withDecimals}}</router-link>
             </td>
           </tr>
           <tr class="subtotal">
