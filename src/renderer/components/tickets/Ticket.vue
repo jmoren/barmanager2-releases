@@ -166,73 +166,75 @@
         </form>
       </modal>
       <modal :title="'TICKET Nro. ' + ticket.number" :show-footer="false" :on-cancel="closeModal" :is-show="isOpen" :ok-loading="true" transition="zoom">
-        <div class="columns modal-row with-border">
-          <div class="column is-4">
-            <i class="fa fa-floated fa-user-o"></i>
-            Cliente</div>
-          <div class="column is-8">
-            <div>{{ ticket.client_id ? ticket.client.name : 'Sin Cliente' }}</div>
-            <div v-if="ticket.client_id" class="is-danger-text ticket-help">
-              <tooltip content="Deuda acumulada">
+        <form @submit.prevent="closeTicket()">
+          <div class="columns modal-row with-border">
+            <div class="column is-4">
+              <i class="fa fa-floated fa-user-o"></i>
+              Cliente</div>
+            <div class="column is-8">
+              <div>{{ ticket.client_id ? ticket.client.name : 'Sin Cliente' }}</div>
+              <div v-if="ticket.client_id" class="is-danger-text ticket-help">
+                <tooltip content="Deuda acumulada">
+                  <i class="fa fa-exclamation-circle fa-floated"></i>
+                  <span>Deuda actual: ${{ ticket.client.total_debt }}</span>
+                </tooltip>
+              </div>
+            </div>
+          </div>
+          <div class="columns modal-row with-border">
+            <div class="column is-4">
+              <i class="fa fa-floated fa-clock-o"></i>
+              Pagado?</div>
+            <div class="column is-8">
+              <div>{{ ticket.paid ? 'Si' :  ticket.total === 0 ? 'No hay items para pagar' : 'Sin pagar' }}</div>
+              <div v-if="!ticket.paid" class="is-danger-text ticket-help">
                 <i class="fa fa-exclamation-circle fa-floated"></i>
-                <span>Deuda actual: ${{ ticket.client.total_debt }}</span>
-              </tooltip>
+                <span v-if="ticket.client_id">Al cerrar se agregara como deuda al cliente</span>
+                <span v-else>Debe ingresar pagos en el ticket</span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="columns modal-row with-border">
-          <div class="column is-4">
-            <i class="fa fa-floated fa-clock-o"></i>
-            Pagado?</div>
-          <div class="column is-8">
-            <div>{{ ticket.paid ? 'Si' :  ticket.total === 0 ? 'No hay items para pagar' : 'Sin pagar' }}</div>
-            <div v-if="!ticket.paid" class="is-danger-text ticket-help">
-              <i class="fa fa-exclamation-circle fa-floated"></i>
-              <span v-if="ticket.client_id">Al cerrar se agregara como deuda al cliente</span>
-              <span v-else>Debe ingresar pagos en el ticket</span>
+          <div class="columns modal-row with-border">
+            <div class="column is-4">
+              <i class="fa fa-floated fa-thumbs-o-up"></i>
+              Todo entregado?</div>
+            <div class="column is-8">
+              <div class="is-danger-text ticket-help">
+                <span><i class="fa fa-exclamation-circle fa-floated"></i></span>
+                <span>Al cerrar se entregaran todos los items que esten pendientes</span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="columns modal-row with-border">
-          <div class="column is-4">
-            <i class="fa fa-floated fa-thumbs-o-up"></i>
-            Todo entregado?</div>
-          <div class="column is-8">
-            <div class="is-danger-text ticket-help">
-              <span><i class="fa fa-exclamation-circle fa-floated"></i></span>
-              <span>Al cerrar se entregaran todos los items que esten pendientes</span>
+          <div class="columns modal-row">
+            <div class="column is-4">
+              <i class="fa fa-dollar fa-floated"></i> Total
+            </div>
+            <div class="column is-8"><b>${{ ticket.total }}</b></div>
+          </div>
+          <div class="columns modal-row">
+            <div class="column is-4">
+              <i class="fa fa-dollar fa-floated"></i> Pendiente
+            </div>
+            <div class="column is-8"><b>${{ ticket.paid ? 0 : ticket.pending }}</b></div>
+          </div>
+          <div class="columns modal-row" v-if="!ticket.paid">
+            <div class="column is-4">Abonar Pendiente</div>
+            <div class="column is-8">
+              <radio-group v-model="ticket.pay">
+                <radio val="efectivo">Efectivo</radio>
+                <radio val="tarjeta"> Tarjeta</radio>
+                <radio val="empty"> No pagar</radio>
+              </radio-group>
             </div>
           </div>
-        </div>
-        <div class="columns modal-row">
-          <div class="column is-4">
-            <i class="fa fa-dollar fa-floated"></i> Total
+          <hr>
+          <div class="columns">
+            <div class="column is-4 is-offset-2">
+              <input type="submit" id="submit-ticket-form" class="button is-success is-medium is-fullwidth" :class="{'is-disabled': !canBeClosed && ticket.pay === 'empty'}" value="Cerrar"></input>
+            </div>
+            <div class="column is-4"><a @click.prevent="closeModal" class="button is-light is-medium is-fullwidth">Cancelar</a></div>
           </div>
-          <div class="column is-8"><b>${{ ticket.total }}</b></div>
-        </div>
-        <div class="columns modal-row">
-          <div class="column is-4">
-            <i class="fa fa-dollar fa-floated"></i> Pendiente
-          </div>
-          <div class="column is-8"><b>${{ ticket.paid ? 0 : ticket.pending }}</b></div>
-        </div>
-        <div class="columns modal-row" v-if="!ticket.paid">
-          <div class="column is-4">Abonar Pendiente</div>
-          <div class="column is-8">
-            <radio-group v-model="ticket.pay">
-              <radio val="efectivo">Efectivo</radio>
-              <radio val="tarjeta"> Tarjeta</radio>
-              <radio val="empty"> No pagar</radio>
-            </radio-group>
-          </div>
-        </div>
-        <hr>
-        <div class="columns">
-          <div class="column is-4 is-offset-2">
-            <a @click.prevent="closeTicket()" class="button is-success is-medium is-fullwidth" :class="{'is-disabled': !canBeClosed && ticket.pay === 'empty'}">Cerrar</a>
-          </div>
-          <div class="column is-4"><a @click.prevent="closeModal" class="button is-light is-medium is-fullwidth">Cancelar</a></div>
-        </div>
+        </form>
       </modal>
     </div>
   </div>
@@ -354,6 +356,9 @@ export default {
     },
     closeTicketModal () {
       this.isOpen = true
+      setTimeout(() => {
+        document.getElementById('submit-ticket-form').focus()
+      }, 100)
     },
     deleteTicket () {
       this.$modal.confirm({
