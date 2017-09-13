@@ -7,6 +7,9 @@
       <div class="control">
         <input type="text" class="input" v-model="newClient.phone" placeholder="Telefono">
       </div>
+      <div class="control">
+        <input type="text" class="input" v-model="newClient.dni" placeholder="DNI">
+      </div>
     </modal>
     <h1 class="header">
       <i class="fa fa-users fa-floated"></i>
@@ -22,6 +25,7 @@
       <thead>
         <th>Nombre</th>
         <th>Telefono</th>
+        <th>DNI</th>
         <th>Deuda</th>
         <th></th>
       </thead>
@@ -29,6 +33,7 @@
         <tr v-for="client in clients" :key="client.id">
           <td>{{ client.name }}</td>
           <td>{{ client.phone }}</td>
+          <td>{{ client.dni }}</td>
           <td><b class="is-danger-text">${{ client.total_debt || '0.0' }}</b></td>
           <td>
             <div class="control has-addons">
@@ -55,8 +60,8 @@ export default {
   mixins: [alert],
   data () {
     return {
-      newClient: { name: null, phone: null },
-      originalClient: { id: null, name: null, phone: null },
+      newClient: { name: '', phone: '', dni: '' },
+      originalClient: { id: '', name: '', phone: '', dni: '' },
       clients: [],
       isShow: false,
       meta: {},
@@ -115,7 +120,7 @@ export default {
       )
     },
     updateClient () {
-      let params = { name: this.newClient.name, phone: this.newClient.phone }
+      let params = { name: this.newClient.name, dni: this.newClient.dni, phone: this.newClient.phone }
       this.$http.put('admin/clients/' + this.newClient.id, { client: params }).then(
         response => {
           _.extend(this.originalClient, response.data)

@@ -95,7 +95,7 @@
         </div>
       </div>
 
-      <modal  :title="'Ticket Nro. ' + ticket.number" :show-footer="false" :on-cancel="closePrintModal" :is-show="isPrintOpen" transition="zoom">
+      <modal :title="'Ticket Nro. ' + ticket.number" :show-footer="false" :on-cancel="closePrintModal" :is-show="isPrintOpen" transition="zoom">
         <form>
           <div class="columns">
             <div class="column is-5"><input class="input" type="text" v-model="print.customer_name" placeholder="Nombre"></div>

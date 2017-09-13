@@ -37,7 +37,13 @@
                 <span></span>
               </span>
               <div class="nav-right" v-if="user.profile.role !== 'cooker'">
-                <div class="nav-item"><table-autocomplete :tables="tables" id-input="open_table" :class="{'is-disabled': !dailyCash.id }" :shortkey="'g'"></table-autocomplete></div>
+                <div class="nav-item">
+                  <input type="text" v-model="clientCode" class="input" @keydown.enter.prevent="findClient()" placeholder="Escanea la credencial">
+                </div>
+                <div class="nav-item">
+                  <table-autocomplete :tables="tables" id-input="open_table" :class="{'is-disabled': !dailyCash.id }" :shortkey="'g'">
+                  </table-autocomplete>
+                </div>
                 <div class="nav-item">
                   <popover title="Mi Cuenta" placement="bottom" :width="300" trigger="click">
                     <button class="button is-primary">{{ user.profile.name }}</button>
@@ -213,15 +219,18 @@
   import Auth from '../../auth'
   import { mapGetters } from 'vuex'
   import TableAutocomplete from '@/components/utils/TableAutocomplete'
+  import alert from '../../mixins/Alert'
 
   export default {
     name: 'PrivateApp',
     components: { TableAutocomplete },
+    mixins: [alert],
     data () {
       return {
         loading: false,
         user: Auth.user,
         isOpen: false,
+        clientCode: '',
         mapRoles: {
           user: 'Usuario',
           manager: 'Manager',
@@ -317,6 +326,23 @@
           error => {
             console.log(error)
             console.log('error loading reasons')
+          }
+        )
+      },
+      findClient () {
+        this.$http.get('client_codes/' + this.clientCode).then(
+          response => {
+            let code = response.data
+            this.clientCode = ''
+            if (code.enabled) {
+              this.$router.push({ name: 'Client', params: { id: response.data.client_id } })
+            } else {
+              this.alert('danger', 'El codigo buscado esta deshabilitado')
+            }
+          },
+          error => {
+            console.log(error.status)
+            this.alert('danger', 'No se encontro el codigo')
           }
         )
       }

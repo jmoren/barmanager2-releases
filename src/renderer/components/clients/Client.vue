@@ -2,12 +2,18 @@
   <div class="container" id="client">
     <div v-if="loading"></div>
     <div v-else>
-      <h1 class="header">Cliente {{client.name }} - Tel: {{ client.phone || 'S/D' }}</h1>
+      <h1 class="header">
+        Cliente {{client.name }}
+        <div class="control has-addons is-pulled-right">
+          <a @click.prevent="addTicket(client)" class="button is-danger">Abrir ticket</a>
+        </div>
+      </h1>
       <hr>
-      <div class="box">
-        <div class="columns">
-          <div class="column is-6">
+      <div class="columns">
+        <div class="column is-6">
+          <div class="box">
             <h4><i class="fa fa-floated fa-credit-card"></i> ) Ingresar Pago</h4>
+            <hr>
             <div class="ticket-form">
               <div class="control is-grouped">
                 <div class="control is-expanded">
@@ -45,27 +51,9 @@
               </ul>
             </div>
           </div>
-          <div class="column is-6">
-            <h4><i class="fa fa-floated fa-comments"></i> ) Notas</h4>
-            <div class="ticket-form">
-              <div class="control is-grouped">
-                <div class="control is-expanded">
-                  <input type="text" v-model="newComment.text" class="input" placeholder="Agregar nota">
-                </div>
-                <div class="control"><button @click.prevent="addComment" class="button is-primary">Agregar</button></div>
-              </div>
-            </div>
-            <div v-if="client.client_comments.length > 0">
-              <hr>
-              <ul>
-                <li v-for="comment in client.client_comments" :key="client.id" v-bind:date="dateFrom(client.date)" type="primary">
-                  <i class="fa fa-angle-right fa-floated"></i>
-                  <span style="font-size: 16px;">{{ comment.text }}</span>
-                  <a @click.prevent="removeComment(comment)" class="is-pulled-right button is-small is-danger"><i class="fa fa-trash"></i></a>
-                </li>
-              </ul>
-            </div>
-          </div>
+        </div>
+        <div class="column is-6">
+          <client-codes :client="client"></client-codes>
         </div>
       </div>
       <div class="box">
@@ -121,29 +109,56 @@
           </div>
         </div>
       </div>
-      <div class="box">
-        <h4><i class="fa fa-floated fa-credit-card"></i> ) Pagos anteriores</h4>
-        <div v-if="client.payments.length > 0">
-          <table class="table">
-            <thead>
-              <th>Ticket</th>
-              <th>Fecha</th>
-              <th>Tipo</th>
-              <th>Monto</th>
-            </thead>
-            <tbody>
-              <tr v-for="payment in payments" :key="payment.id" v-bind:date="formatDate(payment.created_at)" style="margin-bottom: 5px;">
-                <td>
-                  <router-link :to="{ name: 'Ticket', params: { id: payment.ticket_id } }"> 
-                    <i class="fa fa-angle-right fa-floated"></i> {{ payment.ticket.number }}
-                  </router-link>
-                </td>
-                <td>{{ payment.created_at | moment('DD MMMM, YYYY - hh:mm A') }}</td>
-                <td>{{ payment.type }}</td>
-                <td><b>$ {{ payment.amount }}</b></td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="columns">
+        <div class="column is-6">
+          <div class="box">
+            <h4><i class="fa fa-floated fa-credit-card"></i> ) Pagos anteriores</h4>
+            <div v-if="commonPayments.length > 0">
+              <table class="table">
+                <thead>
+                  <th>Ticket</th>
+                  <th>Fecha</th>
+                  <th>Tipo</th>
+                  <th>Monto</th>
+                </thead>
+                <tbody>
+                  <tr v-for="payment in commonPayments" :key="payment.id" v-bind:date="formatDate(payment.created_at)" style="margin-bottom: 5px;">
+                    <td>
+                      <router-link :to="{ name: 'Ticket', params: { id: payment.ticket_id } }"> 
+                        <i class="fa fa-angle-right fa-floated"></i> {{ payment.ticket.number }}
+                      </router-link>
+                    </td>
+                    <td>{{ payment.created_at | moment('DD MMMM, YYYY - hh:mm A') }}</td>
+                    <td>{{ payment.type }}</td>
+                    <td><b>$ {{ payment.amount }}</b></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="column is-6">
+          <div class="box">
+            <h4><i class="fa fa-floated fa-comments"></i> ) Notas</h4>
+            <div class="ticket-form">
+              <div class="control is-grouped">
+                <div class="control is-expanded">
+                  <input type="text" v-model="newComment.text" class="input" placeholder="Agregar nota">
+                </div>
+                <div class="control"><button @click.prevent="addComment" class="button is-primary">Agregar</button></div>
+              </div>
+            </div>
+            <div v-if="client.client_comments.length > 0">
+              <hr>
+              <ul>
+                <li v-for="comment in client.client_comments" :key="client.id" v-bind:date="dateFrom(client.date)" type="primary">
+                  <i class="fa fa-angle-right fa-floated"></i>
+                  <span style="font-size: 16px;">{{ comment.text }}</span>
+                  <a @click.prevent="removeComment(comment)" class="is-pulled-right button is-small is-danger"><i class="fa fa-trash"></i></a>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -153,9 +168,11 @@
 <script>
   import moment from 'moment'
   import Auth from '../../auth'
+  import ClientCodes from './ClientCodes'
 
   export default {
     name: 'Client',
+    components: { ClientCodes },
     data () {
       return {
         loading: false,
@@ -202,7 +219,7 @@
           return payment.favor
         })
       },
-      payments () {
+      commonPayments () {
         return this.client.payments.filter((payment) => {
           return !payment.favor
         })
@@ -225,6 +242,16 @@
           error => {
             console.log(error)
             this.loading = false
+          }
+        )
+      },
+      addTicket () {
+        this.$http.post('tickets', { ticket: { client_id: this.client.id } }).then(
+          response => {
+            this.$router.push({ name: 'Ticket', params: { id: response.data.id } })
+          },
+          error => {
+            this.alert('danger', error.data)
           }
         )
       },
@@ -276,4 +303,5 @@
 <style lang="css">
   #client h4 { font-weight: bold; font-size: 16px; margin-bottom: 15px; }
   #client .tickets-container { height: 250px; overflow: auto; }
+  #client .box:last-child { margin-bottom: 20px; }
 </style>
