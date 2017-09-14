@@ -32,9 +32,9 @@
         </div>
         <div class="credential">
           <div class="client-name">
-            <img style="padding: 2px 0px;" src="/static/user.jpg">
-            <p>Bar de la Esquina</p>
-            <i>Tel: 1231313</i>
+            <p>{{ businessName }}</p>
+            <small>{{ businessSlogan }}</small><br/>
+            <i>Tel: {{ businessPhone }}</i>
           </div>
         </div>
       </modal>
@@ -43,6 +43,9 @@
 </template>
 
 <script>
+  const Config = require('electron-config')
+  const config = new Config()
+
   export default {
     name: 'client-code',
     props: ['code', 'client'],
@@ -51,7 +54,10 @@
         loding: false,
         currentCode: {},
         enabled: this.code.enabled,
-        printing: false
+        printing: false,
+        businessName: config.get('business_name', ''),
+        businessPhone: config.get('business_phone', ''),
+        businessSlogan: config.get('business_slogan', '')
       }
     },
     methods: {
