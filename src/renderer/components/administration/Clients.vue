@@ -10,15 +10,18 @@
       <div class="control">
         <input type="text" class="input" v-model="newClient.dni" placeholder="DNI">
       </div>
+      <div class="control">
+        <input type="text" class="input" v-model="newClient.address" placeholder="Direción">
+      </div>
     </modal>
     <h1 class="header">
       <i class="fa fa-users fa-floated"></i>
-      Clientes 
+      Clientes
       <div class="control has-addons is-pulled-right">
         <input type="text" class="input" v-model="query" @keyup.prevent="reloadClients" placeholder="Filtrar clientes">
         <a @click.prevent="isShow = true" class="button is-light is-pulled-right">Nuevo Cliente</a>
       </div>
-      
+
     </h1>
     <hr>
     <table class="table">
@@ -26,6 +29,7 @@
         <th>Nombre</th>
         <th>Telefono</th>
         <th>DNI</th>
+        <th>Direción</th>
         <th>Deuda</th>
         <th></th>
       </thead>
@@ -34,6 +38,7 @@
           <td>{{ client.name }}</td>
           <td>{{ client.phone }}</td>
           <td>{{ client.dni }}</td>
+          <td>{{ client.address }}</td>
           <td><b class="is-danger-text">${{ client.total_debt || '0.0' }}</b></td>
           <td>
             <div class="control has-addons">
@@ -60,8 +65,8 @@ export default {
   mixins: [alert],
   data () {
     return {
-      newClient: { name: '', phone: '', dni: '' },
-      originalClient: { id: '', name: '', phone: '', dni: '' },
+      newClient: { name: '', phone: '', dni: '', address: '' },
+      originalClient: { id: '', name: '', phone: '', dni: '', address: '' },
       clients: [],
       isShow: false,
       meta: {},
@@ -120,7 +125,7 @@ export default {
       )
     },
     updateClient () {
-      let params = { name: this.newClient.name, dni: this.newClient.dni, phone: this.newClient.phone }
+      let params = { name: this.newClient.name, dni: this.newClient.dni, phone: this.newClient.phone, address: this.newClient.address }
       this.$http.put('admin/clients/' + this.newClient.id, { client: params }).then(
         response => {
           _.extend(this.originalClient, response.data)

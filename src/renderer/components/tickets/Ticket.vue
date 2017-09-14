@@ -72,6 +72,10 @@
           </tooltip>
         </div>
       </div>
+      <div v-if="ticket.client.id" class="print">
+        <h2>CLIENTE: {{ ticket.client.name }}</h2>
+        <h3 v-if="ticket.client.address">DIRECCION: {{ ticket.client.address }}</h3>
+      </div>
       <hr>
       <div>
         <ticket-content :ticket="ticket" :reasons="reasons" @ticket-paid="setPaid" @ticket-not-paid="setNotPaid" :kitchenView="kitchenView"></ticket-content>
