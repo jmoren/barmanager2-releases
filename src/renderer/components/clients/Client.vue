@@ -12,9 +12,9 @@
       <div class="columns">
         <div class="column is-6">
           <div class="box">
-            <h4><i class="fa fa-floated fa-credit-card"></i> ) Ingresar Pago</h4>
+            <h4><i class="fa fa-floated fa-credit-card"></i> Ingresar Pago</h4>
             <hr>
-            <div class="ticket-form">
+            <form class="ticket-form">
               <div class="control is-grouped">
                 <div class="control is-expanded">
                   <div class="select is-fullwidth">
@@ -25,13 +25,13 @@
                   </div>
                 </div>
                 <div class="control is-expanded">
-                  <input class="input" step="0.01" type="number" placeholder="Monto" v-model="newPayment.amount">
+                  <input class="input" step="0.01" type="number" placeholder="Monto" @keydown.enter.prevent="payDebt" v-model="newPayment.amount">
                 </div>
                 <div class="control">
                   <a class="button is-primary" @click.prevent="payDebt">Pagar</a>
                 </div>
               </div>
-            </div>
+            </form>
             <div v-if="paymentInFavor.length > 0">
               <hr>
               <ul>
@@ -41,7 +41,7 @@
                     <div class="column is-2">{{ payment.type }}</div>
                     <div class="column is-4"><b>$ {{ payment.amount }}</b></div>
                     <div class="column is-4">{{ payment.created_at | moment('DD MMMM, YYYY') }}</div>
-                    <div class="column is-1">
+                    <div class="column is-1" v-if="pending > 0">
                       <tooltip content="Aplicar saldo a favor a la deuda">
                         <button class="button is-small is-success is-outlined" @click="assignPayement(payment)"><i class="fa fa-download"></i></button>
                       </tooltip>
@@ -57,7 +57,7 @@
         </div>
       </div>
       <div class="box">
-        <h4><i class="fa fa-floated fa-tags"></i> ) Tickets</h4>
+        <h4><i class="fa fa-floated fa-tags"></i> Tickets</h4>
         <div class="columns">
           <div class="column is-6">
             <div class="button is-light is-not-link">Tickets cerrados</div>
@@ -112,7 +112,7 @@
       <div class="columns">
         <div class="column is-6">
           <div class="box">
-            <h4><i class="fa fa-floated fa-credit-card"></i> ) Pagos anteriores</h4>
+            <h4><i class="fa fa-floated fa-credit-card"></i> Pagos anteriores</h4>
             <div v-if="commonPayments.length > 0">
               <table class="table">
                 <thead>
@@ -139,7 +139,7 @@
         </div>
         <div class="column is-6">
           <div class="box">
-            <h4><i class="fa fa-floated fa-comments"></i> ) Notas</h4>
+            <h4><i class="fa fa-floated fa-comments"></i> Notas</h4>
             <div class="ticket-form">
               <div class="control is-grouped">
                 <div class="control is-expanded">

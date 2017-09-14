@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <h4>
-      <i class="fa fa-floated fa-credit-card"></i> ) 
+      <i class="fa fa-floated fa-code"></i> 
       Credenciales
       <div class="control has-addons is-pulled-right">
         <a class="button is-light" @click.prevent="createCode()">Crear Credencial</a>
@@ -23,6 +23,7 @@
           </tbody>
         </table>
       </div>
+      <div v-else class="is-danger-text">No hay codigos para este cliente</div>
     </div>
   </div>
 </template>

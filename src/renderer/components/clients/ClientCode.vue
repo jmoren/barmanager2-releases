@@ -82,7 +82,7 @@
 </script>
 
 <style>
-  .credential { width: 400px; border: solid 1px #f1f1f1; border-radius: 5px; padding: 50px 40px; margin: 20px auto; }
+  .credential { width: 400px; border: solid 1px #f1f1f1; border-radius: 5px; padding: 50px 20px; margin: 20px auto; }
   .credential img { height: 60px; }
   .credential .client-name { text-align: center;  }
   .credential .client-name p { font-size: 20px; }

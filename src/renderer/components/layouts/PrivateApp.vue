@@ -37,7 +37,7 @@
                 <span></span>
               </span>
               <div class="nav-right" v-if="user.profile.role !== 'cooker'">
-                <div class="nav-item">
+                <div class="nav-item" style="width:300px;">
                   <input type="text" v-model="clientCode" class="input" @keydown.enter.prevent="findClient()" placeholder="Escanea la credencial">
                 </div>
                 <div class="nav-item">
@@ -333,15 +333,15 @@
         this.$http.get('client_codes/' + this.clientCode).then(
           response => {
             let code = response.data
-            this.clientCode = ''
             if (code.enabled) {
               this.$router.push({ name: 'Client', params: { id: response.data.client_id } })
             } else {
               this.alert('danger', 'El codigo buscado esta deshabilitado')
             }
+            this.clientCode = ''
           },
-          error => {
-            console.log(error.status)
+          () => {
+            this.clientCode = ''
             this.alert('danger', 'No se encontro el codigo')
           }
         )

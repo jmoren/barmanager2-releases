@@ -65,7 +65,7 @@
                 </tooltip>
               </td>
             </tr>
-            <tr v-for="payment in ticket.client.in_favor">
+            <tr v-for="payment in ticket.client.in_favor" v-if="pending > 0">
               <td></td>
               <td><tooltip v-bind:content="payment.type"><tag>{{ payment.type[0] }}</tag></tooltip></td>
               <td><b>${{ payment.amount }}</b></td>
