@@ -31,7 +31,7 @@
           </div>
         </div>
         <div class="credential">
-          <div class="client-name">
+          <div class="bar-name">
             <p>{{ businessName }}</p>
             <small>{{ businessSlogan }}</small><br/>
             <i>Tel: {{ businessPhone }}</i>
@@ -88,11 +88,14 @@
 </script>
 
 <style>
-  .credential { width: 400px; border: solid 1px #f1f1f1; border-radius: 5px; padding: 50px 20px; margin: 20px auto; }
+  .credential { width: 400px; height: 200px; border: solid 1px #f1f1f1; border-radius: 5px; padding: 30px 20px; margin: 20px auto; }
   .credential img { height: 60px; }
-  .credential .client-name { text-align: center;  }
-  .credential .client-name p { font-size: 20px; }
-  .credential .client-name i { color: #888; }
+  .credential .client-name, .credential .bar-name { text-align: center;  }
+  .credential .client-name p,
+  .credential .bar-name p { font-size: 20px; }
+  .credential .client-name i,
+  .credential .bar-name i { color: #888; }
+  .credential .bar-name p { font-size: 30px; }
   .credential .barcode-image { text-align: center }
   @media print {
     .modal-card-head { display: none; }
