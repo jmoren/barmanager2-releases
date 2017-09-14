@@ -74,9 +74,9 @@
       </div>
       <div v-if="ticket.client.id" class="print">
         <h2>CLIENTE: {{ ticket.client.name }}</h2>
-        <h3 v-if="ticket.client.address">DIRECCION: {{ ticket.client.address }}</h3>
+        <h3 v-if="ticket.client.address">{{ ticket.client.address }}</h3>
       </div>
-      <hr>
+      <hr class="not-print"/>
       <div>
         <ticket-content :ticket="ticket" :reasons="reasons" @ticket-paid="setPaid" @ticket-not-paid="setNotPaid" :kitchenView="kitchenView"></ticket-content>
       </div>
@@ -85,8 +85,8 @@
           <div class="column is-9">
             <div class="columns">
               <div class="column is-8 is-marginless print-center">
-                <div class="print"><p>TICKET NO VALIDO COMO FACTURA.</p></div>
-                <barcode :value="ticket.number" :options="{ displayValue: true, height: 25, width: 2, background: 'transparent' }"></barcode>
+                <div class="print"><br /><p>TICKET NO VALIDO COMO FACTURA.</p></div>
+                <barcode :value="ticket.number" :options="{ format: barcode.format, lastChar: barcode.lastChar, displayValue: true, height: barcode.height, width: barcode.width, background: 'transparent' }"></barcode>
               </div>
               <div class="column is-4 not-print" style="text-align: right;" v-if="ticket.user">
                 Ud ha sido atendido por: <b>{{ ticket.user.name }}</b>
@@ -158,7 +158,7 @@
               </div>
             </div>
           </div>
-          <hr>
+          <hr class="not-print"/>
           <div class="columns">
             <div class="column is-4 is-offset-2">
               <button @click.prevent="fiscalPrint" class="button is-success is-fullwidth">Imprimir</button>
@@ -211,15 +211,15 @@
           </div>
           <div class="columns modal-row">
             <div class="column is-4">
-              <i class="fa fa-dollar fa-floated"></i> Total
+              <i class="fa fa-dollar fa-floated"></i> <span>Total</span>
             </div>
-            <div class="column is-8"><b>${{ ticket.total }}</b></div>
+            <div class="column is-6"><b>${{ ticket.total }}</b></div>
           </div>
           <div class="columns modal-row">
             <div class="column is-4">
-              <i class="fa fa-dollar fa-floated"></i> Pendiente
+              <i class="fa fa-dollar fa-floated"></i> <span>Pendiente</span>
             </div>
-            <div class="column is-8"><b>${{ ticket.paid ? 0 : ticket.pending }}</b></div>
+            <div class="column is-6"><b>${{ ticket.paid ? 0 : ticket.pending }}</b></div>
           </div>
           <div class="columns modal-row" v-if="!ticket.paid">
             <div class="column is-4">Abonar Pendiente</div>
@@ -231,7 +231,7 @@
               </radio-group>
             </div>
           </div>
-          <hr>
+          <hr class="not-print"/>
           <div class="columns">
             <div class="column is-4 is-offset-2">
               <input type="submit" id="submit-ticket-form" class="button is-success is-medium is-fullwidth" :class="{'is-disabled': !canBeClosed && ticket.pay === 'empty'}" value="Cerrar"></input>
@@ -252,6 +252,8 @@ import { mapGetters } from 'vuex'
 import _ from 'lodash'
 import Auth from '../../auth'
 import alert from '../../mixins/Alert'
+const Config = require('electron-config')
+const config = new Config()
 
 export default {
   name: 'Ticket',
@@ -281,6 +283,12 @@ export default {
   },
   data () {
     return {
+      barcode: {
+        format: config.get('barcode_format', 'EAN13'),
+        width: config.get('barcode_width', 2),
+        height: config.get('barcode_height', 60),
+        lastChar: config.get('barcode_lastChar', '>')
+      },
       loading: false,
       loadingClients: false,
       loadingTables: false,
@@ -537,14 +545,14 @@ export default {
   .modal .columns.modal-row .ticket-help { margin-top: 5px; }
 
   li.active { background: #F5F5F5; }
-  .ticket-footer { margin: 10px 5px; border-top: solid 2px #f1f1f1; }
+  .ticket-footer { margin: 20px 5px; }
   .ticket-footer .content { margin-top: 10px; padding: 10px 15px; background: #f9f9f9; }
   .print { display: none; }
   @media print {
-    .hero.is-primary.is-fixed { display: none; }
-    .popover { display: none !important; }
-    .not-print { display: none; }
+    .not-print, .hero.is-primary.is-fixed, .popover { display: none !important; }
     .print-center { text-align: center; }
     .print { display: block; }
+    .ticket .resume .resume-header { border-bottom: none; }
+    .modal .columns.modal-row .column span { font-size: 14px; }
   }
 </style>

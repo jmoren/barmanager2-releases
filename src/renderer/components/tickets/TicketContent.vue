@@ -283,5 +283,6 @@
     .resume .column { float: left; }
     table thead th.hide { display: none !important; }
     table tbody tr td { text-align: left !important; }
+    .resume .columns .column { font-size: 14px; }
   }
 </style>
