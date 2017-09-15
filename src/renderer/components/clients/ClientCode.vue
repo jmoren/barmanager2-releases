@@ -27,7 +27,7 @@
             <i>{{ client.dni }}</i>
           </div>
           <div class="barcode-image">
-            <barcode :value="code.code" :options="{ format: barcode.format, lastChar: barcode.lastChar, displayValue: true, height: barcode.height, width: barcode.width, background: 'transparent' }"></barcode>
+            <barcode :tag="'img'" :value="code.code" :options="{ format: barcode.format, lastChar: barcode.lastChar, displayValue: true, height: barcode.height, width: barcode.width, background: 'transparent' }"></barcode>
           </div>
         </div>
         <div class="credential">
@@ -53,9 +53,9 @@
       return {
         barcode: {
           format: config.get('barcode_format', 'EAN13'),
-          width: config.get('barcode_width', 1),
-          height: config.get('barcode_height', 50),
-          lastChar: config.get('barcode_last_char', '>')
+          width: config.get('barcode_width', 2),
+          height: config.get('barcode_height', 60),
+          lastChar: config.get('barcode_lastChar', '>')
         },
         loding: false,
         currentCode: {},

@@ -86,7 +86,7 @@
             <div class="columns">
               <div class="column is-8 is-marginless print-center">
                 <div class="print"><br /><p>TICKET NO VALIDO COMO FACTURA.</p></div>
-                <barcode :value="ticket.number" :options="{ format: barcode.format, lastChar: barcode.lastChar, displayValue: true, height: barcode.height, width: barcode.width, background: 'transparent' }"></barcode>
+                <barcode :tag="'img'" :value="ticket.number" :options="{ format: barcode.format, lastChar: barcode.lastChar, displayValue: true, height: barcode.height, width: barcode.width, background: 'transparent' }"></barcode>
               </div>
               <div class="column is-4 not-print" style="text-align: right;" v-if="ticket.user">
                 Ud ha sido atendido por: <b>{{ ticket.user.name }}</b>
