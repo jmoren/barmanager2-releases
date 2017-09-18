@@ -252,7 +252,6 @@
         this.pending = value
       },
       setNotPaid (value) {
-        console.log(value)
         this.$emit('ticket-not-paid', value)
         this.pending = value
       }

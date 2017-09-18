@@ -148,9 +148,6 @@ export default {
       return this.$parent.loading
     }
   },
-  mounted () {
-    console.log('mounted')
-  },
   created () {
     this.loadDelivery()
   },

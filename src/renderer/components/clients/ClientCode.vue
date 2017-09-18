@@ -80,7 +80,6 @@
         )
       },
       printCode () {
-        console.log(this.code.code)
         this.printing = true
       },
       print () {

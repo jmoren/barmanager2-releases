@@ -6,11 +6,11 @@
     <div v-else>
       <h2 class="print" style="font-weight: 300; font-size: 25px">
         <span v-if="ticket.table">MESA: {{ ticket.table.description }} -</span>
-        TICKET # {{ ticket.number }}
+        TICKET # {{ ticket.number | withDash }}
       </h2>
       <div id="ticket-options" class="columns not-print">
         <div class="column is-4">
-          <h2 class="header">TICKET # {{ ticket.number }}</h2>
+          <h2 class="header">TICKET # {{ ticket.number | withDash }}</h2>
         </div>
         <div class="column is-4">
           <div class="columns" v-if="!ticket.closed" >
@@ -266,6 +266,9 @@ export default {
   filters: {
     uppercase (value) {
       return value.toUpperCase()
+    },
+    withDash (value) {
+      return value.slice(0, 6) + '-' + value.slice(6, value.length)
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -287,7 +290,7 @@ export default {
         format: config.get('barcode_format', 'EAN13'),
         width: config.get('barcode_width', 2),
         height: config.get('barcode_height', 60),
-        lastChar: config.get('barcode_lastChar', '>')
+        lastChar: config.path
       },
       loading: false,
       loadingClients: false,
@@ -394,6 +397,10 @@ export default {
       )
     },
     closeTicket () {
+      if (!this.ticket.pay) {
+        this.ticket.pay = 'efectivo'
+      }
+
       this.$http.post('tickets/' + this.$route.params.id + '/close', { ticket: { status: 'closed', pay: this.ticket.pay } }).then(
         response => {
           this.isOpen = false
