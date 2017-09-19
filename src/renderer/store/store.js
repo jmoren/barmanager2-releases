@@ -18,6 +18,7 @@ const ADD_USER = 'ADD_USER'
 const UPDATE_USER = 'UPDATE_USER'
 const UPDATE_DAILY_CASH = 'UPDATE_DAILY_CASH'
 const SET_REASONS = 'SET_REASONS'
+const CHANGE_USER_TABLE = 'CHANGE_USER_TABLE'
 
 const state = {
   tables: {
@@ -43,6 +44,9 @@ const getters = {
 
 // actions
 const actions = {
+  changeUserTable ({ commit }, data) {
+    commit(CHANGE_USER_TABLE, data)
+  },
   setDailyCash ({ commit }, dailyCash) {
     commit(SET_DAILY_CASH, dailyCash)
   },
@@ -83,6 +87,10 @@ const actions = {
 
 // mutations
 const mutations = {
+  [CHANGE_USER_TABLE] (state, data) {
+    let table = state.tables.open.find((t) => { return t.id === data.table })
+    table.current.client = data.client
+  },
   [SET_REASONS] (state, reasons) {
     state.reasons = reasons
   },

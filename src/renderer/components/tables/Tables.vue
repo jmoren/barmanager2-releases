@@ -30,13 +30,11 @@
             <hr>
             <div class="columns is-multiline">
               <div class="column is-3" v-for="table in filteredOpenTables" :key="table.id">
-                <div class="is-clearfix">
-                  <tooltip v-bind:content="'T. ' + table.current.number">
-                    <router-link class="table-button button is-fullwidth is-medium" :class="table.color" :to="{ name: 'Ticket', params: { id: table.current.id } }">
-                      {{ table.description}}
-                    </router-link>
-                  </tooltip>
-                </div>
+                <router-link class="open-table-button is-fullwidth button is-medium" :class="table.color" :to="{ name: 'Ticket', params: { id: table.current.id } }">
+                  <div style="margin: 5px 0">{{ table.description}}</div>
+                  <div v-if="table.current.client.id"><small>{{ table.current.client.name }}</small></div>
+                  <div v-if="table.current.client.id"><small>{{ table.current.client.address || 'Sin direccion'}}</small></div>
+                </router-link>
               </div>
             </div>
           </div>
@@ -51,7 +49,7 @@
             <div class="columns is-multiline">
               <div class="column is-3" v-for="table in filteredClosedTables" :key="table.id">
                 <div class="is-clearfix">
-                  <a class="table-button button is-fullwidth is-outlined is-medium" :class="table.color" @click.prevent="openTable(table)">
+                  <a class="button is-fullwidth is-outlined is-medium" :class="table.color" @click.prevent="openTable(table)">
                     {{ table.description}}
                   </a>
                 </div>
@@ -190,6 +188,5 @@ export default {
 </script>
 
 <style lang="css" scoped>
-  a.table-button.button { font-weight: bold; justify-content: space-between; }
-  a .table-cell { color: #fff; }
+  .open-table-button { font-weight: bold; height: 70px; display:inline-block; text-align: left;  }
 </style>
