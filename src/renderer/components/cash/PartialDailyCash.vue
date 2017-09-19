@@ -203,7 +203,7 @@
           <tr>
             <td>Pago Deuda Tarjeta</td>
             <td class="row-value">
-              <router-link :to="{ name: 'Payments', params: { partial_daily_cash_id: 'not_current', payment_type: 'tarjeta' } }" class="is-success-text">${{ cash.debt_credit | withDecimals }}</router-link>
+              <router-link :to="{ name: 'Payments', params: { partial_daily_cash_id: -1, payment_type: 'tarjeta' } }" class="is-success-text">${{ cash.debt_credit | withDecimals }}</router-link>
             </td>
           </tr>
           <tr class="subtotal">
@@ -218,7 +218,7 @@
           <tr>
             <td>Pago Deuda Efectivo</td>
             <td class="row-value">
-              <router-link :to="{ name: 'Payments', params: { partial_daily_cash_id: 'not_current', payment_type: 'efectivo' } }" class="is-success-text">${{ cash.debt_cash | withDecimals}}</router-link>
+              <router-link :to="{ name: 'Payments', params: { partial_daily_cash_id: -1, payment_type: 'efectivo' } }" class="is-success-text">${{ cash.debt_cash | withDecimals}}</router-link>
             </td>
           </tr>
           <tr class="subtotal">

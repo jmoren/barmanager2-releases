@@ -4,50 +4,119 @@
     <div v-else>
       <h1 class="header">
         Caja Diaria - {{ cash.cash_date | moment('DD MMMM, YYYY') }}
-        <div class="is-pulled-right">
-          <div class="control has-addons is-marginless">
-            <div class="select">
-              <select v-model="currentPartial">
-                <option v-for="partial in cash.partial_daily_cashes" v-bind:value="partial">Caja Parcial #{{ partial.id }}</option>
-              </select>
-            </div>
-            <button class="button is-light" @click="openModal">Ver</button>
-          </div>
-        </div>
       </h1>
       <hr>
-      <table class="table">
-        <thead>
-          <th>Concepto</th>
-          <th>Monto</th>
-        </thead>
-        <tbody>
-          <tr><td>Ventas Totales        </td><td>$ {{ cash.resume.total_sells   }}</td></tr>
-          <tr><td>Total Efectivo        </td><td>$ {{ cash.resume.cash_amount   }}</td></tr>
-          <tr><td>Total Tarjeta         </td><td>$ {{ cash.resume.credit_amount }}</td></tr>
-          <tr><td>Pagos Deudas Efectivo </td><td>$ {{ cash.resume.debt_cash     }}</td></tr>
-          <tr><td>Pagos Deudas Tarjeta  </td><td>$ {{ cash.resume.debt_credit   }}</td></tr>
-          <tr><td>Pagos a Favor Efectivo</td><td>$ {{ cash.resume.favor_cash    }}</td></tr>
-          <tr><td>Pagos a Favor Tarjeta </td><td>$ {{ cash.resume.favor_credit  }}</td></tr>
-          <tr><td>Total Extracciones    </td><td>$ {{ cash.resume.total_home    }}</td></tr>
-          <tr><td>Total Vales           </td><td>$ {{ cash.resume.total_vales   }}</td></tr>
-          <tr><td>Total Gastos          </td><td>$ {{ cash.resume.total_expenses}}</td></tr>
-        </tbody>
-      </table>
-      <hr>
-      <div class="columns">
-        <div class="column is-10">
-          <div class="button is-light is-not-link">Total Diario $ {{ finalSum }}</div>
-          <tooltip content="Monto efectivo">
-            <div class="button is-light">Total Ingresos $ {{ totalIngresosCash }}</div>
-          </tooltip>
-          <tooltip content="Monto en tarjeta">
-            <div class="button is-light">Total Ingresos $ {{ totalIngresosCredit }}</div>
-          </tooltip>
-          <div class="button is-light">Total Egresos  $ {{ totalEgresos }}</div>
+      <div style="margin-bottom:20px;">
+        <cash-row :enabled="false" title="Ventas Totales" :total="cash.resume.total_sells">
+          Suma de los tickets
+        </cash-row>
+        <cash-row :enabled="true" title="Total Efectivo" :total="cash.resume.cash_amount">
+          <router-link class="button is-primary" 
+                  :to="{ name: 'Payments', params: { cash_id: cash.id, payment_type: 'efectivo' } }">
+            <span class="icon is-small"><i class="fa fa-link"></i></span>
+            <span>Ver pagos</span>
+          </router-link>
+        </cash-row>
+        <cash-row :enabled="true" title="Total Tarjeta" :total="cash.resume.credit_amount">
+          <router-link class="button is-primary" 
+                  :to="{ name: 'Payments', params: { cash_id: cash.id, payment_type: 'tarjeta' } }">
+            <span class="icon is-small"><i class="fa fa-link"></i></span>
+            <span>Ver Pagos</span>
+          </router-link>
+        </cash-row>
+        <cash-row :enabled="true" title="Pagos Deudas Efectivo" :total="cash.resume.debt_cash">
+          <router-link class="button is-primary" 
+                        :to="{ name: 'Payments', params: { cash_id: cash.id, partial_daily_cash_id: -1, payment_favor: false, payment_type: 'tarjeta' } }">
+            <span class="icon is-small"><i class="fa fa-link"></i></span>
+            <span>Ver Pagos</span>
+          </router-link>
+        </cash-row>
+        <cash-row :enabled="true" title="Pagos Deudas Tarjeta" :total="cash.resume.debt_credit">
+          <router-link class="button is-primary" 
+                        :to="{ name: 'Payments', params: { cash_id: cash.id, partial_daily_cash_id: -1, payment_favor: false, payment_type: 'tarjeta' } }">
+            <span class="icon is-small"><i class="fa fa-link"></i></span>
+            <span>Ver Pagos</span>
+          </router-link>
+        </cash-row>
+        <cash-row :enabled="true" title="Pagos a Favor Efectivo" :total="cash.resume.favor_cash">
+          <router-link class="button is-primary" 
+                        :to="{ name: 'Payments', params: { cash_id: cash.id, payment_favor: true, payment_type: 'efectivo' } }">
+            <span class="icon is-small"><i class="fa fa-link"></i></span>
+            <span>Ver Pagos</span>
+          </router-link>
+        </cash-row>
+        <cash-row :enabled="true" title="Pagos a Favor Tarjeta" :total="cash.resume.favor_credit">
+          <router-link class="button is-primary" 
+                        :to="{ name: 'Payments', params: { cash_id: cash.id, payment_favor: true, payment_type: 'tarjeta' } }">
+            <span class="icon is-small"><i class="fa fa-link"></i></span>
+            <span>Ver Pagos</span>
+          </router-link>
+        </cash-row>
+        <cash-row :enabled="true" title="Total Extraccion" :total="cash.resume.total_home">
+          <div><b>Usuarios</b></div>
+          <div class="is-danger-text" v-if="cash.expenses.extracciones.length < 1" style="padding: 10px 0px;">No hay extracciones</div>
+          <ul class="expense-list">
+            <li v-for="(vale, index) in cash.expenses.extracciones" :key="index">
+              <i class="fa fa-angle-right fa-floated" style="margin-right: 10px;"></i> {{ vale.name }}: <b>${{ vale.total }}</b>
+            </li>
+          </ul>
+        </cash-row>
+        <cash-row :enabled="true" title="Total Vales" :total="cash.resume.total_vales">
+          <div><b>Usuarios</b></div>
+          <div class="is-danger-text" v-if="cash.expenses.vales.length < 1" style="padding: 10px 0px;">No hay vales</div>
+          <ul class="expense-list">
+            <li v-for="(vale, index) in cash.expenses.vales" :key="index">
+              <i class="fa fa-angle-right fa-floated" style="margin-right: 10px;"></i> {{ vale.name }}: <b>${{ vale.total }}</b>
+            </li>
+          </ul>
+        </cash-row>
+        <cash-row :enabled="true" title="Total Gastos" :total="cash.resume.total_expenses">
+          <div><b>Proveedores</b></div>
+          <div class="is-danger-text" v-if="cash.expenses.gastos.length < 1" style="padding: 10px 0px;">No hay gastos</div>
+          <ul class="expense-list">
+            <li v-for="(vale, index) in cash.expenses.gastos" :key="index">
+              <i class="fa fa-angle-right fa-floated" style="margin-right: 10px;"></i> {{ vale.name }}: <b>${{ vale.total }}</b>
+            </li>
+          </ul>
+        </cash-row>
+      </div>
+      <div class="box">
+        <h1>Resumen</h1>
+        <div class="columns">
+          <div class="column is-10">
+            <div class="button is-light is-not-link">Total Diario $ {{ finalSum }}</div>
+            <tooltip content="Monto efectivo">
+              <div class="button is-light">Total Ingresos $ {{ totalIngresosCash }}</div>
+            </tooltip>
+            <tooltip content="Monto en tarjeta">
+              <div class="button is-light">Total Ingresos $ {{ totalIngresosCredit }}</div>
+            </tooltip>
+            <div class="button is-light">Total Egresos  $ {{ totalEgresos }}</div>
+          </div>
+          <div class="column is-2">
+            <div class="button is-light is-not-link">Tickets Generados {{ cash.resume.tickets_count }}</div>
+          </div>
         </div>
-        <div class="column is-2">
-          <div class="button is-light is-not-link">Tickets Generados {{ cash.resume.tickets_count }}</div>
+      </div>
+      <hr>
+      <div class="box">
+        <h1>Cajas Parciales</h1>
+        <div class="partial-bar is-clearfix">
+          <div class="columns">
+            <div class="column is-4" v-for="partial in cash.partial_daily_cashes" :key="partial.id">
+              <div class="control has-addons">
+                <tooltip content="Responsable">
+                  <div class="button is-light">
+                    #{{ partial.id }} 
+                    <span class="icon is-small"><i class="fa fa-angle-right"></i></span>
+                     {{ partial.user.name }} 
+                   </div>
+                 </tooltip>
+                <tooltip content="Caja Total"><div class="button is-light">${{ partial.total }}</div> </tooltip>
+                <tooltip content="Hora cierre"><div class="button is-light">{{ partial.closed_at | moment('HH:MM') + ' hs' }}</div></tooltip>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -88,6 +157,8 @@
 <script>
   import Auth from '../../auth'
   import Loader from '@/components/utils/Loader'
+  import CashRow from './CashRow'
+
   export default {
     name: 'DailyCash',
     beforeRouteEnter (to, from, next) {
@@ -97,7 +168,7 @@
         next()
       }
     },
-    components: { Loader },
+    components: { Loader, CashRow },
     data () {
       return {
         cash: {},
@@ -142,3 +213,9 @@
     }
   }
 </script>
+
+<style>
+  .box h1 { padding: 5px 0; margin-bottom: 10px; }
+  .card .content .expense-list { padding: 0; margin: 0px; list-style: none;  }
+  .card .content .expense-list li { padding: 10px 0px; }
+</style>

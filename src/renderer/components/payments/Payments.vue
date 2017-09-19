@@ -66,6 +66,10 @@ export default {
   methods: {
     fetchPayments (page) {
       let url = 'payments?page=' + (page || 1)
+
+      if (this.$route.params.cash_id) {
+        url = url + '&cash_id=' + this.$route.params.cash_id
+      }
       if (this.$route.params.partial_daily_cash_id) {
         url = url + '&partial_daily_cash_id=' + this.$route.params.partial_daily_cash_id
       }
@@ -75,7 +79,7 @@ export default {
       if (this.$route.params.payment_favor) {
         url = url + '&payment_favor=' + this.$route.params.payment_favor
       }
-
+      console.log(url)
       this.$http.get(url).then(
         response => {
           this.payments = response.data.payments

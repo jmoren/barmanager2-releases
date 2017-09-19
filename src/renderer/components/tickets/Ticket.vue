@@ -477,9 +477,16 @@ export default {
           if (this.ticket.client_id) {
             message = 'Nuevo cliente asignado: ' + this.ticket.client.name
             kind = 'success'
+            // should update the store
+            if (this.ticket.table_id) {
+              this.$store.dispatch('changeUserTable', { table: this.ticket.table_id, client: { id: this.ticket.client_id, name: this.ticket.client.name, address: this.ticket.client.address } })
+            }
           } else {
             message = 'Ticket sin cliente asignado!'
             kind = 'danger'
+            if (this.ticket.table_id) {
+              this.$store.dispatch('changeUserTable', { table: this.ticket.table_id, client: { id: null, name: null, address: null } })
+            }
           }
 
           this.alert(kind, message)
