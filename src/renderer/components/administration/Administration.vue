@@ -19,12 +19,15 @@
           <menu-item icon="address-book-o" :to="{ name: 'AdminSuppliers'}">Proveedores</menu-item>
           <menu-item icon="cutlery" :to="{ name: 'AdminTables'}">Mesas</menu-item>
           <menu-item icon="hashtag" :to="{ name: 'AdminCancelReasons'}">Razones</menu-item>
+
           <div v-if="profile.role !== 'manager'">
             <div class="divider"></div>
             <h2 style="font-weight:300;padding: 10px; color: #f56954">
               <span class="icon"><i class="fa fa-exclamation-circle"></i></span> <span>Admin</span>
             </h2>
             <div class="divider"></div>
+            <menu-item icon="ticket" :to="{ name: 'Tickets'}">Tickets</menu-item>
+            <menu-item icon="money" :to="{ name: 'Payments'}">Pagos</menu-item>
             <menu-item icon="cog" :to="{ name: 'AdminUsers'}">Usuarios</menu-item>
             <menu-item icon="dollar" :to="{ name: 'AdminDailyCashes'}">Cajas</menu-item>
             <menu-item icon="bar-chart" :to="{ name: 'AdminReports'}">Reportes</menu-item>
