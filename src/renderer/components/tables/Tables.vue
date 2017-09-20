@@ -11,7 +11,10 @@
           <div class="columns is-multiline" v-if="delivery.length > 0">
             <div class="column is-12" v-for="ticket in delivery" :key="ticket.id">
               <router-link class="open-table-button button is-fullwidth is-medium is-primary" :to="{ name: 'Ticket', params: { id: ticket.id } }">
-                <div style="margin: 5px 0">Delivery Nro. {{ ticket.number }}</div>
+                <div style="margin: 5px 0">
+                  Delivery Nro. {{ ticket.number }}
+                  <span><i v-if="ticket.full_delivered" class="fa fa-check-circle fa-floated"></i></span>
+                </div>
                 <p v-if="ticket.client.id"><small>{{ ticket.client.name }}</small></p>
                 <div v-if="ticket.client.id"><small>{{ ticket.client.address || 'Sin direccion'}}</small></div>
               </router-link>
