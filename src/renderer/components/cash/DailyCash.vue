@@ -11,42 +11,42 @@
           Suma de los tickets
         </cash-row>
         <cash-row :enabled="true" title="Total Efectivo" :total="cash.resume.cash_amount">
-          <router-link class="button is-primary" 
+          <router-link class="button is-primary"
                   :to="{ name: 'Payments', params: { cash_id: cash.id, payment_type: 'efectivo' } }">
             <span class="icon is-small"><i class="fa fa-link"></i></span>
             <span>Ver pagos</span>
           </router-link>
         </cash-row>
         <cash-row :enabled="true" title="Total Tarjeta" :total="cash.resume.credit_amount">
-          <router-link class="button is-primary" 
+          <router-link class="button is-primary"
                   :to="{ name: 'Payments', params: { cash_id: cash.id, payment_type: 'tarjeta' } }">
             <span class="icon is-small"><i class="fa fa-link"></i></span>
             <span>Ver Pagos</span>
           </router-link>
         </cash-row>
         <cash-row :enabled="true" title="Pagos Deudas Efectivo" :total="cash.resume.debt_cash">
-          <router-link class="button is-primary" 
+          <router-link class="button is-primary"
                         :to="{ name: 'Payments', params: { cash_id: cash.id, partial_daily_cash_id: -1, payment_favor: false, payment_type: 'tarjeta' } }">
             <span class="icon is-small"><i class="fa fa-link"></i></span>
             <span>Ver Pagos</span>
           </router-link>
         </cash-row>
         <cash-row :enabled="true" title="Pagos Deudas Tarjeta" :total="cash.resume.debt_credit">
-          <router-link class="button is-primary" 
+          <router-link class="button is-primary"
                         :to="{ name: 'Payments', params: { cash_id: cash.id, partial_daily_cash_id: -1, payment_favor: false, payment_type: 'tarjeta' } }">
             <span class="icon is-small"><i class="fa fa-link"></i></span>
             <span>Ver Pagos</span>
           </router-link>
         </cash-row>
         <cash-row :enabled="true" title="Pagos a Favor Efectivo" :total="cash.resume.favor_cash">
-          <router-link class="button is-primary" 
+          <router-link class="button is-primary"
                         :to="{ name: 'Payments', params: { cash_id: cash.id, payment_favor: true, payment_type: 'efectivo' } }">
             <span class="icon is-small"><i class="fa fa-link"></i></span>
             <span>Ver Pagos</span>
           </router-link>
         </cash-row>
         <cash-row :enabled="true" title="Pagos a Favor Tarjeta" :total="cash.resume.favor_credit">
-          <router-link class="button is-primary" 
+          <router-link class="button is-primary"
                         :to="{ name: 'Payments', params: { cash_id: cash.id, payment_favor: true, payment_type: 'tarjeta' } }">
             <span class="icon is-small"><i class="fa fa-link"></i></span>
             <span>Ver Pagos</span>
@@ -56,8 +56,13 @@
           <div><b>Usuarios</b></div>
           <div class="is-danger-text" v-if="cash.expenses.extracciones.length < 1" style="padding: 10px 0px;">No hay extracciones</div>
           <ul class="expense-list">
-            <li v-for="(vale, index) in cash.expenses.extracciones" :key="index">
-              <i class="fa fa-angle-right fa-floated" style="margin-right: 10px;"></i> {{ vale.name }}: <b>${{ vale.total }}</b>
+            <li v-for="(ext, index) in cash.expenses.extracciones" :key="index">
+              <i class="fa fa-angle-right fa-floated" style="margin-right: 10px;"></i> {{ ext.name }}: <b>${{ ext.total }}</b>
+              <ul>
+                <li v-for="(e, index) in ext.list" :key="index">
+                  <span>{{e.created_at | moment('DD MMMM, YYYY HH:MM') }} - ${{e.amount}}</span>
+                </li>
+              </ul>
             </li>
           </ul>
         </cash-row>
@@ -67,6 +72,11 @@
           <ul class="expense-list">
             <li v-for="(vale, index) in cash.expenses.vales" :key="index">
               <i class="fa fa-angle-right fa-floated" style="margin-right: 10px;"></i> {{ vale.name }}: <b>${{ vale.total }}</b>
+              <ul>
+                <li v-for="(v, index) in vale.list" :key="index">
+                  <span>{{v.created_at | moment('DD MMMM, YYYY HH:MM') }} - ${{v.amount}}</span>
+                </li>
+              </ul>
             </li>
           </ul>
         </cash-row>
@@ -74,8 +84,13 @@
           <div><b>Proveedores</b></div>
           <div class="is-danger-text" v-if="cash.expenses.gastos.length < 1" style="padding: 10px 0px;">No hay gastos</div>
           <ul class="expense-list">
-            <li v-for="(vale, index) in cash.expenses.gastos" :key="index">
-              <i class="fa fa-angle-right fa-floated" style="margin-right: 10px;"></i> {{ vale.name }}: <b>${{ vale.total }}</b>
+            <li v-for="(gasto, index) in cash.expenses.gastos" :key="index">
+              <i class="fa fa-angle-right fa-floated" style="margin-right: 10px;"></i> {{ gasto.name }}: <b>${{ gasto.total }}</b>
+              <ul>
+                <li v-for="(g, index) in gasto.list" :key="index">
+                  <span>{{g.created_at | moment('DD MMMM, YYYY HH:MM') }} - ${{g.amount}}</span>
+                </li>
+              </ul>
             </li>
           </ul>
         </cash-row>
@@ -107,9 +122,9 @@
               <div class="control has-addons">
                 <tooltip content="Responsable">
                   <div class="button is-light">
-                    #{{ partial.id }} 
+                    #{{ partial.id }}
                     <span class="icon is-small"><i class="fa fa-angle-right"></i></span>
-                     {{ partial.user.name }} 
+                     {{ partial.user.name }}
                    </div>
                  </tooltip>
                 <tooltip content="Caja Total"><div class="button is-light">${{ partial.total }}</div> </tooltip>
