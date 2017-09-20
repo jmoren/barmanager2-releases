@@ -191,23 +191,26 @@
             <td class="row-value"><span class="is-danger-text">${{ totalHome | withDecimals }}</span></td>
           </tr>
           <tr class="subtotal">
-            <td>Gastos totales (Gastos + Extracciones)</td>
+            <td>Total Gastos (Gastos + vales + Extracciones)</td>
             <td class="row-value"><span class="is-danger-text">${{ debitos  | withDecimals }}</span></td>
           </tr>
           <tr>
-            <td>Pago Tarjeta</td>
+            <td>Ventas con Tarjeta</td>
             <td class="row-value">
               <router-link :to="{ name: 'Payments', params: { partial_daily_cash_id: cash.id, payment_type: 'tarjeta' } }" class="is-success-text">${{ cash.credit_amount | withDecimals }}</router-link>
             </td>
           </tr>
           <tr>
-            <td>Pago Deuda Tarjeta</td>
+            <td>Pago Deuda con Tarjeta</td>
             <td class="row-value">
               <router-link :to="{ name: 'Payments', params: { partial_daily_cash_id: -1, payment_type: 'tarjeta' } }" class="is-success-text">${{ cash.debt_credit | withDecimals }}</router-link>
             </td>
           </tr>
+          <tr>
+            <td>Pagos a favor de cliente Tarjeta</td>
+            <td class="row-value"><span>${{ cash.favor_credit | withDecimals }}</span></td></tr>
           <tr class="subtotal">
-            <td>Sub Tarjeta</td>
+            <td>Total Cobrado con Tarjetas</td>
             <td class="row-value"><span class="is-success-text">${{ subCard | withDecimals }}</span></td></tr>
           <tr>
             <td>Pago Efectivo</td>
@@ -221,26 +224,28 @@
               <router-link :to="{ name: 'Payments', params: { partial_daily_cash_id: -1, payment_type: 'efectivo' } }" class="is-success-text">${{ cash.debt_cash | withDecimals}}</router-link>
             </td>
           </tr>
-          <tr class="subtotal">
-            <td>Sub Efectivo</td>
-            <td class="row-value"><span class="is-success-text">${{ subCash | withDecimals }}</span></td>
-          </tr>
-          <tr>
-            <td>Pagos a favor de cliente Tarjeta</td>
-            <td class="row-value"><span>${{ cash.favor_credit | withDecimals }}</span></td></tr>
           <tr>
             <td>Pagos a favor de cliente Efectivo</td>
-            <td class="row-value"><span>${{ cash.favor_cash | withDecimals }}</span></td></tr>
-          <tr class="subtotal">
-            <td>Sub a favor</td>
-            <td class="row-value"><span class="is-primary-text">${{ totalInFavor | withDecimals }}</span></td>
+            <td class="row-value"><span>${{ cash.favor_cash | withDecimals }}</span></td>
           </tr>
           <tr class="subtotal">
+            <td>Total Cobrado en Efectivo</td>
+            <td class="row-value"><span class="is-success-text">${{ subCash | withDecimals }}</span></td>
+          </tr>
+          <tr class="subtotal">
+            <td>Total Ventas</td>
+            <td class="row-value"><span class="is-success-text">${{ cash.total_paid | withDecimals }}</span></td>
+          </tr>
+          <tr class="subtotal">
+            <td>Total Fiado</td>
+            <td class="row-value"><span class="is-success-text">${{ cash.not_paid | withDecimals }}</span></td>
+          </tr>
+          <tr class="total">
             <td>EFECTIVO EN CAJA <span style="font-size: 17px; color: #999">(Sub Efectivo - Gastos - Retirado)</span></td>
             <td class="row-value"><span class="is-success-text">${{ realCash | withDecimals }}</span></td>
           </tr>
-          <tr class="total">
-            <td>CAJA REAL <span style="font-size: 17px; color: #999">(Sub Efectivo + Sub Tarjeta - Gastos - Retirado)</span></td>
+          <tr class="subtotal">
+            <td>Rentabilidad <span style="font-size: 17px; color: #999">(Sub Efectivo + Sub Tarjeta - Gastos - Retirado)</span></td>
             <td class="row-value"><span class="is-success-text">${{ total | withDecimals }}</span></td>
           </tr>
         </table>
@@ -356,10 +361,10 @@
         return parseFloat(this.cash.favor_credit) + parseFloat(this.cash.favor_cash)
       },
       subCard () {
-        return parseFloat(this.cash.credit_amount) + parseFloat(this.cash.debt_credit)
+        return parseFloat(this.cash.credit_amount) + parseFloat(this.cash.debt_credit) + parseFloat(this.cash.favor_credit)
       },
       subCash () {
-        return parseFloat(this.cash.cash_amount) + parseFloat(this.cash.debt_cash)
+        return parseFloat(this.cash.cash_amount) + parseFloat(this.cash.debt_cash) + parseFloat(this.cash.favor_cash)
       },
       realCash () {
         return parseFloat(this.subCash) + parseFloat(this.cash.init_amount) - parseFloat(this.debitos) + parseFloat(this.cash.favor_cash)
