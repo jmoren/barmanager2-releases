@@ -32,7 +32,8 @@
               </span>
               <div class="nav-right" v-if="user.profile.role !== 'cooker'">
                 <div class="nav-item" style="width:300px;">
-                  <input type="text" v-model="clientCode" class="input" @keydown.enter.prevent="findClient()" placeholder="Escanea la credencial">
+                  <input type="text" v-model="clientCode" class="input" @keydown.enter.prevent="findClient()" 
+                        placeholder="Buscar por telefono o credencial">
                 </div>
                 <div class="nav-item">
                   <table-autocomplete :tables="tables" id-input="open_table" :class="{'is-disabled': !dailyCash.id }" :shortkey="'g'">
@@ -324,18 +325,38 @@
         )
       },
       findClient () {
+        let numberRegex = new RegExp(/^\d+$/)
+
+        if (numberRegex.test(this.clientCode)) {
+          this.findByNumber()
+        } else {
+          this.findByCode()
+        }
+      },
+      findByNumber () {
+        this.$http.get('clients/search?phone=' + this.clientCode).then(
+          response => {
+            this.clientCode = ''
+            let client = response.data.client_id
+            this.$router.push({ name: 'Client', params: { id: client } })
+          },
+          () => {
+            this.alert('danger', 'No se encontro cliente con este numero')
+          }
+        )
+      },
+      findByCode () {
         this.$http.get('client_codes/' + this.clientCode).then(
           response => {
+            this.clientCode = ''
             let code = response.data
             if (code.enabled) {
               this.$router.push({ name: 'Client', params: { id: response.data.client_id } })
             } else {
               this.alert('danger', 'El codigo buscado esta deshabilitado')
             }
-            this.clientCode = ''
           },
           () => {
-            this.clientCode = ''
             this.alert('danger', 'No se encontro el codigo')
           }
         )
