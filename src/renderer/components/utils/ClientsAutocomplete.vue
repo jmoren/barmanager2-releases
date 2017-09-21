@@ -12,7 +12,8 @@
          @keydown.esc.prevent='setBlur'
          @focus="setFocus"
          v-shortkey="['ctrl', 'n']"
-         @shortkey="setFocus"/>
+         @shortkey="setFocus"
+         @blur="setBlur"/>
       <a class="button is-primary" :class="{'is-disabled': !ticket.client_id }" @click.prevent="removeClient">
         <i class="fa fa-times"></i>
       </a>
@@ -21,7 +22,7 @@
       <li class="empty-item is-danger-text" v-if="filteredClients.length === 0">
         No se encontro ningun resultado
       </li>
-      <li v-for="(item, $item) in filteredClients" :key="item.id" :class="activeClass($item)" @key.enter="hit" @mousemove="setActive($item)" 
+      <li v-for="(item, $item) in filteredClients" :key="item.id" :class="activeClass($item)" @key.enter="hit" @mousemove="setActive($item)"
             @mousedown.prevent="hit">
         {{ item.name }}
       </li>
@@ -49,6 +50,7 @@
     },
     data () {
       return {
+        previousSelection: '',
         query: this.ticket.client.name,
         current: -1,
         focused: false,
@@ -97,9 +99,16 @@
         children[this.current].scrollIntoView(false)
       },
       setFocus () {
+        this.previousSelection = this.query
         this.query = ''
         this.focused = true
         document.getElementById('search-clients').focus()
+      },
+      setBlur () {
+        if (this.query.trim() === '') {
+          this.query = this.previousSelection
+        }
+        this.focused = false
       },
       setActive (index) {
         this.current = index

@@ -13,7 +13,7 @@
               <router-link class="open-table-button button is-fullwidth is-medium is-primary" :to="{ name: 'Ticket', params: { id: ticket.id } }">
                 <div style="margin: 5px 0">
                   Delivery Nro. {{ ticket.number }}
-                  <span><i v-if="ticket.full_delivered" class="fa fa-check-circle fa-floated"></i></span>
+                  <span><i v-if="ticket.full_delivered" class="fa fa-check-circle fa-floated is-success"></i></span>
                 </div>
                 <p v-if="ticket.client.id"><small>{{ ticket.client.name }}</small></p>
                 <div v-if="ticket.client.id"><small>{{ ticket.client.address || 'Sin direccion'}}</small></div>
