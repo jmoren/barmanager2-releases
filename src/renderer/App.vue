@@ -29,7 +29,8 @@
 
   .header { font-size: 25px; font-weight: bolder; margin: 0px !important;}
   .main { padding: 80px 15px 0px !important; }
-  h1.header { font-size: 25px; font-weight: bolder; margin-bottom: 20px;}
+  .header .address { margin-top: 5px; }
+  .header .address input { width: 60%; }
   .daily-cash-form {
     width: 40%;
     margin: 20px auto;

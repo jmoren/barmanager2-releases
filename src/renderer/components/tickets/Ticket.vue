@@ -10,16 +10,24 @@
       </h2>
       <div id="ticket-options" class="columns not-print">
         <div class="column is-4">
-          <h2 class="header">TICKET # {{ ticket.number | withDash }}</h2>
+          <h1 class="header">TICKET # {{ ticket.number | withDash }} </h1>
         </div>
         <div class="column is-4">
-          <div class="columns" v-if="!ticket.closed" >
-            <div class="column is-6">
-              <table-autocomplete :class="{'is-disabled': ticket.closed || loadingTables, 'is-primary': ticket.table_id, 'is-light': !ticket.table_id, 'column is-5 is-paddingless': true }"
-              :query="currentTable" :tables="tables" :ticket="ticket" @remove-table="removeTable" @set-table="table => traslateTicket(table.id)"></table-autocomplete>
+          <div v-if="!ticket.closed">
+            <div class="columns" style="margin-bottom:0px;">
+              <div class="column is-6">
+                <table-autocomplete :class="{'is-disabled': ticket.closed || loadingTables, 'is-primary': ticket.table_id, 'is-light': !ticket.table_id, 'column is-5 is-paddingless': true }"
+                :query="currentTable" :tables="tables" :ticket="ticket" @remove-table="removeTable" @set-table="table => traslateTicket(table.id)"></table-autocomplete>
+              </div>
+              <div class="column is-6">
+                <clients-autocomplete :ticket="ticket" :clients="clients" @remove-client="removeClient" @set-client="client => assignClient(client.id)"></clients-autocomplete>
+              </div>
             </div>
-            <div class="column is-6">
-              <clients-autocomplete :ticket="ticket" :clients="clients" @remove-client="removeClient" @set-client="client => assignClient(client.id)"></clients-autocomplete>
+            <div class="address" v-if="!ticket.table_id">
+              <tooltip content="Direccion para envio" trigger="focus">
+                <input type="text" class="input" v-model="ticket.address" 
+                  placeholder="Direccion para envio" @keyup.enter.prevent="updateTicket()">
+              </tooltip>
             </div>
           </div>
           <div v-else>
@@ -360,12 +368,26 @@ export default {
       this.$http.get('tickets/' + this.$route.params.id).then(
         response => {
           _.extend(this.ticket, response.data)
+          if (this.ticket.client_id) {
+            this.ticket.address = this.ticket.address || this.ticket.client.address
+          }
           this.loading = false
         },
         error => {
           console.log(error.data)
           this.alert('danger', 'No se encontro el ticket')
           this.$router.push({ name: 'Tables' })
+        }
+      )
+    },
+    updateTicket () {
+      this.$http.put('tickets/' + this.ticket.id, { ticket: { address: this.ticket.address } }).then(
+        () => {
+          this.alert('success', 'Se actualizo la direccion para envio')
+        },
+        (error) => {
+          console.log(error.data)
+          this.alert('danger', 'No se puedo actualizer la direccion')
         }
       )
     },
@@ -477,6 +499,7 @@ export default {
           if (this.ticket.client_id) {
             message = 'Nuevo cliente asignado: ' + this.ticket.client.name
             kind = 'success'
+            this.ticket.address = this.ticket.client.address
             // should update the store
             if (this.ticket.table_id) {
               this.$store.dispatch('changeUserTable', { table: this.ticket.table_id, client: { id: this.ticket.client_id, name: this.ticket.client.name, address: this.ticket.client.address } })

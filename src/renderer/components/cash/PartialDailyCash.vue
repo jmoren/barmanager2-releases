@@ -274,6 +274,10 @@
           </tooltip>
         </div>
       </alert>
+      <div class="control">
+        <label>Arqueo de caja</label>
+        <input type="number" class="input" step="0.01" placeholder="Monto contado en la caja" v-model="newPartialCash.manual_cash">
+      </div>
       <div class="control" v-if="!lastCash">
         <hr>
         <div class="control is-grouped" >
@@ -322,7 +326,7 @@
         newExpenseExtraccion: { has_vale: true, amount: null, type: 'Extraccion', user_id: '' },
         newExpenseGasto: { supplier_id: '', amount: null, type: 'Gasto', bill_number: null },
         toDelete: {},
-        newPartialCash: { init_amount: 0.0, user_id: '' },
+        newPartialCash: { init_amount: 0.0, user_id: '', manual_cash: '' },
         isOpen: false,
         lastCash: false,
         errorMessage: ''

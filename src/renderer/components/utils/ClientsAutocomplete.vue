@@ -138,7 +138,6 @@
 </script>
 
 <style scoped>
-  input[type=search] { border-radius: 4px; }
   ul {
     position: absolute;
     min-height: 10px;
@@ -153,6 +152,7 @@
     width: 100%;
     box-shadow: 0 2px 3px hsla(0,0%,4%,.1), 0 0 0 1px hsla(0,0%,4%,.1);
   }
+  .autocomplete-dropdown .control input { width: 300px; }
   li { font-weight: 500; padding: 5px 10px; }
   li.active { background: #3c81df; }
   li.active { color: #fff;}
