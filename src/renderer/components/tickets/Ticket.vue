@@ -4,9 +4,8 @@
       loading ticket...
     </div>
     <div v-else>
-      <h2 class="print" style="font-weight: 300; font-size: 25px">
-        <span v-if="ticket.table">MESA: {{ ticket.table.description }} -</span>
-        TICKET # {{ ticket.number | withDash }}
+      <h2 class="print" >
+        
       </h2>
       <div id="ticket-options" class="columns not-print">
         <div class="column is-4">
@@ -79,9 +78,14 @@
           </tooltip>
         </div>
       </div>
-      <div v-if="ticket.client.id" class="print">
-        <h2>CLIENTE: {{ ticket.client.name }}</h2>
-        <h3 v-if="ticket.client.address">{{ ticket.client.address }}</h3>
+      <div class="print">
+        <div>
+          <span v-if="ticket.table_id">MESA {{ ticket.table.description }}</span>
+          <span v-else class="is-danger-text">DELIVERY</span>
+        </div>
+        <div style="font-weight: 300; font-size: 25px">TICKET # {{ ticket.number | withDash }}</div>
+        <div v-if="ticket.client.id"><h4>Cliente: {{ ticket.client.name }}</h4></div>
+        <div v-if="ticket.address"><h4>Direccion{{ ticket.address }}</h4></div>
       </div>
       <hr class="not-print"/>
       <div>
