@@ -11,7 +11,16 @@
         <input type="text" class="input" v-model="newClient.dni" placeholder="DNI">
       </div>
       <div class="control">
-        <input type="text" class="input" v-model="newClient.address" placeholder="Direción">
+        <vue-google-autocomplete
+          ref="clientAddress"
+          id="clientAddressInput"
+          country="ar"
+          v-model="newClient.Address"
+          :enable-geolocation="true"
+          classname="input"
+          v-on:placechanged="updateAddress"
+          :placeholder="newClient.address || 'Direccion para envio'">
+        </vue-google-autocomplete>
       </div>
     </modal>
     <h1 class="header">
@@ -59,9 +68,13 @@
 
 <script>
 import _ from 'lodash'
+import VueGoogleAutocomplete from 'vue-google-autocomplete'
 import alert from '../../mixins/Alert'
 export default {
   name: 'AdminClients',
+  components: {
+    VueGoogleAutocomplete
+  },
   mixins: [alert],
   data () {
     return {
@@ -78,6 +91,14 @@ export default {
     this.fetchClients()
   },
   methods: {
+    updateAddress (data, placeData) {
+      this.newClient.address = placeData.formatted_address
+      this.$refs.clientAddress.update(this.newClient.address)
+    },
+    updateAddress2 (text) {
+      console.log(text)
+      this.$refs.clientAddress.update(text)
+    },
     pageChange (page) {
       this.page = page
       this.fetchClients()
@@ -150,7 +171,7 @@ export default {
     cancelClient () {
       this.isShow = false
       _.extend(this.newClient, this.originalClient)
-      this.newClient = { name: null, phone: null }
+      this.newClient = { name: null, phone: null, dni: null, address: null }
     },
     setToEdit (client) {
       this.originalClient = client
@@ -162,4 +183,7 @@ export default {
 </script>
 
 <style lang="css">
+  .pac-container.pac-logo.hdpi {
+    z-index: 100000000
+  }
 </style>

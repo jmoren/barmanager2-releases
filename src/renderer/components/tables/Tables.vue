@@ -16,7 +16,7 @@
                   <span><i v-if="ticket.full_delivered" class="fa fa-check-circle fa-floated is-success"></i></span>
                 </div>
                 <p v-if="ticket.client.id"><small>{{ ticket.client.name }}</small></p>
-                <div v-if="ticket.client.id"><small>{{ ticket.client.address || 'Sin direccion'}}</small></div>
+                <div v-if="ticket.client.id"><small>{{ ticket.address || 'Sin direccion'}}</small></div>
               </router-link>
             </div>
           </div>

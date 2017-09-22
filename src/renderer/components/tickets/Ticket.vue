@@ -25,8 +25,7 @@
             </div>
             <div class="address" v-if="!ticket.table_id">
               <tooltip content="Direccion para envio" trigger="focus">
-                <input type="text" class="input" v-model="ticket.address" 
-                  placeholder="Direccion para envio" @keyup.enter.prevent="updateTicket()">
+                <vue-google-autocomplete ref="addressInput" id="map" country="ar" v-bind:value="ticket.address" :enable-geolocation="true" classname="input" placeholder="Direccion para envio" v-on:placechanged="updateTicket"></vue-google-autocomplete>
               </tooltip>
             </div>
           </div>
@@ -253,6 +252,7 @@
 </template>
 
 <script>
+import VueGoogleAutocomplete from 'vue-google-autocomplete'
 import TicketContent from './TicketContent'
 import ClientsAutocomplete from '@/components/utils/ClientsAutocomplete'
 import TableAutocomplete from '@/components/utils/TableAutocompleteAssign'
@@ -268,7 +268,8 @@ export default {
   components: {
     TicketContent,
     ClientsAutocomplete,
-    TableAutocomplete
+    TableAutocomplete,
+    VueGoogleAutocomplete
   },
   mixins: [alert],
   filters: {
@@ -294,6 +295,7 @@ export default {
   },
   data () {
     return {
+      addressInput: '',
       barcode: {
         format: config.get('barcode_format', 'EAN13'),
         width: config.get('barcode_width', 2),
@@ -380,8 +382,8 @@ export default {
         }
       )
     },
-    updateTicket () {
-      this.$http.put('tickets/' + this.ticket.id, { ticket: { address: this.ticket.address } }).then(
+    updateTicket (a, placeResultData) {
+      this.$http.put('tickets/' + this.ticket.id, { ticket: { address: placeResultData.formatted_address } }).then(
         () => {
           this.alert('success', 'Se actualizo la direccion para envio')
         },
