@@ -45,14 +45,30 @@
           </div>
         </div>
         <div class="box is-clearfix">
-          <div class="is-pulled-left">
-            <span class="button is-light is-medium">Total cobrar: $ {{ total }}</span>
-            <span class="button is-light is-medium">Total cambio: $ {{ sumChange }}</span>
-          </div>
-          <div class="is-pulled-right">
-            <button class="button is-success is-medium" :disabled="newDelivery.tickets.length < 1"
-                @click="create()">Crear Pedido
-            </button>
+          <div class="columns">
+            <div class="column">
+              <span class="select is-fullwidth">
+                <select v-model="newDelivery.moto_id">
+                  <option value="1">Moto 1</option>
+                  <option value="2">Moto 2</option>
+                  <option value="3">Moto 3</option>
+                </select>
+              </span>
+            </div>
+            <div class="column">
+              <div class="control has-addons">
+                <span class="button is-not-link is-light">Total cobrar: $ {{ total }}</span>
+                <span class="button is-not-link is-light">Total cambio: $ {{ sumChange }}</span>
+              </div>
+            </div>
+            <div class="column">
+              <div class="control has-addons is-pulled-right">
+                <button class="button is-success" :disabled="newDelivery.tickets.length < 1"
+                  @click="create()">Crear Pedido
+                </button>
+                <a class="button is-light" @click.prevent="cancelDelivery()">Cancelar</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -61,12 +77,13 @@
 </template>
 
 <script>
+  import _ from 'lodash'
   export default {
     name: 'create-delivery',
     props: ['tickets'],
     data () {
       return {
-        newDelivery: { tickets: [], total: 0 },
+        newDelivery: { tickets: [], total: 0, moto_id: '' },
         current: null,
         isdragging: false,
         isdragged: false
@@ -86,7 +103,24 @@
     },
     methods: {
       create () {
-        alert('Crear Pedido')
+        let data = this.newDelivery.tickets.map((ticket) => {
+          return { ticket_id: ticket.id, pay: ticket.pay }
+        })
+
+        this.$http.post('deliveries', { delivery: { ticket_deliveries_attributes: data } }).then(
+          (response) => {
+            console.log(response)
+            this.$emit('delivery-created', response.data)
+          },
+          (error) => {
+            console.log(error)
+          }
+        )
+      },
+      cancelDelivery () {
+        _.each(this.newDelivery.tickets, (t) => { t.added = false })
+        this.newDelivery.tickets = []
+        this.$emit('delivery-canceled')
       },
       setChange (ticket) {
         if (ticket.pay) {

@@ -22,7 +22,7 @@
             </div>
           </h2>
           <hr>
-          <div class="columns is-multiline" v-if="delivery.length > 0">
+          <div class="columns is-multiline" v-if="readyToDelivery.length > 0">
             <div class="column is-12" v-for="ticket in readyToDelivery" :key="ticket.id">
               <router-link class="open-table-button button is-fullwidth is-medium is-light" :to="{ name: 'Ticket', params: { id: ticket.id } }">
                 <div style="margin: 5px 0">
@@ -33,24 +33,36 @@
                 <div><small>{{ (ticket.address || 'Sin direccion') | truncate }}</small></div>
               </router-link>
             </div>
+          </div>
+          <div class="column is-12" v-else>
+            <p class="is-danger-text">No hay tickets listos para delivery</p>
+          </div>
+          <hr>
+          <div class="columns is-multiline" v-if="pendingToDelivery.length > 0">
             <div class="column is-12" v-for="ticket in pendingToDelivery" :key="ticket.id">
               <router-link class="open-table-button button is-fullwidth is-medium is-primary" :to="{ name: 'Ticket', params: { id: ticket.id } }">
                 <div style="margin: 5px 0">
                   Delivery Nro. {{ ticket.number }}
                   <span><i v-if="ticket.full_delivered" class="fa fa-check-circle fa-floated is-success"></i></span>
                 </div>
-                <p v-if="ticket.client.id"><small>{{ ticket.client.name }}</small></p>
-                <div v-if="ticket.client.id"><small>{{ ticket.address || 'Sin direccion'}}</small></div>
+                <div><small>{{ ticket.client.id ? ticket.client.name : 'S/C' }}</small></div>
+                <div><small>{{ (ticket.address || 'Sin direccion') | truncate }}</small></div>
               </router-link>
             </div>
+          </div>
+          <div class="column is-12" v-else>
+            <p class="is-danger-text">No hay tickets abiertos</p>
+          </div>
+          <hr>
+          <div class="columns is-multiline" v-if="inDelivery.length > 0">
             <div class="column is-12" v-for="ticket in inDelivery" :key="ticket.id">
               <router-link class="open-table-button button is-fullwidth is-medium is-primary" :to="{ name: 'Ticket', params: { id: ticket.id } }">
                 <div style="margin: 5px 0">
                   Delivery Nro. {{ ticket.number }}
                   <span><i v-if="ticket.full_delivered" class="fa fa-check-circle fa-floated is-success"></i></span>
                 </div>
-                <p v-if="ticket.client.id"><small>{{ ticket.client.name }}</small></p>
-                <div v-if="ticket.client.id"><small>{{ ticket.address || 'Sin direccion'}}</small></div>
+                <div><small>{{ ticket.client.id ? ticket.client.name : 'S/C' }}</small></div>
+                <div><small>{{ (ticket.address || 'Sin direccion') | truncate }}</small></div>
               </router-link>
             </div>
           </div>
@@ -122,7 +134,9 @@
       </div>
     </div>
     <modal title="Crear Pedido" :show-footer="false" :on-cancel="cancelPedido" :width="1200" :is-show="createPedido" transition="zoom">
-      <delivery-composer :tickets="readyToDelivery"></delivery-composer>
+      <delivery-composer :tickets="readyToDelivery" @delivery-created="goToDelivery(delivery)" @delivery-canceled="cancelPedido()">
+        
+      </delivery-composer>
     </modal>
   </div>
 </template>
@@ -220,6 +234,10 @@ export default {
     this.loadDelivery()
   },
   methods: {
+    goToDelivery (data) {
+      this.createPedido = false
+      this.loadDelivery()
+    },
     loadDelivery () {
       this.$http.get('tickets?without_table=true').then(
         response => {
