@@ -6,10 +6,44 @@
     <div v-else>
       <div class="columns" v-if="current.open">
         <div class="column is-3">
-          <h1 class="header">Delivery</h1>
+          <h2 class="header">
+            Delivery
+            <div class="is-pulled-right">
+              <div class="control has-addons">
+                <a @click.prevent="loadDelivery()" class="button is-ligth">
+                  <span class="icon is-small"><i class="fa fa-refresh"></i></span>
+                  <span>Recargar</span>
+                </a>
+                <a @click.prevent="prepareDelivery()" class="button is-ligth">
+                  <span class="icon is-small"><i class="fa fa-plus"></i></span>
+                  <span>Pedido</span>
+                </a>
+              </div>
+            </div>
+          </h2>
           <hr>
           <div class="columns is-multiline" v-if="delivery.length > 0">
-            <div class="column is-12" v-for="ticket in delivery" :key="ticket.id">
+            <div class="column is-12" v-for="ticket in readyToDelivery" :key="ticket.id">
+              <router-link class="open-table-button button is-fullwidth is-medium is-light" :to="{ name: 'Ticket', params: { id: ticket.id } }">
+                <div style="margin: 5px 0">
+                  Delivery Nro. {{ ticket.number }}
+                  <span><i v-if="ticket.full_delivered" class="fa fa-check-circle fa-floated is-success"></i></span>
+                </div>
+                <div><small>{{ ticket.client.id ? ticket.client.name : 'S/C' }}</small></div>
+                <div><small>{{ (ticket.address || 'Sin direccion') | truncate }}</small></div>
+              </router-link>
+            </div>
+            <div class="column is-12" v-for="ticket in pendingToDelivery" :key="ticket.id">
+              <router-link class="open-table-button button is-fullwidth is-medium is-primary" :to="{ name: 'Ticket', params: { id: ticket.id } }">
+                <div style="margin: 5px 0">
+                  Delivery Nro. {{ ticket.number }}
+                  <span><i v-if="ticket.full_delivered" class="fa fa-check-circle fa-floated is-success"></i></span>
+                </div>
+                <p v-if="ticket.client.id"><small>{{ ticket.client.name }}</small></p>
+                <div v-if="ticket.client.id"><small>{{ ticket.address || 'Sin direccion'}}</small></div>
+              </router-link>
+            </div>
+            <div class="column is-12" v-for="ticket in inDelivery" :key="ticket.id">
               <router-link class="open-table-button button is-fullwidth is-medium is-primary" :to="{ name: 'Ticket', params: { id: ticket.id } }">
                 <div style="margin: 5px 0">
                   Delivery Nro. {{ ticket.number }}
@@ -87,6 +121,9 @@
         </div>
       </div>
     </div>
+    <modal title="Crear Pedido" :show-footer="false" :on-cancel="cancelPedido" :width="1200" :is-show="createPedido" transition="zoom">
+      <delivery-composer :tickets="readyToDelivery"></delivery-composer>
+    </modal>
   </div>
 </template>
 
@@ -95,10 +132,12 @@ import { mapGetters } from 'vuex'
 import Loader from '@/components/utils/Loader'
 import Auth from '../../auth'
 import alert from '../../mixins/Alert'
+import DeliveryComposer from '@/components/deliveries/CreateDelivery'
 
 export default {
   name: 'Tables',
   mixins: [alert],
+  components: { Loader, DeliveryComposer },
   beforeRouteEnter (to, from, next) {
     if (Auth.user.profile.role === 'cooker') {
       next(vm => vm.$router.push({ name: 'Kitchen' }))
@@ -111,16 +150,42 @@ export default {
       queryOpen: '',
       queryClosed: '',
       delivery: [],
-      newCash: { init_amount: null, user_id: '' }
+      newCash: { init_amount: null, user_id: '' },
+      createPedido: false
     }
   },
-  components: { Loader },
+  filters: {
+    truncate: function (value) {
+      let dots = '...'
+      let val = value.substr(0, 60)
+      if (value.length > 60) {
+        return val + dots
+      } else {
+        return val
+      }
+    }
+  },
   computed: {
     ...mapGetters({
       tables: 'allTables',
       current: 'currentCash',
       users: 'allUsers'
     }),
+    readyToDelivery () {
+      return this.delivery.filter((del) => {
+        return del.full_delivered && !del.delivery
+      })
+    },
+    inDelivery () {
+      return this.delivery.filter((del) => {
+        return del.full_delivered && del.delivery
+      })
+    },
+    pendingToDelivery () {
+      return this.delivery.filter((del) => {
+        return !del.full_delivered && !del.delivery
+      })
+    },
     filteredOpenTables () {
       if (this.queryOpen) {
         let regex = new RegExp(this.queryOpen.toLowerCase())
@@ -187,6 +252,12 @@ export default {
           this.alert('danger', error.data)
         }
       )
+    },
+    prepareDelivery () {
+      this.createPedido = true
+    },
+    cancelPedido () {
+      this.createPedido = false
     }
   }
 }
