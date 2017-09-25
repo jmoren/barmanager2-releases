@@ -40,7 +40,7 @@
                 <th>Direccion</th>
                 <th>Total</th>
                 <th>Pago</th>
-                <th></th>
+                <th>Entregado</th>
               </thead>
               <tr v-for="ticket in delivery.ticket_deliveries">
                 <td><router-link :to="{ name: 'Ticket', params: { id: ticket.ticket_id } }">{{ ticket.number }}</router-link></td>
@@ -50,12 +50,24 @@
                 <td>$ {{ ticket.total }}</td>
                 <td>$ {{ ticket.payment }}</td>
                 <td>
-                  <label class="checkbox blu-checkbox is-primary" :class="{'on': ticket.delivered }">
-                    <input type="checkbox" v-model="ticket.delivered" @change="updateState(ticket)">
-                  </label>
+                  <b-switch v-model="ticket.delivered" :on-change="ticket => updateTicket"></b-switch>
                 </td>
               </tr>
             </table>
+          </div>
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column is-3">
+          <div class="box">
+            <a @click="initMap()">Cargar</a>
+            <hr>
+            <div id="directions-panel"></div>
+          </div>
+        </div>
+        <div class="column is-9">
+          <div class="box">
+            <div id="map" style="height: 400px; width: 100%"></div>
           </div>
         </div>
       </div>
@@ -69,7 +81,14 @@
     data () {
       return {
         delivery: {},
-        loading: false
+        loading: false,
+        map: null,
+        directionsService: null,
+        directionsDisplay: null,
+        config: {
+          zoom: 6,
+          center: { lat: -34.4686234, lng: -58.5181671 }
+        }
       }
     },
     created () {
@@ -89,6 +108,44 @@
           }
         )
       },
+      initMap () {
+        if (typeof (window.google) !== 'undefined') {
+          this.map = new window.google.maps.Map(document.getElementById('map'), this.config)
+          this.directionsService = new window.google.maps.DirectionsService()
+          this.directionsDisplay = new window.google.maps.DirectionsRenderer()
+          this.directionsDisplay.setMap(this.map)
+          this.calculateRoute()
+        }
+      },
+      calculateRoute () {
+        let _this = this
+        let waypts = this.delivery.ticket_deliveries.map((t) => { return { location: t.address, stopover: true } })
+
+        this.directionsService.route({
+          origin: 'Rivadavia 643, San Isidro, Buenos Aires, Argentina',
+          destination: 'Rivadavia 643, San Isidro, Buenos Aires, Argentina',
+          waypoints: waypts,
+          optimizeWaypoints: true,
+          travelMode: 'DRIVING'
+        }, function (response, status) {
+          if (status === 'OK') {
+            _this.directionsDisplay.setDirections(response)
+            let route = response.routes[0]
+            let summaryPanel = document.getElementById('directions-panel')
+            summaryPanel.innerHTML = ''
+            // For each route, display summary information.
+            for (var i = 0; i < route.legs.length; i++) {
+              let routeSegment = i + 1
+              summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment + '</b><br>'
+              summaryPanel.innerHTML += route.legs[i].start_address + ' to '
+              summaryPanel.innerHTML += route.legs[i].end_address + '<br>'
+              summaryPanel.innerHTML += route.legs[i].distance.text + '<br><br>'
+            }
+          } else {
+            window.alert('Directions request failed due to ' + status)
+          }
+        })
+      },
       close () {
         this.$http.put('deliveries/' + this.delivery.id + '/close').then(
           response => {
@@ -99,8 +156,15 @@
           }
         )
       },
-      updateState (ticket) {
-        console.log(ticket.delivered)
+      updateTicket (ticket) {
+        this.$http.put('ticket_deliveries/' + ticket.id + '/close').then(
+          response => {
+            this.delivery = response.data
+          },
+          error => {
+            console.log(error)
+          }
+        )
       }
     }
   }

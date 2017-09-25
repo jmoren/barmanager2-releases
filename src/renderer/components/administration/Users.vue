@@ -91,7 +91,8 @@ export default {
         { name: 'Admin', value: 'admin' },
         { name: 'User', value: 'user' },
         { name: 'Manager', value: 'manager' },
-        { name: 'Cocina', value: 'cooker' }
+        { name: 'Cocina', value: 'cooker' },
+        { name: 'Delivery', value: 'delivery' }
       ]
     }
   },
