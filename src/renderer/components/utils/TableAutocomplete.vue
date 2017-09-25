@@ -10,7 +10,7 @@
          @keydown.enter='hit'
          @focus="focused = true"
          @keydown.esc='reset'
-         v-shortkey="['ctrl', 'g']"
+         v-shortkey="['f1']"
          @shortkey="setFocus"
          @blur="focused = false"/>
       <ul v-show="focused" id="queryList">
