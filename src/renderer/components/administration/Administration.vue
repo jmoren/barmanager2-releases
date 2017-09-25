@@ -31,6 +31,7 @@
             <menu-item icon="cog" :to="{ name: 'AdminUsers'}">Usuarios</menu-item>
             <menu-item icon="dollar" :to="{ name: 'AdminDailyCashes'}">Cajas</menu-item>
             <menu-item icon="bar-chart" :to="{ name: 'AdminReports'}">Reportes</menu-item>
+            <menu-item icon="cogs" :to="{ name: 'AdminSettings'}">Settings</menu-item>
           </div>
         </menus>
       </div>

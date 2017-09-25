@@ -55,7 +55,7 @@
           format: config.get('barcode_format', 'EAN13'),
           width: config.get('barcode_width', 2),
           height: config.get('barcode_height', 60),
-          lastChar: config.get('barcode_lastChar', '>')
+          lastChar: config.get('barcode_last_char', '>')
         },
         loding: false,
         currentCode: {},

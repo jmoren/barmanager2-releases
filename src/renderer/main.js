@@ -17,12 +17,12 @@ import VueBarcode from 'vue-barcode'
 
 import 'vue-blu/dist/css/vue-blu.min.css'
 import Auth from './auth'
+import Init from './init'
 
 const Config = require('electron-config')
 const config = new Config()
-if (config.get('api_url', null) === null) {
-  config.set('api_url', 'http://localhost:3000/api/')
-}
+
+Init.init(config)
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.config.productionTip = false

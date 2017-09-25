@@ -18,6 +18,7 @@ import Profile from '@/components/user/Profile'
 import Administration from '@/components/administration/Administration'
 import AdminClients from '@/components/administration/Clients'
 import AdminItems from '@/components/administration/Items'
+import AdminSettings from '@/components/administration/AdminSettings'
 import AdminPromotions from '@/components/administration/Promotions'
 import AdminCategories from '@/components/administration/Categories'
 import AdminSuppliers from '@/components/administration/Suppliers'
@@ -96,6 +97,7 @@ const router = new Router({
             { path: 'usuarios', name: 'AdminUsers', component: AdminUsers, meta: { roles: ['admin'] } },
             { path: 'cajas', name: 'AdminDailyCashes', component: AdminDailyCashes, meta: { roles: ['admin'] } },
             { path: 'reportes', name: 'AdminReports', component: AdminReports, meta: { roles: ['admin'] } },
+            { path: 'Configuracion', name: 'AdminSettings', component: AdminSettings, meta: { roles: ['admin'] } },
             { path: 'cajas/:id/resumen',
               name: 'DailyCash',
               component: DailyCash,
