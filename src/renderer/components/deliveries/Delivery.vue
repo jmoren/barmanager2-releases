@@ -60,14 +60,17 @@
       <div class="columns">
         <div class="column is-3">
           <div class="box">
-            <a @click="initMap()">Cargar</a>
+            <a @click="initMap()" class="button is-light">
+              <span class="icon is-small"><i class="fa fa-map-marker"></i></span>
+              <span>Cargar Mapa</span>
+            </a>
             <hr>
             <div id="directions-panel"></div>
           </div>
         </div>
         <div class="column is-9">
           <div class="box">
-            <div id="map" style="height: 400px; width: 100%"></div>
+            <div id="map" style="height: 565px; width: 100%"></div>
           </div>
         </div>
       </div>
@@ -76,6 +79,9 @@
 </template>
 
 <script>
+  const Config = require('electron-config')
+  const config = new Config()
+
   export default {
     name: 'Delivery',
     data () {
@@ -118,12 +124,13 @@
         }
       },
       calculateRoute () {
+        console.log(config)
         let _this = this
         let waypts = this.delivery.ticket_deliveries.map((t) => { return { location: t.address, stopover: true } })
 
         this.directionsService.route({
-          origin: 'Rivadavia 643, San Isidro, Buenos Aires, Argentina',
-          destination: 'Rivadavia 643, San Isidro, Buenos Aires, Argentina',
+          origin: config.get('business_address'),
+          destination: config.get('business_address'),
           waypoints: waypts,
           optimizeWaypoints: true,
           travelMode: 'DRIVING'
@@ -136,10 +143,10 @@
             // For each route, display summary information.
             for (var i = 0; i < route.legs.length; i++) {
               let routeSegment = i + 1
-              summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment + '</b><br>'
-              summaryPanel.innerHTML += route.legs[i].start_address + ' to '
-              summaryPanel.innerHTML += route.legs[i].end_address + '<br>'
-              summaryPanel.innerHTML += route.legs[i].distance.text + '<br><br>'
+              summaryPanel.innerHTML += '<b>Recorrido: ' + routeSegment + '</b><br>'
+              summaryPanel.innerHTML += '<div class="routeRow">' + route.legs[i].start_address + ' to '
+              summaryPanel.innerHTML += route.legs[i].end_address + '</div><br>'
+              summaryPanel.innerHTML += '<small>Distancia: ' + route.legs[i].distance.text + '</small><br><br>'
             }
           } else {
             window.alert('Directions request failed due to ' + status)
@@ -169,3 +176,7 @@
     }
   }
 </script>
+
+<style>
+  .routeRow { font-size: 14px; }
+</style>

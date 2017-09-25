@@ -22,6 +22,9 @@
           <div class="control is-expanded">
             <input class="input is-medium" :disabled="status" type="text" placeholder="Nota o comentario" v-model="entry.comment">
           </div>
+          <div class="control">
+            <button @click.prevent="addEntry()" class="button is-light is-medium"><i class="fa fa-plus"></i></button>
+          </div>
         </div>
       </div>
     </div>

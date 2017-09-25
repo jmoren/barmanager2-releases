@@ -12,11 +12,10 @@
           </div>
         </div>
         <div class="column is-7 has-text-right" style="margin-top: -5px;">
-          <tooltip content="Editar datos personales">
-            <router-link :to="{ name: 'Profile' }" class="button is-medium is-light">
-              <span class="icon is-small"><i class="fa fa-user-o"></i></span>
-              <span>{{ user.profile.name }}</span>
-            </router-link>
+          <tooltip v-bind:content="'Recargar tickets - Ultimo check: ' + lastCheck">
+            <a @click.prevent="fetchTickets" class="button is-primary is-medium" :class="{'is-disabled': loadingTickets }">
+              <span class="icon"><i class="fa fa-refresh" :class="{'fa-spin': loadingTickets }"></i></span>
+            </a>
           </tooltip>
           <div class="button is-light is-medium is-not-link">
             <span class="icon is-small"><i class="fa fa-calendar"></i></span>
@@ -26,11 +25,10 @@
             <span class="icon is-small"><i class="fa fa-clock-o"></i></span>
             <span>{{ currentTime | moment('HH:mm:ss')}}</span>
           </div>
-          <tooltip v-bind:content="'Recargar tickets - Ultimo check: ' + lastCheck">
-            <a @click.prevent="fetchTickets" class="button is-primary is-medium" :class="{'is-disabled': loadingTickets }">
-              <span class="icon"><i class="fa fa-refresh" :class="{'fa-spin': loadingTickets }"></i></span>
-            </a>
-          </tooltip>
+          <a @click.prevent="logout" class="button is-light is-medium">
+            <span class="icon is-small"><i class="fa fa-sign-out"></i></span>
+            <span>Salir</span>
+          </a>
         </div>
       </div>
       <hr>
@@ -115,6 +113,16 @@
       clearInterval(this.clock)
     },
     methods: {
+      logout () {
+        this.$modal.confirm({
+          title: 'Salir',
+          content: 'Estas seguro de salir?',
+          onOk: this.confirmLogout
+        })
+      },
+      confirmLogout () {
+        Auth.logout()
+      },
       startClock () {
         this.clock = setInterval(() => {
           this.current = Date.now()

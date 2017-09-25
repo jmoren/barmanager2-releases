@@ -1,7 +1,7 @@
 <template>
   <form @keyup.enter.prevent="addEntry">
     <div class="columns">
-      <div class="column is-8">
+      <div class="column is-7">
         <input class="input is-medium" :disabled="status" type="text" placeholder="Adicional" v-model="entry.comment">
       </div>
       <div class="column is-2">
@@ -10,6 +10,11 @@
       <div class="column is-2">
         <div class="input is-medium">
           <checkbox v-model="entry.kitchen" val="true"> Cocina?</checkbox>
+        </div>
+      </div>
+      <div class="column is-1">
+        <div class="control">
+          <button @click.prevent="addEntry()" class="button is-light is-medium"><i class="fa fa-plus"></i></button>
         </div>
       </div>
     </div>
