@@ -4,7 +4,6 @@
       loading ticket...
     </div>
     <div v-else>
-      {{ ticket.address }}
       <div id="ticket-options" class="columns not-print">
         <div class="column is-4">
           <h1 class="header">TICKET # {{ ticket.number | withDash }} </h1>

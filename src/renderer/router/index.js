@@ -27,6 +27,8 @@ import AdminDailyCashes from '@/components/administration/DailyCashes'
 import DailyCash from '@/components/cash/DailyCash'
 import AdminUsers from '@/components/administration/Users'
 import AdminReports from '@/components/administration/Reports'
+import Delivery from '@/components/deliveries/Delivery'
+import Deliveries from '@/components/deliveries/Deliveries'
 
 import NotFound from '@/components/notFound/NotFound'
 
@@ -70,6 +72,16 @@ const router = new Router({
           name: 'Payments',
           component: Payments,
           props: (route) => ({ query: route.query.q })
+        },
+        {
+          path: 'pedido/:id',
+          name: 'Delivery',
+          component: Delivery
+        },
+        {
+          path: 'pedidos',
+          name: 'Deliveries',
+          component: Deliveries
         },
         { path: 'administracion',
           component: Administration,

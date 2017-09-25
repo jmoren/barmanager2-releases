@@ -24,7 +24,7 @@
         <div class="box" style="min-height: 70px; width: 100%;">
           <div @dragover.prevent @drop="addItem" class="dragZone" :class="{'dragEnter': isdragging }" @dragoever="isdragging = true">
             <div class="drag-message">
-              <p>Aca va el drag</p>
+              <p>Arrastra los tickets para enviar</p>
               <p><i class="fa fa-upload"></i></p>
             </div>
           </div>
@@ -35,8 +35,15 @@
                 <div class="columns">
                   <div class="column"><span class="button is-fullwidth is-not-link is-light"># {{ ticket.number }}</span></div>
                   <div class="column"><span class="button is-fullwidth is-not-link is-light">$ {{ ticket.partial_total }}</span></div>
-                  <div class="column"><input type="number" step="0.01" v-model="ticket.pay" class="input" @blur="setChange(ticket)"></div>
-                  <div class="column"><span class="button is-fullwidth is-light is-not-link">Llevar cambio: $ {{ ticket.change }}</span></div>
+                  <div class="column" v-if="!ticket.paid">
+                    <input type="number" step="0.01" v-model="ticket.pay" class="input" @blur="setChange(ticket)">
+                    <span class="button is-fullwidth is-light is-not-link">Llevar cambio: $ {{ ticket.change }}</span>
+                  </div>
+                  <div v-else class="column">
+                    <div style="padding:7px 5px">
+                      <i class="fa fa-check-circle fa-floated is-success" style="margin-right:10px"></i> <b>Ticket pagado</b>
+                    </div>
+                  </div>
                   <div class="column"><a class="button is-danger" @click="removeFromList($index)"><i class="fa fa-trash"></i></a></div>
                 </div>
                 <div class="columns"><div class="column"><i class="fa fa-home fa-floated"></i> {{ ticket.address }}</div></div>
@@ -107,7 +114,9 @@
           return { ticket_id: ticket.id, pay: ticket.pay }
         })
 
-        this.$http.post('deliveries', { delivery: { ticket_deliveries_attributes: data } }).then(
+        this.$http.post('deliveries', { delivery:
+          { moto_id: this.newDelivery.moto_id, total: this.total, ticket_deliveries_attributes: data }
+        }).then(
           (response) => {
             console.log(response)
             this.$emit('delivery-created', response.data)

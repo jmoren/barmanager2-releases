@@ -27,7 +27,7 @@
               <router-link class="open-table-button button is-fullwidth is-medium is-light" :to="{ name: 'Ticket', params: { id: ticket.id } }">
                 <div style="margin: 5px 0">
                   Delivery Nro. {{ ticket.number }}
-                  <span><i v-if="ticket.full_delivered" class="fa fa-check-circle fa-floated is-success"></i></span>
+                  <span><i v-if="ticket.full_delivered" class="fa fa-check-circle is-success is-pulled-right"></i></span>
                 </div>
                 <div><small>{{ ticket.client.id ? ticket.client.name : 'S/C' }}</small></div>
                 <div><small>{{ (ticket.address || 'Sin direccion') | truncate }}</small></div>
@@ -56,10 +56,11 @@
           <hr>
           <div class="columns is-multiline" v-if="inDelivery.length > 0">
             <div class="column is-12" v-for="ticket in inDelivery" :key="ticket.id">
-              <router-link class="open-table-button button is-fullwidth is-medium is-primary" :to="{ name: 'Ticket', params: { id: ticket.id } }">
+              <router-link class="open-table-button button is-fullwidth is-medium is-success" 
+                  :to="{ name: 'Delivery', params: { id: ticket.delivery.delivery_id } }">
                 <div style="margin: 5px 0">
                   Delivery Nro. {{ ticket.number }}
-                  <span><i v-if="ticket.full_delivered" class="fa fa-check-circle fa-floated is-success"></i></span>
+                  <span><i v-if="ticket.full_delivered" class="fa fa-truck is-pulled-right"></i></span>
                 </div>
                 <div><small>{{ ticket.client.id ? ticket.client.name : 'S/C' }}</small></div>
                 <div><small>{{ (ticket.address || 'Sin direccion') | truncate }}</small></div>
@@ -192,7 +193,7 @@ export default {
     },
     inDelivery () {
       return this.delivery.filter((del) => {
-        return del.full_delivered && del.delivery
+        return del.full_delivered && del.delivery && !del.delivered
       })
     },
     pendingToDelivery () {

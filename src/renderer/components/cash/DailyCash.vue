@@ -117,15 +117,15 @@
       <div class="box">
         <h1>Cajas Parciales</h1>
         <div class="partial-bar is-clearfix">
-          <div class="columns">
+          <div class="columns is-multiline">
             <div class="column is-4" v-for="partial in cash.partial_daily_cashes" :key="partial.id">
               <div class="control has-addons">
                 <tooltip content="Responsable">
-                  <div class="button is-light">
+                  <a @click.prevent="showPartial(partial.id)" class="button is-light">
                     #{{ partial.id }}
                     <span class="icon is-small"><i class="fa fa-angle-right"></i></span>
                      {{ partial.user.name }}
-                   </div>
+                   </a>
                  </tooltip>
                 <tooltip content="Caja Total"><div class="button is-light">${{ partial.total }}</div> </tooltip>
                 <tooltip content="Hora cierre"><div class="button is-light">{{ partial.closed_at | moment('HH:MM') + ' hs' }}</div></tooltip>
@@ -135,13 +135,13 @@
         </div>
       </div>
     </div>
-    <modal :title="'CAJA PARCIAL No. ' + currentPartial.id" :show-footer="false" :on-cancel="closeModal" :is-show="isOpen" transition="zoom">
+    <modal :title="'CAJA PARCIAL No. ' + currentPartial.id" :show-footer="false" :on-cancel="closePartial" :is-show="isOpen" transition="zoom">
       <div v-if="currentPartial.id">
         <div class="columns">
           <div class="column is-6">Responsable <b>{{ currentPartial.user.name }}</b></div>
           <div class="column is-6">
             <tooltip content="Fecha hora de cierre">
-              Fecha/Hora <b>{{ currentPartial.closed_at | moment('DD MMMM, YYYY hh:mm A')}}</b>
+              Fecha/Hora <b>{{ currentPartial.closed_at | moment('DD/MM/YYYY hh:mm A')}}</b>
             </tooltip>
           </div>
         </div>
@@ -219,10 +219,16 @@
           }
         )
       },
-      openModal () {
-        this.isOpen = true
+      showPartial (id) {
+        this.$http.get('admin/partial_daily_cashes/' + id).then(
+          response => {
+            this.currentPartial = response.data
+            this.isOpen = true
+          }
+        )
       },
-      closeModal () {
+      closePartial () {
+        this.currentPartial = {}
         this.isOpen = false
       }
     }
