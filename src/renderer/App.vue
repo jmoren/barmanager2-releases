@@ -28,22 +28,22 @@
   .is-orange.is-active, .is-orange:hover { background-color: #f26202; color: #fff; }
 
   .header { font-size: 25px; font-weight: bolder; margin: 0px !important;}
-  .main { padding: 80px 15px 0px !important; }
+  .main { padding: 60px 15px 0px !important; }
   .header .address { margin-top: 5px; }
   .header .address input { width: 60%; }
   .daily-cash-form {
     width: 40%;
     margin: 20px auto;
   }
-  .daily-cash-form .tag.medium { 
+  .daily-cash-form .tag.medium {
     height: 30px;
     width: 30px;
     margin-top: 1px;
-    font-size: 20px; 
+    font-size: 20px;
   }
    #header-icon {
-    height: 44px; 
-    font-size: 20px; 
+    height: 44px;
+    font-size: 20px;
     width: 44px;
     margin-top: -5px;
   }

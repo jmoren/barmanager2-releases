@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" >
     <section class="hero is-primary is-fixed">
       <div class="hero-head">
         <div class="nav-main">
@@ -26,7 +26,8 @@
                     Abrir Delivery
                   </a>
                 </div>
-                <div class="nav-item"><a class="button is-primary" v-shortkey="['ctrl', 'a']" @shortkey="isOpen = true" @click.prevent="isOpen = true">Mesas abiertas <tag rounded>{{ openTables.length }}</tag>  </a></div>
+                <div class="nav-item"><a class="button is-primary" v-shortkey="['ctrl', 'a']" @shortkey="toggleSideBar('tables')" @click.prevent="toggleSideBar('tables')">Mesas abiertas <tag rounded>{{ openTables.length }}</tag>  </a></div>
+                <div class="nav-item"><a class="button is-primary" v-shortkey="['ctrl', 'b']" @shortkey="toggleSideBar('delivery')" @click.prevent="toggleSideBar('delivery')">Deliveries </a></div>
               </div>
               <span class="nav-toggle" v-if="user.profile.role !== 'cooker'">
                 <span></span>
@@ -35,7 +36,7 @@
               </span>
               <div class="nav-right" v-if="user.profile.role !== 'cooker'">
                 <div class="nav-item" style="width:300px;">
-                  <input type="text" v-model="clientCode" class="input" @keydown.enter.prevent="findClient()" 
+                  <input type="text" v-model="clientCode" class="input" @keydown.enter.prevent="findClient()"
                         placeholder="Buscar por telefono o credencial">
                 </div>
                 <div class="nav-item">
@@ -187,29 +188,38 @@
         </div>
       </div>
     </section>
-    <div class="main">
-      <router-view></router-view>
+    <div class="main columns">
+      <div v-show="isOpen === 'delivery'" class="shadow-border column is-2">
+        <deliveries-bar></deliveries-bar>
+      </div>
+      <div v-show="isOpen === 'tables'" class="shadow-border column is-2">
+        <h2 class="header">
+          Mesas abiertas
+        </h2>
+        <hr>
+        <ul>
+          <li v-for="table in openTables" style="margin-bottom: 10px;">
+            <div class="columns">
+              <div class="column is-7">
+                <button class="button is-light is-fullwidth" style="justify-content: flex-start;" @click="goTo(table)">
+                  <span class="icon is-small"><i class="fa fa-cutlery"></i></span>
+                  <span>({{ table.id }}) {{ table.description }}</span>
+                </button>
+              </div>
+              <div class="column is-5">
+                <button class="button is-success" @click="goTo(table)">
+                  <span><b>T. {{ table.current.number }}</b></span>
+                  <span class="icon is-small"><i class="fa fa-angle-right"></i></span>
+                </button>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="ticket-background" :class="isOpen !== '' ? 'column is-10' : 'column is-12'">
+        <router-view></router-view>
+      </div>
     </div>
-    <b-aside :is-show="isOpen" :width="420" :show-footer="false" placement="left" title="Mesas Abiertas" @close="isOpen=false">
-      <ul>
-        <li v-for="table in openTables" style="margin-bottom: 10px;">
-          <div class="columns">
-            <div class="column is-7">
-              <button class="button is-light is-fullwidth" style="justify-content: flex-start;" @click="goTo(table)">
-                <span class="icon is-small"><i class="fa fa-cutlery"></i></span>
-                <span>({{ table.id }}) {{ table.description }}</span>
-              </button>
-            </div>
-            <div class="column is-5">
-              <button class="button is-success" @click="goTo(table)">
-                <span><b>T. {{ table.current.number }}</b></span>
-                <span class="icon is-small"><i class="fa fa-angle-right"></i></span>
-              </button>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </b-aside>
   </div>
 </template>
 
@@ -218,16 +228,17 @@
   import { mapGetters } from 'vuex'
   import TableAutocomplete from '@/components/utils/TableAutocomplete'
   import alert from '../../mixins/Alert'
+  import deliveriesBar from '@/components/deliveries/DeliveriesBar'
 
   export default {
     name: 'PrivateApp',
-    components: { TableAutocomplete },
+    components: { TableAutocomplete, deliveriesBar },
     mixins: [alert],
     data () {
       return {
         loading: false,
         user: Auth.user,
-        isOpen: false,
+        isOpen: '',
         clientCode: '',
         mapRoles: {
           user: 'Usuario',
@@ -257,6 +268,13 @@
       this.loadReasons()
     },
     methods: {
+      toggleSideBar (name) {
+        if (this.isOpen === name) {
+          this.isOpen = ''
+        } else {
+          this.isOpen = name
+        }
+      },
       logout () {
         this.$modal.confirm({
           title: 'Salir',
@@ -269,7 +287,7 @@
       },
       goTo (table) {
         this.$router.push({ name: 'Ticket', params: { id: table.current.id } })
-        this.isOpen = false
+        this.isOpen = ''
       },
       openDeliveryTicket () {
         this.$http.post('tickets', { ticket: { table_id: null } }).then(
@@ -376,10 +394,10 @@
     color: #2c3e50;
     font-size: 15px;
   }
-
+  .shadow-border { box-shadow: 0px 0px 15px #000; }
   .is-fixed { position: fixed; top: 0; width: 100%; z-index: 1000; }
   .nav-main { margin: auto 15px;}
-
+  .ticket-background { background-color: #fafafa; margin-left: 10px; }
   .empty-message { color: #f56954; text-align: center; font-size: 15px;}
   .nav-right { flex-grow: initial; }
   .nav-item { padding: 5px; }
