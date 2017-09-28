@@ -4,25 +4,35 @@
       loading ticket...
     </div>
     <div v-else>
-      <div id="ticket-options" class="columns not-print">
-        <div class="column is-4">
-          <h1 class="header">TICKET # {{ ticket.number | withDash }} </h1>
+      <div class="print">
+        <div>
+          <span v-if="ticket.table_id">MESA {{ ticket.table.description }}</span>
+          <span v-else class="is-danger-text">DELIVERY</span>
         </div>
-        <div class="column is-4">
+        <div style="font-weight: 300; font-size: 25px">TICKET # {{ ticket.number | withDash }}</div>
+        <div v-if="ticket.client.id"><h4>Cliente: {{ ticket.client.name }}</h4></div>
+        <div v-if="ticket.address"><h4>Direccion: {{ ticket.address }}</h4></div>
+      </div>
+      <div id="ticket-options" class="columns not-print">
+        <div class="column is-3">
+          <h1 class="header">TICKET # {{ ticket.number | withDash }} </h1>
+          <small>{{ ticket.address }}</small>
+        </div>
+        <div class="column is-6">
           <div v-if="!ticket.closed">
             <div class="columns" style="margin-bottom:0px;">
-              <div class="column is-6">
-                <table-autocomplete :class="{'is-disabled': ticket.closed || loadingTables, 'is-primary': ticket.table_id, 'is-light': !ticket.table_id, 'column is-5 is-paddingless': true }"
+              <div class="column is-3">
+                <table-autocomplete :class="{'is-disabled': ticket.closed || loadingTables, 'is-primary': ticket.table_id, 'is-light': !ticket.table_id }"
                 :query="currentTable" :tables="tables" :ticket="ticket" @remove-table="removeTable" @set-table="table => traslateTicket(table.id)"></table-autocomplete>
               </div>
-              <div class="column is-6">
+              <div class="column is-4">
                 <clients-autocomplete :ticket="ticket" :clients="clients" @remove-client="removeClient" @set-client="client => assignClient(client.id)"></clients-autocomplete>
               </div>
-            </div>
-            <div class="address" v-if="!ticket.table_id">
-              <tooltip content="Direccion para envio" trigger="focus">
-                <vue-google-autocomplete ref="addressInput" id="map" country="ar" v-bind:value="ticket.address" :enable-geolocation="true" classname="input" placeholder="Direccion para envio" v-on:placechanged="updateTicket"></vue-google-autocomplete>
-              </tooltip>
+              <div class="column is-5 address" v-if="!ticket.table_id">
+                <tooltip content="Direccion para envio" trigger="focus">
+                  <vue-google-autocomplete ref="addressInput" id="map" country="ar" :value="ticket.address" :enable-geolocation="true" classname="input" placeholder="Direccion alternativa para envio" @clear="clearAddress" @placechanged="updateTicket"></vue-google-autocomplete>
+                </tooltip>
+              </div>
             </div>
           </div>
           <div v-else>
@@ -38,7 +48,7 @@
             </div>
           </div>
         </div>
-        <div class="column is-4 has-text-right">
+        <div class="column is-3 has-text-right">
           <tooltip v-bind:content="ticket.paid ? 'Ticket Pago' : 'Ticket Sin Pagar'">
             <div class="button" :class="{'is-danger': closed && ticket.paid, 'is-success': !closed, 'is-warning': closed && !ticket.paid}">
               <span class="icon is-small"><i class="fa" :class="{'fa-check': ticket.paid, 'fa-exclamation-circle': !ticket.paid }"></i></span>
@@ -75,34 +85,26 @@
           </tooltip>
         </div>
       </div>
-      <div class="print">
-        <div>
-          <span v-if="ticket.table_id">MESA {{ ticket.table.description }}</span>
-          <span v-else class="is-danger-text">DELIVERY</span>
-        </div>
-        <div style="font-weight: 300; font-size: 25px">TICKET # {{ ticket.number | withDash }}</div>
-        <div v-if="ticket.client.id"><h4>Cliente: {{ ticket.client.name }}</h4></div>
-        <div v-if="ticket.address"><h4>Direccion{{ ticket.address }}</h4></div>
-      </div>
       <hr class="not-print"/>
-      <div>
-        <ticket-content :ticket="ticket" :reasons="reasons" @ticket-paid="setPaid" @ticket-not-paid="setNotPaid" :kitchenView="kitchenView"></ticket-content>
+      <div id="ticket-content">
+        <ticket-content :ticket="ticket" :reasons="reasons" @ticket-paid="setPaid" @ticket-not-paid="setNotPaid" :kitchenView="kitchenView">
+        </ticket-content>
       </div>
-      <div class="ticket-footer">
-        <div class="columns content">
+      <div id="ticket-footer">
+        <div class="columns ticket">
           <div class="column is-9">
-            <div class="columns">
-              <div class="column is-8 is-marginless print-center">
+            <div class="content">
+              <div class="print print-center">
                 <div class="print"><br /><p>TICKET NO VALIDO COMO FACTURA.</p></div>
                 <barcode :tag="'img'" :value="ticket.number" :options="{ format: barcode.format, lastChar: barcode.lastChar, displayValue: true, height: barcode.height, width: barcode.width, background: 'transparent' }"></barcode>
               </div>
-              <div class="column is-4 not-print" style="text-align: right;" v-if="ticket.user">
+              <div class="not-print" v-if="ticket.user">
                 Ud ha sido atendido por: <b>{{ ticket.user.name }}</b>
               </div>
             </div>
           </div>
-          <div class="column is-3 not-print" style="padding-left: 30px">
-            {{ date | moment('DD, MMMM YYYY, HH:mm A') | uppercase }}
+          <div class="column is-3 not-print">
+            <div class="content">{{ date | moment('DD, MMMM YYYY, HH:mm A') | uppercase }}</div>
           </div>
         </div>
       </div>
@@ -253,7 +255,7 @@
 </template>
 
 <script>
-import VueGoogleAutocomplete from 'vue-google-autocomplete'
+import VueGoogleAutocomplete from './TicketAddress'
 import TicketContent from './TicketContent'
 import ClientsAutocomplete from '@/components/utils/ClientsAutocomplete'
 import TableAutocomplete from '@/components/utils/TableAutocompleteAssign'
@@ -383,9 +385,22 @@ export default {
         }
       )
     },
+    clearAddress () {
+      this.$http.put('tickets/' + this.ticket.id, { ticket: { address: '' } }).then(
+        (response) => {
+          _.extend(this.ticket, response.data)
+          this.alert('success', 'Se actualizo la direccion para envio')
+        },
+        (error) => {
+          console.log(error.data)
+          this.alert('danger', 'No se puedo actualizer la direccion')
+        }
+      )
+    },
     updateTicket (a, placeResultData) {
       this.$http.put('tickets/' + this.ticket.id, { ticket: { address: placeResultData.formatted_address } }).then(
-        () => {
+        (response) => {
+          _.extend(this.ticket, response.data)
           this.alert('success', 'Se actualizo la direccion para envio')
         },
         (error) => {
@@ -585,9 +600,10 @@ export default {
   .modal .columns.modal-row .ticket-help { margin-top: 5px; }
 
   li.active { background: #F5F5F5; }
-  .ticket-footer { margin: 20px 5px; }
-  .ticket-footer .content { margin-top: 10px; padding: 10px 15px; background: #f9f9f9; }
+  #ticket-footer { margin-top: 10px; }
+  #ticket-footer .content { margin: 10px 5px 0px 5px; padding: 10px; background: #F6F6F6; }
   .print { display: none; }
+
   @media print {
     .not-print, .hero.is-primary.is-fixed, .popover { display: none !important; }
     .print-center { text-align: center; }

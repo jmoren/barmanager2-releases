@@ -20,7 +20,7 @@
               <tr><td>Entregado</td><td><b>{{ delivery.delivered_at | moment('DD/MM/YY HH:mm A') }}</b></td></tr>
               <tr><td>Estado</td><td><b>{{ delivery.state }}</b></td></tr>
               <tr><td>Creado</td><td><b>{{ delivery.user.name }}</b></td></tr>
-              <tr><td>Total</td><td> <b>{{ delivery.total }}</b></td></tr>
+              <tr><td>Total</td><td> <b>$ {{ delivery.total }}</b></td></tr>
               <tr><td>Enviado</td><td><b>Moto {{ delivery.moto_id }}</b></td></tr>
             </table>
             <div class="has-text-centered">
@@ -115,16 +115,13 @@
         )
       },
       initMap () {
-        if (typeof (window.google) !== 'undefined') {
-          this.map = new window.google.maps.Map(document.getElementById('map'), this.config)
-          this.directionsService = new window.google.maps.DirectionsService()
-          this.directionsDisplay = new window.google.maps.DirectionsRenderer()
-          this.directionsDisplay.setMap(this.map)
-          this.calculateRoute()
-        }
+        this.map = new window.google.maps.Map(document.getElementById('map'), this.config)
+        this.directionsService = new window.google.maps.DirectionsService()
+        this.directionsDisplay = new window.google.maps.DirectionsRenderer()
+        this.directionsDisplay.setMap(this.map)
+        this.calculateRoute()
       },
       calculateRoute () {
-        console.log(config)
         let _this = this
         let waypts = this.delivery.ticket_deliveries.map((t) => { return { location: t.address, stopover: true } })
 

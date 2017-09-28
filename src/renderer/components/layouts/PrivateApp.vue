@@ -189,34 +189,31 @@
       </div>
     </section>
     <div class="main columns">
-      <div v-show="isOpen === 'delivery'" class="shadow-border column is-2">
+      <div v-show="isOpen === 'delivery'" class="not-print shadow-border column is-3">
         <deliveries-bar></deliveries-bar>
       </div>
-      <div v-show="isOpen === 'tables'" class="shadow-border column is-2">
-        <h2 class="header">
-          Mesas abiertas
-        </h2>
-        <hr>
-        <ul>
-          <li v-for="table in openTables" style="margin-bottom: 10px;">
-            <div class="columns">
-              <div class="column is-7">
-                <button class="button is-light is-fullwidth" style="justify-content: flex-start;" @click="goTo(table)">
-                  <span class="icon is-small"><i class="fa fa-cutlery"></i></span>
-                  <span>({{ table.id }}) {{ table.description }}</span>
-                </button>
-              </div>
-              <div class="column is-5">
-                <button class="button is-success" @click="goTo(table)">
-                  <span><b>T. {{ table.current.number }}</b></span>
-                  <span class="icon is-small"><i class="fa fa-angle-right"></i></span>
-                </button>
+      <div v-show="isOpen === 'tables'" class="not-print shadow-border column is-3">
+        <div class="column is-12" style="height: 870px;">
+          <h2 class="header" style="height: 45px;">
+            Mesas abiertas
+          </h2>
+          <hr>
+          <div style="height: 760px; overflow: auto">
+            <div class="columns is-multiline">
+              <div v-for="table in openTables" style="margin-bottom: 10px;" class="column  is-12">
+                <router-link class="open-table-button button is-fullwidth is-medium is-light"
+                  :to="{ name: 'Ticket', params: { id: table.current.id } }">
+                  <div style="margin: 5px 0">
+                    <i class="fa fa-cutlery fa-floated"></i> {{ table.description }}
+                  </div>
+                  <div style="font-size: 14px;">Ticket: {{ table.current.number }}</div>
+                </router-link>
               </div>
             </div>
-          </li>
-        </ul>
+          </div>
+        </div>
       </div>
-      <div class="ticket-background" :class="isOpen !== '' ? 'column is-10' : 'column is-12'">
+      <div class="main-window" :class="isOpen !== '' ? 'column is-9' : 'column is-12'" style="height: 870px; overflow: auto">
         <router-view></router-view>
       </div>
     </div>
@@ -394,11 +391,14 @@
     color: #2c3e50;
     font-size: 15px;
   }
-  .shadow-border { box-shadow: 0px 0px 15px #000; }
   .is-fixed { position: fixed; top: 0; width: 100%; z-index: 1000; }
   .nav-main { margin: auto 15px;}
-  .ticket-background { background-color: #fafafa; margin-left: 10px; }
   .empty-message { color: #f56954; text-align: center; font-size: 15px;}
   .nav-right { flex-grow: initial; }
   .nav-item { padding: 5px; }
+  .open-table-button { font-weight: bold !important; height: 70px !important; display:inline-block !important; text-align: left !important;  }
+  
+  .main.columns { top: 55px; left: 10px; right: 10px; position: absolute; }
+  .main.columns .shadow-border { box-shadow: 0px 0px 15px #ccc; height: 90%; overflow: auto; margin-right: 10px;}
+  .main.columns .main-window { padding: 30px 15px !important; }
 </style>

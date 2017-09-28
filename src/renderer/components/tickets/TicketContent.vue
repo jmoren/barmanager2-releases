@@ -73,12 +73,12 @@
         </div>
         <div class="columns resume-sub-row">
           <div class="column is-6">
-            <div> Pedidos Confirmados</div>
-            <p>{{ totalLines }}</p>
+            <div> Pedidos Confirmados <b>{{ totalLines }}</b></div>
+            <br>
           </div>
           <div class="column is-6">
-            <div> Pedidos Cancelados</div>
-            <p>{{ totalCanceledLines }}</p>
+            <div> Pedidos Cancelados: <b>{{ totalCanceledLines }}</b></div>
+            <br>
           </div>
         </div>
       </div>
@@ -261,7 +261,8 @@
 
 <style lang="css">
   .ticket-lines {
-    height: 450px;
+    min-height: 350px;
+    max-height: 350px;
     margin: 0 5px;
     overflow: auto;
     border: 1px solid rgb(236, 236, 236);
