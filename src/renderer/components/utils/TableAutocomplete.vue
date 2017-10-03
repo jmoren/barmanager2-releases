@@ -1,7 +1,7 @@
 <template>
   <div class="autocomplete-dropdown" style="position:relative">
     <div class="control">
-      <input type="search" class="input is-expanded" id="search"
+      <input type="search" class="input" id="search"
          autocomplete="off"
          placeholder="Buscardor..."
          v-model="query"

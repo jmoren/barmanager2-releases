@@ -5,7 +5,7 @@
     </div>
     <div v-else>
       <div class="columns" v-if="current.open">
-        <div class="column is-9">
+        <div class="column is-12">
           <div v-if="tablesOpen.length > 0" style="margin-bottom: 40px;">
             <h1 class="header">
               Mesas Abiertas

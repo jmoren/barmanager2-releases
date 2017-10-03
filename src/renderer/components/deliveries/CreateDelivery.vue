@@ -33,18 +33,24 @@
             <div style="height: 400px; overflow: auto">
               <div v-for="(ticket, $index) in newDelivery.tickets" :key="ticket.id" class="dticket">
                 <div class="columns">
-                  <div class="column"><span class="button is-fullwidth is-not-link is-light"># {{ ticket.number }}</span></div>
-                  <div class="column"><span class="button is-fullwidth is-not-link is-light">$ {{ ticket.partial_total }}</span></div>
-                  <div class="column" v-if="!ticket.paid">
-                    <input type="number" step="0.01" v-model="ticket.pay" class="input" @blur="setChange(ticket)">
-                    <span class="button is-fullwidth is-light is-not-link">Llevar cambio: $ {{ ticket.change }}</span>
-                  </div>
-                  <div v-else class="column">
-                    <div style="padding:7px 5px">
-                      <i class="fa fa-check-circle fa-floated is-success" style="margin-right:10px"></i> <b>Ticket pagado</b>
+                  <div class="column is-3"><span class="button is-fullwidth is-not-link is-light"># {{ ticket.number }}</span></div>
+                  <div class="column is-2"><span class="button is-fullwidth is-not-link is-light">$ {{ ticket.partial_total }}</span></div>
+                  <div class="column is-5">
+                    <div v-if="!ticket.paid">
+                      <div class="control has-addons">
+                        <input type="number" step="0.01" v-model="ticket.pay" class="input" @blur="setChange(ticket)">
+                        <span class="button is-light is-not-link">$ {{ ticket.change }}</span>
+                      </div>
+                    </div>
+                    <div v-else>
+                      <div style="padding:7px 5px">
+                        <i class="fa fa-check-circle fa-floated is-success" style="margin-right:10px"></i> <b>Ticket pagado</b>
+                      </div>
                     </div>
                   </div>
-                  <div class="column"><a class="button is-danger" @click="removeFromList($index)"><i class="fa fa-trash"></i></a></div>
+                  <div class="column is-2">
+                    <a class="button is-danger is-pulled-right" @click="removeFromList($index)"><i class="fa fa-trash"></i></a>
+                  </div>
                 </div>
                 <div class="columns"><div class="column"><i class="fa fa-home fa-floated"></i> {{ ticket.address }}</div></div>
               </div>

@@ -1,6 +1,9 @@
 <template>
   <div class="container">
-    <h1 class="header">Pedidos enviados</h1>
+    <h1 class="header">
+      <tag id="header-icon" rounded><i class="fa fa-truck"></i></tag>
+      Pedidos enviados
+    </h1>
     <hr>
     <table class="table">
       <thead>
