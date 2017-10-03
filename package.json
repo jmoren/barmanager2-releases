@@ -14,6 +14,7 @@
     "build:win32": "cross-env BUILD_TARGET=win32 node .electron-vue/build.js",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "node web-build/dev-server.js",
+    "build:web-prod": "node web-build/build.js",
     "build:start": "cross-env BUILD_TARGET=web node .electron-vue/dev-server.js",
     "dev": "node .electron-vue/dev-runner.js",
     "lint": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter src",
@@ -27,6 +28,7 @@
     "chartkick": "^2.2.4",
     "electron-config": "^1.0.0",
     "eventsource-polyfill": "^0.9.6",
+    "friendly-errors-webpack-plugin": "^1.6.1",
     "fs": "0.0.1-security",
     "highcharts": "^5.0.12",
     "vee-validate": "^2.0.0-rc.6",
@@ -76,10 +78,13 @@
     "eslint-plugin-standard": "^3.0.1",
     "extract-text-webpack-plugin": "^2.0.0-beta.4",
     "file-loader": "^0.11.1",
+    "friendly-errors-webpack-plugin": "^1.6.1",
     "html-webpack-plugin": "^2.16.1",
     "json-loader": "^0.5.4",
     "multispinner": "^0.2.1",
+    "optimize-css-assets-webpack-plugin": "^3.2.0",
     "style-loader": "^0.18.1",
+    "uglifyjs-webpack-plugin": "^0.4.6",
     "url-loader": "^0.5.7",
     "vue-html-loader": "^1.2.2",
     "vue-loader": "^12.2.1",
@@ -87,10 +92,11 @@
     "vue-template-compiler": "^2.3.3",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.3.0",
-    "webpack-hot-middleware": "^2.18.0"
+    "webpack-hot-middleware": "^2.18.0",
+    "webpack-merge": "^4.1.0"
   },
   "engines": {
-    "node": "^6.9.0",
-    "npm": "^3.10.8"
+    "node": "7.5.0",
+    "npm": "4.1.2"
   }
 }
