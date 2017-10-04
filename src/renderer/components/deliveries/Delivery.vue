@@ -24,7 +24,7 @@
               <tr><td>Enviado</td><td><b>Moto {{ delivery.moto_id }}</b></td></tr>
             </table>
             <div class="has-text-centered">
-              <button class="button is-success is-fullwidth" :disabled="delivery.delivered_at" @click.prevent="close()">Cerrar envio</button>
+              <button class="button is-success is-fullwidth" :disabled="delivery.delivered_at" @click.prevent="isShow = true">Cerrar envio</button>
             </div>
           </div>
         </div>
@@ -39,7 +39,7 @@
                 <th>Client</th>
                 <th>Direccion</th>
                 <th>Total</th>
-                <th>Pago</th>
+                <th>Prepago</th>
                 <th>Entregado</th>
               </thead>
               <tr v-for="ticket in delivery.ticket_deliveries">
@@ -50,7 +50,7 @@
                 <td>$ {{ ticket.total }}</td>
                 <td>$ {{ ticket.payment }}</td>
                 <td>
-                  <b-switch v-model="ticket.delivered" :on-change="ticket => updateTicket"></b-switch>
+                  <b-switch v-model="ticket.delivered" :disabled="delivery.delivered_at"></b-switch>
                 </td>
               </tr>
             </table>
@@ -75,6 +75,21 @@
         </div>
       </div>
     </div>
+    <modal title="Cerrar Pedido" ok-text="Guardar" :on-cancel="() => { isShow = false} " cancel-text="Cancelar" :on-ok="close" :width="520" :is-show="isShow" transition="zoom" @close="isShow = false">
+      <h1 class="subtitle is-danger-text">Estás seguro que queres cerrar este pedido?</h1>
+      <alert type="primary">
+        Todos los ticket se cerrarán y se les agregará un pago en efectivo por el total pendiente.
+        Excepto los que hayas marcado como no entregados.
+      </alert>
+      <div class="control is-expanded" v-if="notDeliveredTickets.length > 0">
+        <h3 class="is-danger-text">Tickets no entregados:</h3>
+        <ul>
+          <li v-for="ticket in notDeliveredTickets">
+            <b>#{{ticket.number}}: </b>{{ticket.address || ticket.client.address}}
+          </li>
+        </ul>
+      </div>
+    </modal>
   </div>
 </template>
 
@@ -86,7 +101,10 @@
     name: 'Delivery',
     data () {
       return {
-        delivery: {},
+        isShow: false,
+        delivery: {
+          ticket_deliveries: []
+        },
         loading: false,
         map: null,
         directionsService: null,
@@ -99,6 +117,14 @@
     },
     created () {
       this.load()
+    },
+    computed: {
+      notDeliveredTickets () {
+        return this.delivery.ticket_deliveries.filter((t) => { return t.delivered ? null : t })
+      },
+      deliveredTickets () {
+        return this.delivery.ticket_deliveries.filter((t) => { return t.delivered ? t : null })
+      }
     },
     methods: {
       load () {
@@ -151,17 +177,8 @@
         })
       },
       close () {
-        this.$http.put('deliveries/' + this.delivery.id + '/close').then(
-          response => {
-            this.delivery = response.data
-          },
-          error => {
-            console.log(error)
-          }
-        )
-      },
-      updateTicket (ticket) {
-        this.$http.put('ticket_deliveries/' + ticket.id + '/close').then(
+        var notDelivered = { nd: this.notDeliveredTickets.map((t) => { return t.id }) }
+        this.$http.put('deliveries/' + this.delivery.id + '/close', { delivery: notDelivered }).then(
           response => {
             this.delivery = response.data
           },
