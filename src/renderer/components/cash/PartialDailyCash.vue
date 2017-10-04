@@ -2,7 +2,7 @@
   <div class="container">
     <div v-if="loading">Loading...</div>
     <div v-else>
-      <div class="columns">
+      <div class="columns not-print">
         <div class="column is-1">
           <tooltip content="Caja Numero" placement="left"><tag class="tag-header is-pulled-left" rounded>{{ cash.id }}</tag></tooltip>
           <tag v-if="cash.daily_cash_id" class="tag-header is-pulled-left" rounded>{{ cash.id }}</tag>
@@ -32,11 +32,16 @@
                 <span>C. Diario</span>
               </a>
             </pop-confirm>
+            <pop-confirm content="Imprimir resumen" icon="question-circle-o" :on-ok="printSummary" :on-cancel="cancelPrint">
+              <a class="button is-medium" v-shortkey.once="['ctrl', 'p']" @shortkey="printSummary()">
+                <span class="icon is-small"><i class="fa fa-print"></i></span>
+              </a>
+            </pop-confirm>
           </div>
         </div>
       </div>
       <hr>
-      <div class="columns">
+      <div class="columns not-print">
         <div class="column is-6">
           <div class="resume">
             <h2>Extracciones</h2>
@@ -249,7 +254,7 @@
             <td class="row-value"><span class="is-success-text">${{ total | withDecimals }}</span></td>
           </tr>
         </table>
-        <div class="box" v-if="!cash.closed_at">
+        <div class="box not-print" v-if="!cash.closed_at">
           <div class="columns">
             <div class="column is-6 is-offset-3 has-text-centered">
               <button class="button is-danger is-large" @click.prevent="openModal">CIERRE TURNO</button>
@@ -444,6 +449,9 @@
       this.fetchSuppliers()
     },
     methods: {
+      printSummary () {
+        window.print()
+      },
       fetchSuppliers () {
         this.$http.get('admin/suppliers').then(
           response => {
@@ -639,4 +647,8 @@
   tr.subtotal td { background: #F5F5F5; }
   td.row-value { font-weight: bold; }
   tr.divider td { background-color: #F5F5F5; height: 5px; padding: 5px 0px; }
+
+  @media print {
+    .not-print { display: none !important; }
+  }
 </style>
