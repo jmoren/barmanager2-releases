@@ -66,13 +66,27 @@
     <table class="table">
       <thead>
         <th></th>
-        <th>Cod</th>
+        <th>
+          <a @click.prevent="sortBy('code')">
+            Cod
+            <i class="fa fa-floated fa-arrow-down" v-if="sortByField === 'code'"></i>
+          </a>
+        </th>
         <th>Categoria</th>
-        <th>Nombre</th>
+        <th><a @click.prevent="sortBy('name')">
+          Nombre
+          <i class="fa fa-floated fa-arrow-down" v-if="sortByField === 'name'"></i>
+        </a></th>
         <th>
           <div class="columns">
-            <div class="column is-6">Precio Dia</div>
-            <div class="column is-6">Precio Noche</div>
+            <div class="column is-6"><a @click.prevent="sortBy('day_price')">
+              Precio Dia
+              <i class="fa fa-floated fa-arrow-down" v-if="sortByField === 'day_price'"></i>
+            </a></div>
+            <div class="column is-6"><a @click.prevent="sortBy('night_price')">
+              Precio Noche
+              <i class="fa fa-floated fa-arrow-down" v-if="sortByField === 'night_price'"></i>
+            </a></div>
           </div>
         </th>
         <th></th>
@@ -123,6 +137,7 @@ export default {
       meta: {},
       query: '',
       page: 1,
+      sortByField: 'code',
       newItem: { name: null, description: null, code: null, category_id: '', day_price: null, night_price: null, favorite: false },
       items: [],
       categories: [],
@@ -136,13 +151,17 @@ export default {
     this.fetchCategories()
   },
   methods: {
+    sortBy (field) {
+      this.sortByField = field
+      this.fetchItems()
+    },
     pageChange (page) {
       this.page = page
       this.fetchItems()
     },
     fetchItems () {
       this.loading = true
-      let url = 'admin/items?page=' + this.page
+      let url = 'admin/items?page=' + this.page + '&sort_by=' + this.sortByField
       if (this.query && this.query.length > 2) {
         url = url + '&query=' + this.query
       }
