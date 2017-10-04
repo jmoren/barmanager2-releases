@@ -4,8 +4,8 @@
       Delivery
       <div class="is-pulled-right">
         <div class="control has-addons">
-          <a @click.prevent="loadDelivery()" class="button is-ligth">
-            <span class="icon is-small"><i class="fa fa-refresh"></i></span>
+          <a @click.prevent="loadDelivery()" class="button is-ligth" :class="{'is-disabled': loadingDeliveries}">
+            <span class="icon is-small"><i class="fa fa-refresh" :class="{'fa-spin': loadingDeliveries }"></i></span>
           </a>
           <a @click.prevent="prepareDelivery()" class="button is-ligth">
             <span class="icon is-small"><i class="fa fa-truck"></i></span>
@@ -82,6 +82,7 @@ export default {
   components: { DeliveryComposer },
   data () {
     return {
+      loading: false,
       delivery: [],
       createPedido: false
     }
@@ -99,6 +100,12 @@ export default {
   },
   created () {
     this.loadDelivery()
+    this.mainCall = setInterval(() => {
+      this.loadDelivery()
+    }, 7000)
+  },
+  beforeDestroy () {
+    clearInterval(this.mainCall)
   },
   computed: {
     ...mapGetters({
@@ -120,6 +127,9 @@ export default {
       return this.delivery.filter((del) => {
         return !del.full_delivered && !del.delivery
       })
+    },
+    loadingDeliveries () {
+      return this.loading
     }
   },
   methods: {
@@ -128,14 +138,20 @@ export default {
       this.loadDelivery()
     },
     loadDelivery () {
+      this.loading = true
       this.$http.get('tickets?without_table=true').then(
         response => {
           this.delivery = response.data
+          this.loading = false
         },
         error => {
           this.alert('danger', error.data)
+          this.loading = false
         }
-      ).catch(message => console.log(message))
+      ).catch(message => {
+        console.log(message)
+        this.loading = false
+      })
     },
     prepareDelivery () {
       this.createPedido = true
