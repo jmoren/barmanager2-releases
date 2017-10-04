@@ -128,6 +128,7 @@
           (response) => {
             console.log(response)
             this.$emit('delivery-created', response.data)
+            this.newDelivery = { tickets: [], total: 0, moto_id: '' }
           },
           (error) => {
             console.log(error)
