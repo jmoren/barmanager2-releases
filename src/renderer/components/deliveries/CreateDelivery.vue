@@ -5,12 +5,12 @@
         <h1 style="font-size: 18px; font-weight: 400; margin-bottom: 10px;">Pedidos listos para enviar: {{ tickets.length }}</h1>
         <div style="height: 600px; overflow: auto;">
           <ul>
-            <li v-for="(ticket, $index) in tickets" :id="$index" class="dticket" :draggable="ticket.address && !ticket.added" 
-                  :class="{'disabled': !ticket.address, added: ticket.added, dragging: isdragged && current === $index }" 
+            <li v-for="(ticket, $index) in tickets" :id="$index" class="dticket" :draggable="ticket.address && !ticket.added"
+                  :class="{'disabled': !ticket.address, added: ticket.added, dragging: isdragged && current === $index }"
                   @drag="setDragging($index)" @dragstart="isdragged = true; isdragging = true" @dragend="isdragging = false; current = null;">
               <div class="is-clearfix">
                 <i class="fa fa-check fa-floated" v-if="ticket.added"></i>
-                # {{ ticket.number }} 
+                # {{ ticket.number }}
                 <b class="is-pulled-right">${{ ticket.partial_total }}</b>
               </div>
               <p style="margin: 10px 0px;">
@@ -62,9 +62,7 @@
             <div class="column">
               <span class="select is-fullwidth">
                 <select v-model="newDelivery.moto_id">
-                  <option value="1">Moto 1</option>
-                  <option value="2">Moto 2</option>
-                  <option value="3">Moto 3</option>
+                  <option v-for="user in users" v-bind:value="user.id">{{ user.name }}</option>
                 </select>
               </span>
             </div>
@@ -90,6 +88,7 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   import _ from 'lodash'
   export default {
     name: 'create-delivery',
@@ -103,6 +102,9 @@
       }
     },
     computed: {
+      ...mapGetters({
+        users: 'allUsers'
+      }),
       total () {
         return this.newDelivery.tickets.reduce((sum, ticket) => {
           return parseFloat(sum) + parseFloat(ticket.partial_total)
