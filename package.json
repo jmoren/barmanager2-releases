@@ -34,7 +34,7 @@
     "uglify-es": "github:mishoo/UglifyJS2#harmony",
     "vee-validate": "^2.0.0-rc.6",
     "vue": "^2.3.3",
-    "vue-barcode": "github:xkeshi/vue-barcode",
+    "vue-barcode": "^1.0.7",
     "vue-blu": "^0.1.9",
     "vue-chartkick": "^0.2.0",
     "vue-electron": "^1.0.6",

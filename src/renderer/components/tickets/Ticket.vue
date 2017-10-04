@@ -30,7 +30,7 @@
               </div>
               <div class="column is-5 address" v-if="!ticket.table_id">
                 <tooltip content="Direccion para envio" trigger="focus">
-                  <vue-google-autocomplete ref="addressInput" id="map" country="ar" :value="ticket.address" :enable-geolocation="true" classname="input" placeholder="Direccion alternativa para envio" @clear="clearAddress" @placechanged="updateTicket"></vue-google-autocomplete>
+                  <vue-google-autocomplete ref="addressInput" id="map" country="ar" :value="ticket.address" :enable-geolocation="true" classname="input" placeholder="Direccion alternativa para envio" @clear="clearAddress" @placechanged="updateAddress"></vue-google-autocomplete>
                 </tooltip>
               </div>
             </div>
@@ -87,7 +87,8 @@
       </div>
       <hr class="not-print"/>
       <div id="ticket-content">
-        <ticket-content :ticket="ticket" :reasons="reasons" @ticket-paid="setPaid" @ticket-not-paid="setNotPaid" :kitchenView="kitchenView">
+        <ticket-content :ticket="ticket" :reasons="reasons" @update-pay="value => updatePayWith(value)" @ticket-paid="setPaid" 
+          @ticket-not-paid="setNotPaid" :kitchenView="kitchenView">
         </ticket-content>
       </div>
       <div id="ticket-footer">
@@ -397,15 +398,28 @@ export default {
         }
       )
     },
-    updateTicket (a, placeResultData) {
-      this.$http.put('tickets/' + this.ticket.id, { ticket: { address: placeResultData.formatted_address } }).then(
+    updateAddress (a, placeResultData) {
+      this.ticket.address = placeResultData.formatted_address
+      this.updateTicket()
+    },
+    updatePayWith (value) {
+      this.ticket.pay_with = value
+      this.updateTicket()
+    },
+    updateTicket () {
+      let data = {
+        pay_with: this.ticket.pay_with,
+        address: this.ticket.address
+      }
+
+      this.$http.put('tickets/' + this.ticket.id, { ticket: data }).then(
         (response) => {
           _.extend(this.ticket, response.data)
-          this.alert('success', 'Se actualizo la direccion para envio')
+          this.alert('success', 'Se actualizo el ticket')
         },
         (error) => {
           console.log(error.data)
-          this.alert('danger', 'No se puedo actualizer la direccion')
+          this.alert('danger', 'No se puedo actualizer el ticket')
         }
       )
     },

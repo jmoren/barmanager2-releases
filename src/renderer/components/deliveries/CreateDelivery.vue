@@ -37,9 +37,21 @@
                   <div class="column is-2"><span class="button is-fullwidth is-not-link is-light">$ {{ ticket.partial_total }}</span></div>
                   <div class="column is-5">
                     <div v-if="!ticket.paid">
-                      <div class="control has-addons">
-                        <input type="number" step="0.01" v-model="ticket.pay" class="input" @blur="setChange(ticket)">
-                        <span class="button is-light is-not-link">$ {{ ticket.change }}</span>
+                      <div class="columns">
+                        <div class="column">
+                          <div class="control">
+                            <tooltip content="Paga con">
+                              <div class="input">$ {{ ticket.pay_with }}</div> 
+                            </tooltip>
+                          </div>
+                        </div>
+                        <div class="column">
+                          <div class="control">
+                            <tooltip content="Cambio">
+                              <div class="input">$ {{ ticket.partial_total - ticket.pay_with }}</div>
+                            </tooltip>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <div v-else>
@@ -139,11 +151,6 @@
         _.each(this.newDelivery.tickets, (t) => { t.added = false })
         this.newDelivery.tickets = []
         this.$emit('delivery-canceled')
-      },
-      setChange (ticket) {
-        if (ticket.pay) {
-          ticket.change = parseFloat(ticket.pay) - parseFloat(ticket.partial_total)
-        }
       },
       addItem (evt) {
         if (this.current !== null && this.current >= 0) {

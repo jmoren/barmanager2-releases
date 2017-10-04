@@ -66,17 +66,22 @@
       </div>
       <div class="resume">
         <div class="columns resume-header print">
-          <div class="column is-4">TOTAL</div>
-          <div class="column is-2">$ {{ total }}</div>
-          <div class="column is-4">PENDIENTE</div>
-          <div class="column is-2">$ {{ pending || 0}}</div>
+          <div class="column is-4">TOTAL $ {{ total }}</div>
+          <div class="column is-4">PENDIENTE $ {{ pending || 0}}</div>
+          <div class="column is-4" v-if="!ticket.table_id">
+            <div class="control has-addons is-pulled-right">
+              <span class="button is-primary is-not-link"><i class="fa fa-dollar"></i></span>
+              <input type="number" step="0.01" v-model="pay_with" class="input" placeholder="Paga el delivery con" 
+              @blur.prevent="() => setPayWith">
+            </div>
+          </div>
         </div>
         <div class="columns resume-sub-row">
-          <div class="column is-6">
+          <div class="column is-4">
             <div> Pedidos Confirmados <b>{{ totalLines }}</b></div>
             <br>
           </div>
-          <div class="column is-6">
+          <div class="column is-4">
             <div> Pedidos Cancelados: <b>{{ totalCanceledLines }}</b></div>
             <br>
           </div>
@@ -132,7 +137,10 @@
     },
     watch: {
       '$route': 'focusCode',
-      'ticket.closed': 'fetchEntries'
+      'ticket.closed': 'fetchEntries',
+      total () {
+        this.setPayWith(0)
+      }
     },
     data () {
       return {
@@ -142,7 +150,8 @@
         entries: [],
         isShow: false,
         loading: false,
-        pending: 0
+        pending: 0,
+        pay_with: this.ticket.pay_with
       }
     },
     created () {
@@ -254,6 +263,25 @@
       setNotPaid (value) {
         this.$emit('ticket-not-paid', value)
         this.pending = value
+      },
+      setPayWith (value) {
+        debugger
+        if (value) {
+          if (this.pay_with > 0) {
+            this.pay_with = 0
+            this.$emit('update-pay', this.pay_with)
+          }
+        } else {
+          if (this.total > 0 && (this.pay_with < this.total || this.pay_with < this.pending)) {
+            this.$notify.open({
+              content: 'El pago no puede ser menor al total o pendiente',
+              duration: 3000,
+              type: 'danger'
+            })
+          } else {
+            this.$emit('update-pay', this.pay_with)
+          }
+        }
       }
     }
   }
