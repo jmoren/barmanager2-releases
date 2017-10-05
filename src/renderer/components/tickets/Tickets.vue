@@ -14,18 +14,21 @@
           <th>Numero</th>
           <th>Total</th>
           <th>Fecha</th>
+          <th>Razon</th>
         </thead>
         <tbody>
           <router-link tag="tr" v-for="ticket in tickets" :key="ticket.id" :to="{ name: 'Ticket', params: { id: ticket.id } }">
             <td style="width: 15%;">
-              <tag rounded :class="ticket.table.color" v-if="ticket.table_id"><b>{{ ticket.table.description }}</b></tag>
-              <tag rounded type="light" v-else><b>Delivery</b></tag>
+              <span v-if="ticket.table_id"><b>{{ ticket.table.description }}</b></span>
+              <span v-else><b>Delivery</b></span>
             </td>
             <td>
-              <tooltip v-bind:content="ticket.closed ? 'Ticket Cerrado' : 'Ticket Abierto'">
-                <i class="fa fa-circle fa-floated"
-                  :class="{'is-success': !ticket.closed, 'is-danger': ticket.closed }"></i>
-              </tooltip>
+              <div class="button is-light is-fullwidth is-small">
+                <span class="icon is-small">
+                  <i class="fa fa-circle" :class="{'is-danger': ticket.status === 'canceled', 'is-success': ticket.status === 'open', 'is-warning': ticket.status === 'closed' }"></i>
+                </span>
+                <span>{{ ticket.status_name }}</span>
+              </div>
             </td>
             <td>
               <i class="fa fa-floated" :class="{'fa-check is-success': ticket.paid_at, 'fa-exclamation-circle is-warning': !ticket.paid_at }"></i>
@@ -34,6 +37,7 @@
             <td>{{ ticket.number }}</td>
             <td>${{ ticket.partial_total }}</td>
             <td>{{ ticket.created_at | moment('DD MMMM, YYYY')}}</td>
+            <td>{{ ticket.cancel_reason.text }}</td>
           </router-link>
         </tbody>
       </table>

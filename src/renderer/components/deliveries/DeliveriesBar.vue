@@ -100,9 +100,9 @@ export default {
   },
   created () {
     this.loadDelivery()
-    this.mainCall = setInterval(() => {
-      this.loadDelivery()
-    }, 7000)
+    //  this.mainCall = setInterval(() => {
+    this.loadDelivery()
+    //  }, 7000)
   },
   beforeDestroy () {
     clearInterval(this.mainCall)

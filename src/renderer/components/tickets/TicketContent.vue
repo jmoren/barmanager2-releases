@@ -72,7 +72,7 @@
             <div class="control has-addons is-pulled-right">
               <span class="button is-primary is-not-link"><i class="fa fa-dollar"></i></span>
               <input type="number" step="0.01" v-model="pay_with" class="input" placeholder="Paga el delivery con" 
-              @blur.prevent="() => setPayWith">
+              @keydown.enter="setPayWith()">
             </div>
           </div>
         </div>
@@ -139,7 +139,7 @@
       '$route': 'focusCode',
       'ticket.closed': 'fetchEntries',
       total () {
-        this.setPayWith(0)
+        this.setPayWith(true)
       }
     },
     data () {
@@ -264,22 +264,26 @@
         this.$emit('ticket-not-paid', value)
         this.pending = value
       },
-      setPayWith (value) {
-        debugger
-        if (value) {
-          if (this.pay_with > 0) {
-            this.pay_with = 0
-            this.$emit('update-pay', this.pay_with)
-          }
+      setPayWith (resetValue) {
+        if (this.ticket.table_id) {
+          return false
         } else {
-          if (this.total > 0 && (this.pay_with < this.total || this.pay_with < this.pending)) {
-            this.$notify.open({
-              content: 'El pago no puede ser menor al total o pendiente',
-              duration: 3000,
-              type: 'danger'
-            })
+          if (resetValue) {
+            if (parseFloat(this.pay_with) > 0) {
+              this.pay_with = 0
+              this.$emit('update-pay', this.pay_with)
+            }
           } else {
-            this.$emit('update-pay', this.pay_with)
+            if (parseFloat(this.total) > 0 &&
+               (parseFloat(this.pay_with) < parseFloat(this.total) || parseFloat(this.pay_with) < parseFloat(this.pending))) {
+              this.$notify.open({
+                content: 'El pago no puede ser menor al total o pendiente',
+                duration: 3000,
+                type: 'danger'
+              })
+            } else {
+              this.$emit('update-pay', this.pay_with)
+            }
           }
         }
       }

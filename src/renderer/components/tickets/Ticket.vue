@@ -48,41 +48,42 @@
             </div>
           </div>
         </div>
-        <div class="column is-3 has-text-right">
-          <tooltip v-bind:content="ticket.paid ? 'Ticket Pago' : 'Ticket Sin Pagar'">
-            <div class="button" :class="{'is-danger': closed && ticket.paid, 'is-success': !closed, 'is-warning': closed && !ticket.paid}">
-              <span class="icon is-small"><i class="fa" :class="{'fa-check': ticket.paid, 'fa-exclamation-circle': !ticket.paid }"></i></span>
-              <span><b>{{ formattedStatus }}</b></span>
-            </div>
-          </tooltip>
-          <tooltip content="Cerrar ticket (ctrl + c)" v-if="!closed">
-            <a @click.prevent="closeTicketModal" class="button is-light" v-shortkey="['ctrl', 'c']"
-             @shortkey="closeTicketModal">
-              <span class="icon is-small"><i class="fa fa-lock"></i></span>
-            </a>
-          </tooltip>
-          <tooltip v-bind:content=" ticket.printed_at ? 'Ticket impreso. Imprimir nuevamente' : 'Imprimir ticket (ctrl + p)'">
-            <pop-confirm content="Despues de imprimir, no se podra modificar el ticket. Seguro de seguir?" icon="question-circle-o" :on-ok="printTicket" :on-cancel="cancelPrint" class="not-print">
-              <span class="button is-light" v-shortkey.once="['ctrl', 'p']" @shortkey="printTicket()">
-                <span class="icon is-small"><i class="fa fa-print"></i></span>
-              </span>
-            </pop-confirm>
-          </tooltip>
-          <tooltip content="Imprimir ticket de cocina">
-            <a class="button is-light" @click.prevent="toggleKitchenView">
-              <span class="icon is-small"><i class="fa fa-cutlery"></i></span>
-            </a>
-          </tooltip>
-          <tooltip content="Enviar a la impresora fiscal">
-            <a class="button is-light" @click.prevent="printFiscalTicket">
-              <span class="icon is-small"><i class="fa fa-file-o"></i></span>
-            </a>
-          </tooltip>
-          <tooltip content="Eliminar ticket">
-            <button class="button is-light" @click.prevent="deleteTicket">
-              <span class="icon is-small"><i class="fa fa-times"></i></span>
-            </button>
-          </tooltip>
+        <div class="column is-3">
+          <div class="control has-addons is-pulled-right">
+            <tooltip v-bind:content="ticket.paid ? 'Ticket Pago' : 'Ticket Sin Pagar'">
+              <div class="button" :class="{'is-danger': closed, 'is-success': !closed, 'is-warning': ticket.canceled_at}">
+                <b>{{ ticket.status_name }}</b>
+              </div>
+            </tooltip>
+            <tooltip content="Cerrar ticket (ctrl + c)" v-if="!closed && !ticket.canceled_at">
+              <a @click.prevent="closeTicketModal" class="button is-light" v-shortkey="['ctrl', 'c']"
+               @shortkey="closeTicketModal">
+                <span class="icon is-small"><i class="fa fa-lock"></i></span>
+              </a>
+            </tooltip>
+            <tooltip v-bind:content=" ticket.printed_at ? 'Ticket impreso. Imprimir nuevamente' : 'Imprimir ticket (ctrl + p)'">
+              <pop-confirm content="Despues de imprimir, no se podra modificar el ticket. Seguro de seguir?" icon="question-circle-o" :on-ok="printTicket" :on-cancel="cancelPrint" class="not-print">
+                <span class="button is-light" v-shortkey.once="['ctrl', 'p']" @shortkey="printTicket()">
+                  <span class="icon is-small"><i class="fa fa-print"></i></span>
+                </span>
+              </pop-confirm>
+            </tooltip>
+            <tooltip content="Imprimir ticket de cocina">
+              <a class="button is-light" @click.prevent="toggleKitchenView">
+                <span class="icon is-small"><i class="fa fa-cutlery"></i></span>
+              </a>
+            </tooltip>
+            <tooltip content="Enviar a la impresora fiscal">
+              <a class="button is-light" @click.prevent="printFiscalTicket">
+                <span class="icon is-small"><i class="fa fa-file-o"></i></span>
+              </a>
+            </tooltip>
+            <tooltip content="Eliminar ticket">
+              <button class="button is-light" @click.prevent="deleteTicket" v-if="!ticket.canceled_at">
+                <span class="icon is-small"><i class="fa fa-times"></i></span>
+              </button>
+            </tooltip>
+          </div>
         </div>
       </div>
       <hr class="not-print"/>
@@ -251,6 +252,21 @@
           </div>
         </form>
       </modal>
+      <modal :title="'TICKET Nro. ' + ticket.number" :show-footer="false" :on-cancel="closeCancelTicket" :is-show="cancelTicketModal">
+        <alert><b>Estas seguro de cancelar este ticket?</b></alert>
+        <hr>
+        <h3 style="font-size: 17px; font-weight: 400; margin-bottom: 15px">Seleccione una razon</h3>
+        <div class="control">
+          <div class="select is-fullwidth">
+            <select v-model="ticket.cancel_reason_id">
+              <option v-for="reason in reasons" :key="reason.id" :value="reason.id">{{ reason.text }}</option>
+            </select>
+          </div>
+        </div>
+        <hr>
+        <button @click.prevent="confirmDelete" class="button is-danger">Cancelar Ticket</button>
+        <button @click.prevent="cancelTicketModal = false" class="button is-light">Cerrar</button>
+      </modal>
     </div>
   </div>
 </template>
@@ -333,10 +349,13 @@ export default {
         full_delivered: false,
         closed: false,
         paid: false,
-        pay: 'efectivo'
+        pay: 'efectivo',
+        canceled_at: '',
+        cancel_reason_id: ''
       },
       new_table_id: '',
-      new_client_id: ''
+      new_client_id: '',
+      cancelTicketModal: false
     }
   },
   computed: {
@@ -346,9 +365,6 @@ export default {
     }),
     closed () {
       return this.ticket.status === 'closed'
-    },
-    formattedStatus () {
-      return this.ticket.status === 'closed' ? 'Cerrado' : 'Abierto'
     },
     canBeClosed () {
       return (this.ticket.client_id || this.ticket.paid || this.ticket.total === 0)
@@ -403,6 +419,7 @@ export default {
       this.updateTicket()
     },
     updatePayWith (value) {
+      debugger
       this.ticket.pay_with = value
       this.updateTicket()
     },
@@ -430,19 +447,16 @@ export default {
       }, 100)
     },
     deleteTicket () {
-      this.$modal.confirm({
-        title: 'Eliminar ticket',
-        content: 'Estas seguro de eliminar este ticket',
-        onOk: this.confirmDelete
-      })
+      this.cancelTicketModal = true
     },
     confirmDelete () {
-      this.$http.delete('tickets/' + this.ticket.id).then(
-        () => {
+      this.$http.post('tickets/' + this.ticket.id + '/cancel', { ticket: { cancel_reason_id: this.ticket.cancel_reason_id } }).then(
+        (response) => {
+          _.extend(this.ticket, response.data)
           if (this.ticket.table) {
             this.$store.dispatch('closeTable', this.ticket.table)
           }
-          this.$router.push({ name: 'Tables' })
+          this.cancelTicketModal = false
           this.alert('success', 'Ticket eliminado!')
         },
         error => {
@@ -593,6 +607,9 @@ export default {
     },
     closePrintModal () {
       this.isPrintOpen = false
+    },
+    closeCancelTicket () {
+      this.cancelTicketModal = false
     }
   }
 }
