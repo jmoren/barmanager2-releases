@@ -10,7 +10,7 @@
       <br>
       <div class="control is-grouped">
         <div class="control">
-          <input type="text" class="input" v-model="newItem.code" placeholder="Codigo">
+          <input class="input" v-model="newItem.code" placeholder="Código" min="1" type="number" >
         </div>
         <div class="control is-expanded">
           <input type="text" class="input" v-model="newItem.name" placeholder="Nombre">
@@ -196,9 +196,18 @@ export default {
     },
     openForm () {
       this.isShow = true
-      if (this.items.length > 0) {
-        this.newItem.code = parseInt(_.max(_.map(this.items, function (item) { return item.code }))) + 1
-      }
+      this.getProposedCode()
+    },
+    getProposedCode () {
+      this.$http.get('admin/items/proposed_code').then(
+        response => {
+          this.newItem.code = response.data.proposed
+        },
+        error => {
+          console.log(error.data)
+          this.alert('warning', error.data, 'top-center')
+        }
+      )
     },
     createItem () {
       this.$http.post('admin/items', { item: this.newItem }).then(
@@ -247,7 +256,8 @@ export default {
           this.items.splice(index, 1)
         },
         error => {
-          this.alert('danger', error.data)
+          var promoName = error.data.promotions[0].name
+          this.alert('danger', error.data.message + '. PROMO: ' + promoName)
         }
       )
     },

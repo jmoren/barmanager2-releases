@@ -2,15 +2,15 @@
   <div id="promotions">
     <b-aside :is-show="isShow" :width="600" :backdrop="false" :show-footer="false" placement="right" title="Administrar Promocion" @close="cancelPromotion">
       <div v-if="newPromotion.id">
-        <tag type="success">Editando Promotion {{ newPromotion.id }}</tag>
+        <tag type="success">Editando Promoción {{ newPromotion.id }}</tag>
       </div>
       <div v-else>
-        <tag type="danger">Nuevo Promotion</tag>
+        <tag type="danger">Nuevo Promoción</tag>
       </div>
       <br>
       <div class="control is-grouped">
         <div class="control is-expanded">
-          <input type="text" class="input is-expanded" v-model="newPromotion.code" placeholder="Codigo">
+          <input class="input is-expanded" v-model="newPromotion.code" placeholder="Código" min="1" type="number" >
         </div>
         <div class="control is-expanded">
           <input type="text" class="input is-expanded" v-model="newPromotion.name" placeholder="Nombre">
@@ -136,7 +136,7 @@ export default {
     return {
       meta: {},
       query: undefined,
-      newPromotion: { name: '', promotion_items: [], day_price: null, night_price: null, favorite: false },
+      newPromotion: { name: '', promotion_items: [], day_price: null, night_price: null, favorite: false, code: '' },
       newItem: { item: {}, quantity: null },
       newItems: [],
       page: 1,
@@ -278,11 +278,20 @@ export default {
       let index = this.newItems.indexOf(entry)
       this.newItems.splice(index, 1)
     },
+    getProposedCode () {
+      this.$http.get('admin/promotions/proposed_code').then(
+        response => {
+          this.newPromotion.code = response.data.proposed
+        },
+        error => {
+          console.log(error.data)
+          this.alert('warning', error.data, 'top-center')
+        }
+      )
+    },
     openForm () {
       this.isShow = true
-      if (this.promotions.length > 0) {
-        this.newPromotion.code = parseInt(_.max(_.map(this.promotions, function (promo) { return promo.code }))) + 1
-      }
+      this.getProposedCode()
     },
     setToEdit (promotion) {
       this.originalPromotion = promotion
