@@ -32,6 +32,20 @@
         </div>
       </div>
       <div class="control">
+        <div class="control is-grouped">
+          <div class="control is-expanded">
+            <input type="checkbox" id="checkbox" v-model="newItem.stockable">
+            <label for="checkbox">Descuenta Stock</label>
+          </div>
+          <div class="control is-expanded" v-if="newItem.stockable">
+            <input type="number" :step="0.01" class="input" v-model="newItem.stock_discount"  placeholder="% descuento"></input>
+          </div>
+          <div class="control is-expanded" v-if="newItem.stockable">
+            <input type="number" :step="0.01" class="input" v-model="newItem.stock_amount"  placeholder="Cantidad disponible"></input>
+          </div>
+        </div>
+      </div>
+      <div class="control">
         <div class="control is-expanded">
           <span class="select is-fullwidth">
             <select v-model="newItem.category_id">
@@ -89,6 +103,8 @@
             </a></div>
           </div>
         </th>
+        <th>Descuenta Stock</th>
+        <th>Stock</th>
         <th></th>
       </thead>
       <tbody>
@@ -107,6 +123,12 @@
               <div class="column is-6"><span class="button is-fullwidth is-light">${{ item.day_price }}</span></div>
               <div class="column is-6"><span class="button is-fullwidth is-light">${{ item.night_price}}</span></div>
             </div>
+          </td>
+          <td>
+            {{ item.stockable ? "Si" : "No"}}
+          </td>
+          <td>
+            {{ item.stock_amount }}
           </td>
           <td>
             <div class="control has-addons">
@@ -134,11 +156,24 @@ export default {
   mixins: [alert],
   data () {
     return {
+      emptyItem: {
+        id: null,
+        name: null,
+        description: null,
+        code: null,
+        category_id: '',
+        day_price: null,
+        night_price: null,
+        favorite: false,
+        stock_amount: null,
+        stock_discount: null,
+        stockable: false
+      },
       meta: {},
       query: '',
       page: 1,
       sortByField: 'code',
-      newItem: { name: null, description: null, code: null, category_id: '', day_price: null, night_price: null, favorite: false },
+      newItem: {},
       items: [],
       categories: [],
       isShow: false,
@@ -235,8 +270,7 @@ export default {
     },
     cancelItem () {
       this.isShow = false
-      _.extend(this.newItem, this.originalItem)
-      this.newItem = { name: null, description: null, code: null, category_id: '', day_price: null, night_price: null, favorite: false }
+      this.newItem = _.clone(this.emptyItem)
     },
     removeItem (item) {
       this.current = item
@@ -271,6 +305,6 @@ export default {
 </script>
 
 <style lang="css">
-  .switchery {margin-top: 15px; }
+  .switchery {margin-top: 3px; }
   tr:hover td .edit { display: block; }
 </style>
