@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1 class="header">Cajas</h1>
+    <h1 class="header">Cajas Diarias</h1>
     <hr>
     <table class="table">
       <thead>

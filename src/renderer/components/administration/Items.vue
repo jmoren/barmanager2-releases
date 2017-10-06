@@ -231,23 +231,13 @@ export default {
     },
     openForm () {
       this.isShow = true
-      this.getProposedCode()
-    },
-    getProposedCode () {
-      this.$http.get('admin/items/proposed_code').then(
-        response => {
-          this.newItem.code = response.data.proposed
-        },
-        error => {
-          console.log(error.data)
-          this.alert('warning', error.data, 'top-center')
-        }
-      )
+      this.newItem.code = this.meta.proposed
     },
     createItem () {
       this.$http.post('admin/items', { item: this.newItem }).then(
         response => {
           this.items.push(response.data)
+          this.meta.proposed = this.meta.proposed + 1
           this.cancelItem()
         },
         error => {

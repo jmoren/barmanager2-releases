@@ -30,6 +30,8 @@ import AdminUsers from '@/components/administration/Users'
 import AdminReports from '@/components/administration/Reports'
 import Delivery from '@/components/deliveries/Delivery'
 import Deliveries from '@/components/deliveries/Deliveries'
+import MensualCashes from '@/components/administration/MensualCashes'
+import MensualCash from '@/components/administration/MensualCash'
 
 import NotFound from '@/components/notFound/NotFound'
 
@@ -98,11 +100,9 @@ const router = new Router({
             { path: 'cajas', name: 'AdminDailyCashes', component: AdminDailyCashes, meta: { roles: ['admin'] } },
             { path: 'reportes', name: 'AdminReports', component: AdminReports, meta: { roles: ['admin'] } },
             { path: 'Configuracion', name: 'AdminSettings', component: AdminSettings, meta: { roles: ['admin'] } },
-            { path: 'cajas/:id/resumen',
-              name: 'DailyCash',
-              component: DailyCash,
-              meta: { roles: ['admin'] }
-            },
+            { path: 'cajas/:id/resumen', name: 'DailyCash', component: DailyCash, meta: { roles: ['admin'] } },
+            { path: 'cajas/mensuales', name: 'MensualCashes', component: MensualCashes, meta: { roler: ['admin'] } },
+            { path: 'cajas/:month/:year', name: 'MensualCash', component: MensualCash, meta: { roler: ['admin'] } },
             {
               path: 'mesas/:id',
               name: 'AdminTable',

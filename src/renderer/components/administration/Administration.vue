@@ -29,7 +29,8 @@
             <menu-item icon="ticket" :to="{ name: 'Tickets'}">Tickets</menu-item>
             <menu-item icon="money" :to="{ name: 'Payments'}">Pagos</menu-item>
             <menu-item icon="cog" :to="{ name: 'AdminUsers'}">Usuarios</menu-item>
-            <menu-item icon="dollar" :to="{ name: 'AdminDailyCashes'}">Cajas</menu-item>
+            <menu-item icon="dollar" :to="{ name: 'AdminDailyCashes'}">C. Diarias</menu-item>
+            <menu-item icon="dollar" :to="{ name: 'MensualCashes'}">C. Mensuales</menu-item>
             <menu-item icon="bar-chart" :to="{ name: 'AdminReports'}">Reportes</menu-item>
             <menu-item icon="cogs" :to="{ name: 'AdminSettings'}">Settings</menu-item>
           </div>

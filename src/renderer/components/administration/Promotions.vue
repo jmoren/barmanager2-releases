@@ -205,6 +205,7 @@ export default {
       this.$http.post('admin/promotions', { promotion: params }).then(
         response => {
           this.promotions.push(response.data)
+          this.meta.proposed = this.meta.proposed + 1
           this.cancelPromotion()
         },
         error => {
@@ -278,20 +279,9 @@ export default {
       let index = this.newItems.indexOf(entry)
       this.newItems.splice(index, 1)
     },
-    getProposedCode () {
-      this.$http.get('admin/promotions/proposed_code').then(
-        response => {
-          this.newPromotion.code = response.data.proposed
-        },
-        error => {
-          console.log(error.data)
-          this.alert('warning', error.data, 'top-center')
-        }
-      )
-    },
     openForm () {
       this.isShow = true
-      this.getProposedCode()
+      this.newPromotion.code = this.meta.proposed
     },
     setToEdit (promotion) {
       this.originalPromotion = promotion
