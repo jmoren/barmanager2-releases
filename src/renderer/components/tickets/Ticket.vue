@@ -337,7 +337,7 @@ export default {
         customer_doc_nbr: '',
         customer_doc_type: '',
         iva_type: '',
-        iva: ''
+        iva: '21'
       },
       ticket: {
         client: {},
