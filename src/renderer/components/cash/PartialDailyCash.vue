@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="">
     <div v-if="loading">Loading...</div>
     <div v-else>
       <div class="columns not-print">

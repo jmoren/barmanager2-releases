@@ -42,14 +42,7 @@
     methods: {
       fetchValues () {
         this.$http.get('admin/reports?from=' + this.range.from + '&to=' + this.range.to).then(response => { this.data = response.data.values })
-      },
-      filterData () {
-
       }
     }
   }
 </script>
-
-<style>
-  
-</style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="">
     <h1 class="header">Cajas Diarias</h1>
     <hr>
     <table class="table">

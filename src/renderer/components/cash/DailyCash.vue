@@ -95,24 +95,6 @@
           </ul>
         </cash-row>
       </div>
-      <div class="box">
-        <h1>Resumen</h1>
-        <div class="columns">
-          <div class="column is-10">
-            <div class="button is-light is-not-link">Total Diario $ {{ finalSum }}</div>
-            <tooltip content="Monto efectivo">
-              <div class="button is-light">Total Ingresos $ {{ totalIngresosCash }}</div>
-            </tooltip>
-            <tooltip content="Monto en tarjeta">
-              <div class="button is-light">Total Ingresos $ {{ totalIngresosCredit }}</div>
-            </tooltip>
-            <div class="button is-light">Total Egresos  $ {{ totalEgresos }}</div>
-          </div>
-          <div class="column is-2">
-            <div class="button is-light is-not-link">Tickets Generados {{ cash.resume.tickets_count }}</div>
-          </div>
-        </div>
-      </div>
       <hr>
       <div class="box">
         <h1>Cajas Parciales</h1>

@@ -1,6 +1,6 @@
 <template lang="html">
-  <div class="container">
-    <h1 class="header"><tag id="header-icon" rounded><i class="fa fa-tags"></i></tag>Pagos</h1>
+  <div class="">
+    <h1 class="header"><i class="fa fa-tags fa-floated"></i> Pagos</h1>
     <hr>
     <div v-if="loading">
       <Loader></Loader>

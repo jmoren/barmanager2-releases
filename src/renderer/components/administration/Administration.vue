@@ -1,7 +1,7 @@
 <template lang="html">
-  <div class="container" id="admin-content">
+  <div class="" id="admin-content">
     <div class="columns">
-      <div class="column is-2">
+      <div class="column is-2 is-marginless">
         <h1 class="header">Menu</h1>
         <hr>
         <menus label="">
@@ -12,14 +12,13 @@
             <span class="is-danger-text">No hay caja</span>
           </li>
           <div class="divider" style="height: 3px; margin: 6px 0px;"></div>
+          <menu-item icon="users" :to="{ name: 'AdminClients'}">Clientes</menu-item>
           <menu-item icon="bars" :to="{ name: 'AdminItems'}">Items</menu-item>
           <menu-item icon="lightbulb-o" :to="{ name: 'AdminPromotions'}">Promociones</menu-item>
           <menu-item icon="paperclip" :to="{ name: 'AdminCategories'}">Categorias</menu-item>
-          <menu-item icon="users" :to="{ name: 'AdminClients'}">Clientes</menu-item>
           <menu-item icon="address-book-o" :to="{ name: 'AdminSuppliers'}">Proveedores</menu-item>
           <menu-item icon="cutlery" :to="{ name: 'AdminTables'}">Mesas</menu-item>
           <menu-item icon="hashtag" :to="{ name: 'AdminCancelReasons'}">Razones</menu-item>
-
           <div v-if="profile.role !== 'manager'">
             <div class="divider"></div>
             <h2 style="font-weight:300;padding: 10px; color: #f56954">
@@ -29,14 +28,14 @@
             <menu-item icon="ticket" :to="{ name: 'Tickets'}">Tickets</menu-item>
             <menu-item icon="money" :to="{ name: 'Payments'}">Pagos</menu-item>
             <menu-item icon="cog" :to="{ name: 'AdminUsers'}">Usuarios</menu-item>
-            <menu-item icon="dollar" :to="{ name: 'AdminDailyCashes'}">C. Diarias</menu-item>
-            <menu-item icon="dollar" :to="{ name: 'MensualCashes'}">C. Mensuales</menu-item>
+            <menu-item icon="dollar" :to="{ name: 'AdminDailyCashes'}">Cajas Diarias</menu-item>
+            <menu-item icon="dollar" :to="{ name: 'MensualCashes'}">Cajas Mensuales</menu-item>
             <menu-item icon="bar-chart" :to="{ name: 'AdminReports'}">Reportes</menu-item>
             <menu-item icon="cogs" :to="{ name: 'AdminSettings'}">Settings</menu-item>
           </div>
         </menus>
       </div>
-      <div class="column is-10">
+      <div class="column is-10 is-marginless">
         <router-view></router-view>
       </div>
     </div>

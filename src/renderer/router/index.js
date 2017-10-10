@@ -67,15 +67,6 @@ const router = new Router({
           name: 'Clients',
           component: Clients
         },
-        { path: 'tickets',
-          name: 'Tickets',
-          component: Tickets
-        },
-        { path: 'pagos',
-          name: 'Payments',
-          component: Payments,
-          props: (route) => ({ query: route.query.q })
-        },
         {
           path: 'pedido/:id',
           name: 'Delivery',
@@ -100,6 +91,8 @@ const router = new Router({
             { path: 'cajas', name: 'AdminDailyCashes', component: AdminDailyCashes, meta: { roles: ['admin'] } },
             { path: 'reportes', name: 'AdminReports', component: AdminReports, meta: { roles: ['admin'] } },
             { path: 'Configuracion', name: 'AdminSettings', component: AdminSettings, meta: { roles: ['admin'] } },
+            { path: 'tickets', name: 'Tickets', component: Tickets },
+            { path: 'pagos', name: 'Payments', component: Payments, props: (route) => ({ query: route.query.q }) },
             { path: 'cajas/:id/resumen', name: 'DailyCash', component: DailyCash, meta: { roles: ['admin'] } },
             { path: 'cajas/mensuales', name: 'MensualCashes', component: MensualCashes, meta: { roler: ['admin'] } },
             { path: 'cajas/:month/:year', name: 'MensualCash', component: MensualCash, meta: { roler: ['admin'] } },

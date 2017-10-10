@@ -1,11 +1,11 @@
 <template>
-  <div class="container">
+  <div class="">
     <h1 class="header">
       Cajas Mensuales
       <div class="is-pulled-right">
         <div class="control has-addons">
-          <span class="button is-light">{{ currentMonthName.name }}</span>
-          <span class="button is-primary">{{ currentYear }}</span>
+          <span class="button is-not-link is-light">{{ currentMonthName.name }}</span>
+          <span class="button is-not-link is-primary">{{ currentYear }}</span>
         </div>
       </div>
     </h1>
@@ -23,8 +23,9 @@
     <hr>
     <div class="columns is-multiline">
       <div class="column is-3" v-for="month in months">
-        <router-link :to="{ name: 'MensualCash', params: { month: month.number, year: currentYear } }" class="button is-fullwidth is-medium is-primary">
-          Mes {{ month.name }}
+        <router-link :to="{ name: 'MensualCash', params: { month: month.number, year: currentYear } }" class="button is-fullwidth is-medium"
+          :class="{'is-primary': currentMonth === month.number, 'is-light': currentMonth !== month.number }">
+          {{ month.name }}
         </router-link>
       </div>
     </div>
