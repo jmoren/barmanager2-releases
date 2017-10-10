@@ -8,7 +8,7 @@
       </div>
     </modal>
     <h1 class="header">
-      <i class="fa fa-address-book-o fa-floated"></i> 
+      <i class="fa fa-address-book-o fa-floated"></i>
       Proveedores
       <a @click.prevent="isShow=true" class="is-pulled-right button is-light">Nuevo proveedor</a>
     </h1>
@@ -33,6 +33,7 @@
               <a @click.prevent="setToEdit(supplier)" class="button is-light">
                  <span class="icon is-small"><i class="fa fa-pencil"></i></span>
               </a>
+              <router-link class="button is-light" :to="{ name: 'Supplier', params: { id: supplier.id } }">Ver Detalles</router-link>
             </div>
           </td>
         </tr>
