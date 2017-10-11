@@ -477,6 +477,7 @@
       closeModal () {
         this.isOpen = false
         this.newPartialCash = { init_amount: 0, user_id: '' }
+        this.errorMessage = ''
       },
       setSupplier (supplier) {
         this.newExpenseGasto.supplier_id = supplier.id
@@ -544,6 +545,9 @@
               if (this.lastCash) {
                 this.$store.dispatch('updateDailyCash', {})
               }
+            },
+            error => {
+              this.errorMessage = error.data.message
             }
           )
         }

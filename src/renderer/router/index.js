@@ -46,11 +46,6 @@ const router = new Router({
           name: 'Tables',
           component: Tables
         },
-        { path: 'cajas/:id',
-          name: 'PartialDailyCash',
-          component: PartialDailyCash,
-          meta: { roles: ['admin'] }
-        },
         { path: 'clientes/:id',
           name: 'Client',
           component: Client
@@ -96,6 +91,7 @@ const router = new Router({
             { path: 'cajas/:id/resumen', name: 'DailyCash', component: DailyCash, meta: { roles: ['admin'] } },
             { path: 'cajas/mensuales', name: 'MensualCashes', component: MensualCashes, meta: { roler: ['admin'] } },
             { path: 'cajas/:month/:year', name: 'MensualCash', component: MensualCash, meta: { roler: ['admin'] } },
+            { path: 'cajas/:id', name: 'PartialDailyCash', component: PartialDailyCash, meta: { roles: ['admin'] } },
             {
               path: 'mesas/:id',
               name: 'AdminTable',
