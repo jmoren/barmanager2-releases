@@ -13,6 +13,7 @@ import Tables from '@/components/tables/Tables'
 import AdminTable from '@/components/tables/AdminTable'
 import Clients from '@/components/clients/Clients'
 import Client from '@/components/clients/Client'
+import Supplier from '@/components/suppliers/Supplier'
 import PartialDailyCash from '@/components/cash/PartialDailyCash'
 import Profile from '@/components/user/Profile'
 import Administration from '@/components/administration/Administration'
@@ -49,6 +50,10 @@ const router = new Router({
         { path: 'clientes/:id',
           name: 'Client',
           component: Client
+        },
+        { path: 'proveedores/:id',
+          name: 'Supplier',
+          component: Supplier
         },
         { path: 'tickets/:id',
           name: 'Ticket',
