@@ -72,10 +72,40 @@
       <i class="fa fa-bars fa-floated"></i>
       Items
       <div class="control has-addons is-pulled-right">
-        <input type="text" class="input" v-model="query" @keyup.prevent="fetchItems" placeholder="Filtrar items">
         <a @click.prevent="openForm" class="button is-light is-pulled-right">Nuevo Item</a>
       </div>
     </h1>
+    <hr>
+    <div class="columns">
+      <div class="column is-4 control is-horizontal">
+        <div class="control-label">
+          <label class="label">Nombre</label>
+        </div>
+        <div class="control">
+          <input type="text" class="input" v-model="filters.query" placeholder="Filtrar items">
+        </div>
+      </div>
+      <div class="column is-4 control is-horizontal">
+        <div class="control-label">
+          <label class="label">D. Stock</label>
+        </div>
+        <div class="control has-addons">
+          <radio-group v-model="filters.stockable">
+            <radio-button val="null">-</radio-button>
+            <radio-button val="true">SI</radio-button>
+            <radio-button val="false">No</radio-button>
+          </radio-group>
+        </div>
+      </div>
+      <div class="control is-grouped is-horizontal column is-1">
+        <div class="control is-expanded">
+          <a class="button is-info" @click.prevent="fetchItems">Filtrar</a>
+        </div>
+        <div class="control is-expanded">
+          <a class="button is-warning" @click.prevent="clearFilters">Limpiar filtros</a>
+        </div>
+      </div>
+    </div>
     <hr>
     <table class="table">
       <thead>
@@ -103,7 +133,10 @@
             </a></div>
           </div>
         </th>
-        <th>Descuenta Stock</th>
+        <th><a @click.prevent="sortBy('name')">
+          Descuenta Stock
+          <i class="fa fa-floated fa-arrow-down" v-if="sortByField === 'stockable'"></i>
+        </a></th>
         <th>Stock</th>
         <th></th>
       </thead>
@@ -170,7 +203,7 @@ export default {
         stockable: false
       },
       meta: {},
-      query: '',
+      filters: { query: '', stockable: 'null' },
       page: 1,
       sortByField: 'code',
       newItem: {},
@@ -186,6 +219,10 @@ export default {
     this.fetchCategories()
   },
   methods: {
+    clearFilters () {
+      this.filters = { query: '', stockable: 'null' }
+      this.fetchItems()
+    },
     sortBy (field) {
       this.sortByField = field
       this.fetchItems()
@@ -197,8 +234,11 @@ export default {
     fetchItems () {
       this.loading = true
       let url = 'admin/items?page=' + this.page + '&sort_by=' + this.sortByField
-      if (this.query && this.query.length > 2) {
-        url = url + '&query=' + this.query
+      if (this.filters.query && this.filters.query.length > 2) {
+        url = url + '&query=' + this.filters.query
+      }
+      if (this.filters.stockable !== 'null') {
+        url = url + '&stockable=' + this.filters.stockable
       }
       this.$http.get(url).then(
         response => {
