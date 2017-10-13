@@ -157,6 +157,7 @@
             this.status = ''
             this.alert('success', 'Factura guarda correctamente.')
             this.resetForm()
+            this.$emit('save-purchase', this.purchase)
           },
           error => {
             this.alert('danger', error.data)
