@@ -61,6 +61,7 @@
         <th>Cantidad</th>
         <th>Stock</th>
         <th>Precio Unitario</th>
+        <th></th>
         <th>Sub Total</th>
       </thead>
       <tbody>
@@ -68,14 +69,24 @@
           <td>{{ entry.item.name }}</td>
           <td>{{ entry.quantity }}</td>
           <td>{{ entry.item.stock_amount }}</td>
-          <td>{{ entry.price }}</td>
+          <td>
+            ${{ entry.price }}
+          </td>
+          <td>
+            <tooltip v-if="entry.previous && entry.price > entry.previous.price" content="El precio del producto es mayor al de la útlima compra.">
+              <span class="is-danger-text">
+                <i class="fa fa-exclamation-triangle"></i>
+                Precio anterior: ${{entry.previous.price}}
+              </span>
+            </tooltip>
+          </td>
           <td>{{ entry.subtotal }}</td>
         </tr>
       </tbody>
     </table>
     <hr>
     <div>
-      <button class="button is-primary" :disabled="loading || !purchase.number || purchase.entries.length < 1" 
+      <button class="button is-primary" :disabled="loading || !purchase.number || purchase.entries.length < 1"
           @click.prevent="savePurchase()">Guardar</button>
       <button class="button is-light" @click.prevent="resetForm()">Cancelar</button>
     </div>
@@ -95,7 +106,7 @@
         purchase: { total: '', number: '', entries: [] },
         items: [],
         loading: false,
-        entry: { price: '', quantity: '', item: {} },
+        entry: { price: '', quantity: '', item: {}, previous: {} },
         item: { id: null, name: '', price: null, code: null, description: '' }
       }
     },
@@ -119,13 +130,24 @@
         if (this.item.id && this.entry.quantity && this.entry.price) {
           this.entry.item = _.clone(this.item)
           this.entry.subtotal = this.entry.quantity * this.entry.price
-
           this.purchase.entries.push(_.clone(this.entry))
+          this.getLastEntry()
           this.entry = {}
           this.item = {}
         } else {
           this.alert('danger', 'Debe completar todos los datos para agergar un producto')
         }
+      },
+      getLastEntry () {
+        var lastEntry = _.last(this.purchase.entries, 1)
+        console.log(lastEntry.item.id)
+        this.$http.get('admin/suppliers/' + this.purchase.supplier.id + '/purchases/last_entry' + '?item_id=' + lastEntry.item.id).then(
+          (response) => {
+            lastEntry.previous = response.data
+            this.alert('success', 'Factura guarda correctamente.')
+          },
+          error => { this.alert('danger', error.data) }
+        )
       },
       getItem (item) {
         if (item) {
