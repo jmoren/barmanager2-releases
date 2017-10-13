@@ -6,13 +6,13 @@
       <div class="column is-6">
         <label class="label">Número de Factura</label>
         <p class="control">
-          <input class="input" :disabled="status" type="text" placeholder="Factura" v-model="purchase.number">
+          <input class="input" :disabled="loading" type="text" placeholder="Factura" v-model="purchase.number">
         </p>
       </div>
       <div class="column is-6">
         <label class="label">Total $</label>
         <p class="control">
-          <input class="input" :disabled="status" min="1" type="number" :placeholder="purchaseTotal" v-model="purchase.total">
+          <input class="input" :disabled="loading" min="1" type="number" :placeholder="purchaseTotal" v-model="purchase.total">
         </p>
       </div>
     </div>
@@ -23,24 +23,24 @@
           <label class="label">Producto</label>
           <div class="control is-grouped">
             <div class="control">
-              <input class="input is-medium" :disabled="status" id="code" type="text" placeholder="Cod" v-model="item.code" @blur.prevent="pickItem" autofocus>
+              <input class="input is-medium" :disabled="loading" id="code" type="text" placeholder="Cod" v-model="item.code" @blur.prevent="pickItem" autofocus>
             </div>
             <div class="control is-expanded">
-              <autocomplete @item-selected="getItem" :status="status" :name="item.name" :items="items"></autocomplete>
+              <autocomplete @item-selected="getItem" :status="loading" :name="item.name" :items="items"></autocomplete>
             </div>
           </div>
         </div>
         <div class="column is-3">
           <label class="label">Cantidad</label>
           <div class="control">
-            <input class="input is-medium" :disabled="status" min="1" type="number" placeholder="Cantidad" v-model="entry.quantity">
+            <input class="input is-medium" :disabled="loading" min="1" type="number" placeholder="Cantidad" v-model="entry.quantity">
           </div>
         </div>
         <div class="column is-3">
           <label class="label">Precio Unitario</label>
           <div class="control is-grouped">
             <div class="control">
-              <input class="input is-medium" :disabled="status" type="number" placeholder="Precio unitario" v-model="entry.price" >
+              <input class="input is-medium" :disabled="loading" type="number" placeholder="Precio unitario" v-model="entry.price" >
             </div>
             <div class="control is-expanded">
               <button @click.prevent="addEntry()" class="button is-light is-medium is-fullwidth">
@@ -55,25 +55,29 @@
       </div>
     </form>
     <br/>
-    <data-table :data="purchase.entries">
-      <column label="Producto">
-        <template scope="row">
-          <tag type="primary">{{ row.item.name }}</tag>
-        </template>
-      </column>
-      <column label="Cantidad" field="quantity"></column>
-      <column label="Stock Actual">
-        <template scope="row">
-          {{ row.item.stock_amount }}
-        </template>
-      </column>
-      <column label="Precio Unitario" field="price"></column>
-      <column label="Sub Total" field="subtotal"></column>
-    </data-table>
+    <table class="table">
+      <thead>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Stock</th>
+        <th>Precio Unitario</th>
+        <th>Sub Total</th>
+      </thead>
+      <tbody>
+        <tr v-for="(entry, index) in purchase.entries" :key="index">
+          <td>{{ entry.item.name }}</td>
+          <td>{{ entry.quantity }}</td>
+          <td>{{ entry.item.stock_amount }}</td>
+          <td>{{ entry.price }}</td>
+          <td>{{ entry.subtotal }}</td>
+        </tr>
+      </tbody>
+    </table>
     <hr>
     <div>
-      <button class="button is-primary" @click.prevent="savePurchase()">Guardar</button>
-      <button class="button is-link" @click.prevent="resetForm()">Cancelar</button>
+      <button class="button is-primary" :disabled="loading || !purchase.number || purchase.entries.length < 1" 
+          @click.prevent="savePurchase()">Guardar</button>
+      <button class="button is-light" @click.prevent="resetForm()">Cancelar</button>
     </div>
   </div>
 </template>
@@ -83,14 +87,15 @@
   import alert from '../../mixins/Alert'
   export default {
     name: 'PurchaseForm',
-    props: ['supplier', 'status'],
+    props: ['supplier'],
     components: { autocomplete },
     mixins: [alert],
     data () {
       return {
-        purchase: { total: 0, number: '', entries: [] },
+        purchase: { total: '', number: '', entries: [] },
         items: [],
-        entry: { price: 0, quantity: 0, item: {} },
+        loading: false,
+        entry: { price: '', quantity: '', item: {} },
         item: { id: null, name: '', price: null, code: null, description: '' }
       }
     },
@@ -111,7 +116,7 @@
         this.purchase = { total: 0, number: '', entries: [] }
       },
       addEntry () {
-        if (this.item.id) {
+        if (this.item.id && this.entry.quantity && this.entry.price) {
           this.entry.item = _.clone(this.item)
           this.entry.subtotal = this.entry.quantity * this.entry.price
 
@@ -119,7 +124,7 @@
           this.entry = {}
           this.item = {}
         } else {
-          this.alert('danger', 'No hay item seleccionado')
+          this.alert('danger', 'Debe completar todos los datos para agergar un producto')
         }
       },
       getItem (item) {
@@ -151,17 +156,18 @@
         }
       },
       savePurchase () {
-        this.status = 'disabled'
+        this.loading = true
+        this.purchase.total = this.purchaseTotal
         this.$http.post('admin/suppliers/' + this.purchase.supplier.id + '/purchases', { purchase: this.purchase }).then(
           (response) => {
-            this.status = ''
+            this.loading = false
             this.alert('success', 'Factura guarda correctamente.')
             this.resetForm()
             this.$emit('save-purchase', this.purchase)
           },
           error => {
             this.alert('danger', error.data)
-            this.status = ''
+            this.loading = false
           }
         )
       }

@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="container" id="supplier">
+  <div class="" id="supplier">
     <div v-if="loading"></div>
     <div v-else>
       <h1 class="header">
@@ -8,44 +8,41 @@
       <hr>
       <div>
         <purchase-form :supplier="supplier" @save-purchase="purchase => addPurchase(purchase)"></purchase-form>
-        <div class="box">
-          <h4><i class="fa fa-floated fa-tags"></i> Compras</h4>
-          <div>
-            <div class="button is-light is-not-link">Anteriores</div>
-            <hr>
-            <div class="purchases-container">
-              <collapse accordion>
-                <collapse-item v-for="purchase in purchases" :title="'Factura: ' + purchase.number">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th>Producto</th>
-                        <th>Precio unitario</th>
-                        <th>Cantidad</th>
-                        <th>Subtotal</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="entry in purchase.entry_items">
-                        <td>{{entry.item.name}}</td>
-                        <td>{{entry.price}}</td>
-                        <td>{{entry.amount}}</td>
-                        <td>{{entry.amount * entry.price}}</td>
-                      </tr>
-                    </tbody>
-                    <tfoot>
-                      <tr class="text-info">
-                        <td></td>
-                        <td></td>
-                        <td>TOTAL</td>
-                        <td>${{purchase.total}}</td>
-                      </tr>
-                    </tfoot>
-                  </table>
-                </collapse-item>
-              </collapse>
-            </div>
-          </div>
+        <hr>
+        <h4><i class="fa fa-floated fa-tags"></i> Compras Anteriores</h4>
+        <div class="purchases-container">
+          <div class="box" v-if="purchases.length < 1"><span class="is-danger-text">No hay compras registradas</span></div>
+          <collapse accordion v-else>
+            <collapse-item v-for="purchase in purchases" :title="'Factura: ' + purchase.number">
+              <h4><i class="fa fa-calendar fa-floated"></i> {{ purchase.created_at | moment('dddd DD MMMM, YYYY') }}</h4>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Producto</th>
+                    <th>Precio unitario</th>
+                    <th>Cantidad</th>
+                    <th>Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="entry in purchase.entry_items">
+                    <td>{{entry.item.name}}</td>
+                    <td>{{entry.price}}</td>
+                    <td>{{entry.amount}}</td>
+                    <td>{{entry.amount * entry.price}}</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr class="text-info">
+                    <td></td>
+                    <td></td>
+                    <td>TOTAL</td>
+                    <td>${{purchase.total}}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </collapse-item>
+          </collapse>
         </div>
       </div>
     </div>

@@ -51,10 +51,6 @@ const router = new Router({
           name: 'Client',
           component: Client
         },
-        { path: 'proveedores/:id',
-          name: 'Supplier',
-          component: Supplier
-        },
         { path: 'tickets/:id',
           name: 'Ticket',
           component: Ticket
@@ -85,6 +81,7 @@ const router = new Router({
             { path: 'promociones', name: 'AdminPromotions', component: AdminPromotions, meta: { roles: ['admin', 'manager'] } },
             { path: 'categorias', name: 'AdminCategories', component: AdminCategories, meta: { roles: ['admin', 'manager'] } },
             { path: 'proveedores', name: 'AdminSuppliers', component: AdminSuppliers, meta: { roles: ['admin', 'manager'] } },
+            { path: 'proveedores/:id', name: 'Supplier', component: Supplier },
             { path: 'mesas', name: 'AdminTables', component: AdminTables, meta: { roles: ['admin', 'manager'] } },
             { path: 'razones', name: 'AdminCancelReasons', component: AdminCancelReasons, meta: { roles: ['admin', 'manager'] } },
             { path: 'usuarios', name: 'AdminUsers', component: AdminUsers, meta: { roles: ['admin'] } },
