@@ -71,7 +71,7 @@
           <div class="column is-4" v-if="!ticket.table_id">
             <div class="control has-addons is-pulled-right">
               <span class="button is-primary is-not-link"><i class="fa fa-dollar"></i></span>
-              <input type="number" step="0.01" v-model="pay_with" class="input" placeholder="Paga el delivery con" 
+              <input type="number" step="0.01" v-model="pay_with" class="input" placeholder="Paga el delivery con"
               @keydown.enter="setPayWith()">
             </div>
           </div>
@@ -311,7 +311,7 @@
   @media print {
     .ticket-form, .payments.column.is-3, .resume .resume-sub-row, a.button, button.button { display: none; }
     .fa.fa-question-circle { display: none; }
-    .ticket-lines { height: 100%; overflow: none; border: none; }
+    .ticket-lines { height: 100%; overflow: visible; border: none; max-height: none;}
     .resume .column { float: left; }
     table thead th.hide { display: none !important; }
     table tbody tr td { text-align: left !important; }
