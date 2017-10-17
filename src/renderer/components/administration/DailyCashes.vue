@@ -20,6 +20,7 @@
         </tr>
       </tbody>
     </table>
+    <pagination layout="pager" align="left" :page-size="10" :total="meta.total" :change="fetchCashes"></pagination>
   </div>
 </template>
 
@@ -29,17 +30,19 @@
     data () {
       return {
         dailyCashes: [],
-        loading: false
+        loading: false,
+        meta: {}
       }
     },
     created () {
-      this.fetchCashes()
+      this.fetchCashes(1)
     },
     methods: {
-      fetchCashes () {
-        this.$http.get('admin/daily_cashes').then(
+      fetchCashes (page) {
+        this.$http.get('admin/daily_cashes?page=' + (page || 1)).then(
           response => {
-            this.dailyCashes = response.data
+            this.dailyCashes = response.data.daily_cashes
+            this.meta = response.data.meta
           }
         )
       }
