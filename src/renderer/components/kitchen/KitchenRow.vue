@@ -22,14 +22,25 @@
         <div class="columns">
           <div class="column is-2">
             <tooltip content="Sacar Entrada completa">
-              <a class="button is-fullwidth is-light" @click="deliverEntry(entry)" :class="{'is-disabled is-success': entry.delivered, 'is-loading': loading }">
+              <a class="button is-info" @click="deliverEntry(entry)" :class="{'is-disabled is-success': entry.delivered, 'is-loading': loading }">
                 <span class="icon is-small"><i class="fa fa-reply"></i></span>
-                <span>Enviar Grupo</span>
+                <span>Entregar</span>
               </a>
             </tooltip>
           </div>
           <div class="column is-10">
-            <div v-for="req in entry.items" class="request-row">
+            <div>
+              <a class="button is-light" :class="{'is-disabled is-success': entry.delivered, 'is-loading': loading }" @click="toggleShow()">
+                <span>{{entry.items[0].name}} x {{entry.items.length}}</span> &nbsp;&nbsp;&nbsp;
+                <span class="icon is-small">
+                  <i :class="{ 'fa fa-expand': !rowExpanded, 'fa fa-compress': rowExpanded }"></i>
+                </span>
+              </a>
+              <div class="is-pulled-right button is-white is-not-link">
+                Pedido: {{entry.items[0].created_at | moment("from") }}
+              </div>
+            </div>
+            <div v-if="rowExpanded" v-for="req in entry.items" class="request-row">
               <tooltip content="Sacar pedido">
                 <a class="button is-light" @click="deliverItem(req)" :class="{'is-disabled is-success': req.delivered_at, 'is-loading': loading }">
                   <i class="fa" :class="{'fa-check': req.delivered_at, 'fa-reply': !req.delivered_at }"></i>
@@ -56,10 +67,14 @@
     data () {
       return {
         loading: false,
-        removed: false
+        removed: false,
+        rowExpanded: false
       }
     },
     methods: {
+      toggleShow () {
+        this.rowExpanded = !this.rowExpanded
+      },
       deliverItem (item) {
         this.loading = true
         this.$http.post('kitchen/deliver_item', { entry_item_id: item.id }).then(
