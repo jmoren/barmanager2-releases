@@ -1,25 +1,47 @@
 <template lang="html">
   <div class="">
-    <modal title="Administrar Ususarios" ok-text="Guardar" cancel-text="Cancelar" :on-ok="saveUser" :on-cancel="cancelUser" :width="520" :is-show="isShow" transition="zoom" @close="cancelUser">
-      <div class="control">
-        <label>Nombre</label>
-        <input type="text" class="input is-medium" v-model="newUser.name" placeholder="Agregar Nombre">
-      </div>
-      <div class="control">
-        <label>Email</label>
-        <input type="text" class="input is-medium" v-model="newUser.email" placeholder="Agregar Email">
-      </div>
-      <div class="control">
-        <label>Direccion</label>
-        <input type="text" class="input is-medium" v-model="newUser.address" placeholder="Agregar Direccion">
-      </div>
-      <div class="control">
-        <label>Telefono</label>
-        <input type="text" class="input is-medium" v-model="newUser.phone" placeholder="Agregar Telefono">
-      </div>
-      <div class="control">
-        <label>CUIL</label>
-        <input type="text" class="input is-medium" v-model="newUser.cuil" placeholder="Agregar Cuil">
+    <modal title="Administrar Ususarios" ok-text="Guardar" cancel-text="Cancelar" :on-ok="saveUser" :on-cancel="cancelUser" :width="620" :is-show="isShow" transition="zoom" @close="cancelUser">
+      <div class="columns">
+        <div class="column is-6">
+          <div class="control">
+            <label>Nombre</label>
+            <input type="text" class="input is-medium" v-model="newUser.name" placeholder="Agregar Nombre">
+          </div>
+          <div class="control">
+            <label>DNI</label>
+            <input type="text" class="input is-medium" v-model="newUser.dni" placeholder="Agregar DNI">
+          </div>
+          <div class="control">
+            <label>Telefono Alternativo</label>
+            <input type="text" class="input is-medium" v-model="newUser.alt_phone" placeholder="Agregar Telefono Alternativo">
+          </div>
+          <div class="control">
+            <label>Fecha de Ingreso</label>
+            <datepicker placeholder="Fecha de ingreso" :options="dateOptions" v-model="newUser.start_date"></datepicker>
+          </div>
+          <div class="control">
+            <label>Direccion</label>
+            <input type="text" class="input is-medium" v-model="newUser.address" placeholder="Agregar Direccion">
+          </div>
+        </div>
+        <div class="column is-6">
+          <div class="control">
+            <label>Email</label>
+            <input type="text" class="input is-medium" v-model="newUser.email" placeholder="Agregar Email">
+          </div>
+          <div class="control">
+            <label>CUIL</label>
+            <input type="text" class="input is-medium" v-model="newUser.cuil" placeholder="Agregar Cuil">
+          </div>
+          <div class="control">
+            <label>Telefono</label>
+            <input type="text" class="input is-medium" v-model="newUser.phone" placeholder="Agregar Telefono">
+          </div>
+          <div class="control">
+            <label>Fecha de Salida</label>
+            <datepicker placeholder="Fecha de salida" :options="dateOptions" v-model="newUser.end_date"></datepicker>
+          </div>
+        </div>
       </div>
       <div class="control" v-if="!newUser.id">
         <div class="control is-grouped">
@@ -41,8 +63,8 @@
       </div>
     </modal>
     <h1 class="header">
-      <i class="fa fa-users fa-floated"></i> 
-      Usuarios 
+      <i class="fa fa-users fa-floated"></i>
+      Usuarios
       <a @click.prevent="isShow = true" class="button is-light is-pulled-right">Nuevo User</a>
     </h1>
     <hr>
@@ -50,6 +72,10 @@
       <thead>
         <th>Nombre</th>
         <th>Email</th>
+        <th>Dni</th>
+        <th>cuil</th>
+        <th>Dirección</th>
+        <th>Teléfonos</th>
         <th>Role</th>
         <th></th>
       </thead>
@@ -57,6 +83,10 @@
         <tr v-for="user in users" :key="user.id">
           <td>{{ user.name }}</td>
           <td>{{ user.email }}</td>
+          <td>{{ user.dni }}</td>
+          <td>{{ user.cuil }}</td>
+          <td>{{ user.address }}</td>
+          <td>{{ phones(user) }}</td>
           <td>{{ user.role }}</td>
           <td>
             <div class="control has-addons">
@@ -84,8 +114,8 @@ export default {
   mixins: [alert],
   data () {
     return {
-      newUser: { name: null, email: null, role: 'user', password: null, password_confirmation: null },
-      originalUser: { id: null, name: null, email: null, role: null },
+      newUser: {},
+      originalUser: {},
       isShow: false,
       roles: [
         { name: 'Admin', value: 'admin' },
@@ -93,7 +123,11 @@ export default {
         { name: 'Manager', value: 'manager' },
         { name: 'Cocina', value: 'cooker' },
         { name: 'Delivery', value: 'delivery' }
-      ]
+      ],
+      dateOptions: {
+        minDate: 'today',
+        dateFormat: 'd/m/Y'
+      }
     }
   },
   computed: {
@@ -131,8 +165,7 @@ export default {
       )
     },
     updateUser () {
-      let params = { name: this.newUser.name, email: this.newUser.email, role: this.newUser.role }
-      this.$http.put('admin/users/' + this.newUser.id, { user: params }).then(
+      this.$http.put('admin/users/' + this.newUser.id, { user: this.newUser }).then(
         response => {
           this.$store.dispatch('updateUser', response.data)
           this.cancelUser()
@@ -159,8 +192,12 @@ export default {
     },
     setToEdit (user) {
       this.originalUser = user
+      this.newUser = {}
       this.newUser = _.clone(user)
       this.isShow = true
+    },
+    phones (user) {
+      return _.filter([user.phone, user.alt_phone]).join(' / ')
     }
   }
 }
