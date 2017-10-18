@@ -91,15 +91,15 @@
       <div class="columns resume-sub-row">
         <div class="column is-4">
           <div>Pendiente</div>
-          <p>{{ pending }} $</p>
+          <p>{{ pending | withDecimals }} $</p>
         </div>
         <div class="column is-4">
           <div>Efectivo:</div>
-          <p>{{ totalCash }} $</p>
+          <p>{{ totalCash | withDecimals}} $</p>
         </div>
         <div class="column is-4">
           <div>Tarjeta:</div>
-          <p>{{ totalCard }} $</p>
+          <p>{{ totalCard | withDecimals}} $</p>
         </div>
       </div>
     </div>
@@ -158,6 +158,11 @@
     },
     watch: {
       'ticket.closed': 'loadPayments'
+    },
+    filters: {
+      withDecimals: function (value) {
+        return parseFloat(value).toFixed(2)
+      }
     },
     methods: {
       loadPayments () {

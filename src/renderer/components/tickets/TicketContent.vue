@@ -66,8 +66,8 @@
       </div>
       <div class="resume">
         <div class="columns resume-header print">
-          <div class="column is-4">TOTAL $ {{ total }}</div>
-          <div class="column is-4">PENDIENTE $ {{ pending || 0}}</div>
+          <div class="column is-4">TOTAL $ {{ total | withDecimals }}</div>
+          <div class="column is-4">PENDIENTE $ {{(pending || 0) | withDecimals}}</div>
           <div class="column is-4" v-if="!ticket.table_id">
             <div class="control has-addons is-pulled-right">
               <span class="button is-primary is-not-link"><i class="fa fa-dollar"></i></span>
@@ -185,6 +185,11 @@
         return this.entries.filter((e) => {
           return e.canceled
         }).length
+      }
+    },
+    filters: {
+      withDecimals: function (value) {
+        return parseFloat(value).toFixed(2)
       }
     },
     methods: {
