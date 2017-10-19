@@ -1,65 +1,98 @@
 <template lang="html">
   <div class="">
-    <modal title="Administrar Ususarios" ok-text="Guardar" cancel-text="Cancelar" :on-ok="saveUser" :on-cancel="cancelUser" :width="620" :is-show="isShow" transition="zoom" @close="cancelUser">
-      <div class="columns">
+    <modal title="Administrar Ususarios" ok-text="Guardar" cancel-text="Cancelar" :on-ok="saveUser" :on-cancel="cancelUser" :width="1020" :is-show="isShow" transition="zoom" @close="cancelUser">
+      <div class="columns is-multiline">
         <div class="column is-6">
           <div class="control">
             <label>Nombre</label>
-            <input type="text" class="input is-medium" v-model="newUser.name" placeholder="Agregar Nombre">
+            <input type="text" class="input" v-model="newUser.name" placeholder="Agregar Nombre">
           </div>
+        </div>
+        <div class="column is-3">
           <div class="control">
             <label>DNI</label>
-            <input type="text" class="input is-medium" v-model="newUser.dni" placeholder="Agregar DNI">
+            <input type="text" class="input" v-model="newUser.dni" placeholder="Agregar DNI">
           </div>
+        </div>
+        <div class="column is-3">
+          <div class="control">
+            <label>Email</label>
+            <input type="text" class="input" v-model="newUser.email" placeholder="Agregar Email">
+          </div>
+        </div>
+
+        <div class="column is-3">
+          <div class="control">
+            <label>Telefono</label>
+            <input type="text" class="input" v-model="newUser.phone" placeholder="Agregar Telefono">
+          </div>
+        </div>
+        <div class="column is-3">
           <div class="control">
             <label>Telefono Alternativo</label>
-            <input type="text" class="input is-medium" v-model="newUser.alt_phone" placeholder="Agregar Telefono Alternativo">
+            <input type="text" class="input" v-model="newUser.alt_phone" placeholder="Agregar Telefono Alternativo">
           </div>
+        </div>
+        <div class="column is-3">
+          <div class="control">
+            <label>CUIL</label>
+            <input type="text" class="input" v-model="newUser.cuil" placeholder="Agregar Cuil">
+          </div>
+        </div>
+        <div class="column is-3">
+          <div class="control">
+            <label>Libreta San.</label>
+            <input type="text" class="input" v-model="newUser.sanitary_number" placeholder="Agregar Libreta sanitaria">
+          </div>
+        </div>
+
+        <div class="column is-6">
+          <div class="control">
+            <label>Direccion</label>
+            <input type="text" class="input" v-model="newUser.address" placeholder="Agregar Direccion">
+          </div>
+        </div>
+        <div class="column is-3">
           <div class="control">
             <label>Fecha de Ingreso</label>
             <datepicker placeholder="Fecha de ingreso" :options="dateOptions" v-model="newUser.start_date"></datepicker>
           </div>
-          <div class="control">
-            <label>Direccion</label>
-            <input type="text" class="input is-medium" v-model="newUser.address" placeholder="Agregar Direccion">
-          </div>
         </div>
-        <div class="column is-6">
-          <div class="control">
-            <label>Email</label>
-            <input type="text" class="input is-medium" v-model="newUser.email" placeholder="Agregar Email">
-          </div>
-          <div class="control">
-            <label>CUIL</label>
-            <input type="text" class="input is-medium" v-model="newUser.cuil" placeholder="Agregar Cuil">
-          </div>
-          <div class="control">
-            <label>Telefono</label>
-            <input type="text" class="input is-medium" v-model="newUser.phone" placeholder="Agregar Telefono">
-          </div>
+        <div class="column is-3">
           <div class="control">
             <label>Fecha de Salida</label>
             <datepicker placeholder="Fecha de salida" :options="dateOptions" v-model="newUser.end_date"></datepicker>
           </div>
         </div>
-      </div>
-      <div class="control" v-if="!newUser.id">
-        <div class="control is-grouped">
+        <div class="column is-6">
           <div class="control">
-            <label>Contraseña</label>
-            <input type="password" class="input is-medium" v-model="newUser.password" placeholder="Contraseña">
-          </div>
-          <div class="control">
-            <label>Confirmar contraseña</label>
-            <input type="password" class="input is-medium" v-model="newUser.password_confirmation" placeholder="Confirmar contraseña">
+            <label>Seleccione role:</label>
+            <radio-group v-model="newUser.role">
+              <radio-button v-bind:val="role.value" v-for="role in roles" :key="role.value">{{ role.name }}</radio-button>
+            </radio-group>
           </div>
         </div>
-      </div>
-      <div class="control is-medium">
-        <label>Seleccione role:</label>
-        <radio-group v-model="newUser.role">
-          <radio-button v-bind:val="role.value" v-for="role in roles" :key="role.value" class="is-medium">{{ role.name }}</radio-button>
-        </radio-group>
+        <div class="column is-6">
+          <div class="control">
+            <label>Seleccione Sexo:</label>
+            <radio-group v-model="newUser.gender">
+              <radio-button val="male">Hombre</radio-button>
+              <radio-button val="female">Mujer</radio-button>
+            </radio-group>
+          </div>
+        </div>
+        <div class="column is-6" v-if="!newUser.id">
+          <div class="control">
+            <label>Contraseña</label>
+            <input type="password" class="input" v-model="newUser.password" placeholder="Contraseña">
+          </div>
+        </div>
+        <div class="column is-6" v-if="!newUser.id">
+          <div class="control">
+            <label>Confirmar contraseña</label>
+            <input type="password" class="input" v-model="newUser.password_confirmation" placeholder="Confirmar contraseña">
+          </div>
+        </div>
       </div>
     </modal>
     <h1 class="header">
@@ -72,8 +105,9 @@
       <thead>
         <th>Nombre</th>
         <th>Email</th>
-        <th>Dni</th>
-        <th>cuil</th>
+        <th>DNI</th>
+        <th>CUIL</th>
+        <th>Libreta Sanitaria</th>
         <th>Dirección</th>
         <th>Teléfonos</th>
         <th>Role</th>
@@ -85,6 +119,7 @@
           <td>{{ user.email }}</td>
           <td>{{ user.dni }}</td>
           <td>{{ user.cuil }}</td>
+          <td>{{ user.sanitary_number }}</td>
           <td>{{ user.address }}</td>
           <td>{{ phones(user) }}</td>
           <td>{{ user.role }}</td>
@@ -125,7 +160,6 @@ export default {
         { name: 'Delivery', value: 'delivery' }
       ],
       dateOptions: {
-        minDate: 'today',
         dateFormat: 'd/m/Y'
       }
     }
@@ -204,5 +238,5 @@ export default {
 </script>
 
 <style lang="css" scoped>
-  .control label { margin: 10px 5px; display: block }
+  .control label { margin: 10px 5px; display: block; font-size: 15px; font-weight: 400}
 </style>
