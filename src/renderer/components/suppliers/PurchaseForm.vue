@@ -12,12 +12,12 @@
       <div class="column is-6">
         <label class="label">Total $</label>
         <p class="control">
-          <input class="input" :disabled="loading" min="1" type="number" :placeholder="purchaseTotal" v-model="purchase.total">
+          <input class="input" :disabled="loading" min="1" type="number" v-model="purchaseTotal" readonly="readonly">
         </p>
       </div>
     </div>
     <hr>
-    <form @keyup.enter.prevent="addEntry">
+    <form>
       <div class="columns">
         <div class="column is-6">
           <label class="label">Producto</label>
@@ -85,6 +85,24 @@
       </tbody>
     </table>
     <hr>
+    <div class="columns">
+      <div class="column is-4">
+        <checkbox v-model="payExpense" val="true">Pagar factura</checkbox>
+      </div>
+      <div class="column is-4">
+        <checkbox v-if="supplier.partial_cash_open" v-model="addToPartial" val="true">Cargar el gasto a la caja</checkbox>
+      </div>
+    </div>
+    <div class="columns" v-if="payExpense">
+      <div class="column is-4">
+        <input type="number" v-model="partialValue" class="input" :disabled="payTotal">
+        <label for="setTotal">
+          <input id="setTotal" type="checkbox" value="true" v-model="payTotal" @change.prevent="setPayTotal"/> 
+          <small>Pago total?</small>
+        </label>
+      </div>
+    </div>
+    <hr>
     <div>
       <button class="button is-primary" :disabled="loading || !purchase.number || purchase.entries.length < 1"
           @click.prevent="savePurchase()">Guardar</button>
@@ -106,15 +124,18 @@
         purchase: { total: '', number: '', entries: [] },
         items: [],
         loading: false,
-        entry: { price: '', quantity: '', item: {}, previous: {} },
-        item: { id: null, name: '', price: null, code: null, description: '' }
+        entry: { price: '', quantity: '', item: {} },
+        item: { id: null, name: '', price: null, code: null, description: '' },
+        payExpense: false,
+        addToPartial: false,
+        payTotal: false,
+        partialValue: ''
       }
     },
     created () {
       if (!this.supplier) {
         this.alert('danger', 'No hay Proveedor seleccionado. Eliga uno nuevamente de la lista de proveedores')
       }
-      this.purchase.supplier = this.supplier
       this.fetchItems()
     },
     computed: {
@@ -125,29 +146,21 @@
     methods: {
       resetForm () {
         this.purchase = { total: 0, number: '', entries: [] }
+        this.partialValue = 0
+        this.addToPartial = false
+        this.payExpense = false
+        this.payTotal = false
       },
       addEntry () {
         if (this.item.id && this.entry.quantity && this.entry.price) {
           this.entry.item = _.clone(this.item)
           this.entry.subtotal = this.entry.quantity * this.entry.price
           this.purchase.entries.push(_.clone(this.entry))
-          this.getLastEntry()
           this.entry = {}
           this.item = {}
         } else {
           this.alert('danger', 'Debe completar todos los datos para agergar un producto')
         }
-      },
-      getLastEntry () {
-        var lastEntry = _.last(this.purchase.entries, 1)
-        console.log(lastEntry.item.id)
-        this.$http.get('admin/suppliers/' + this.purchase.supplier.id + '/purchases/last_entry' + '?item_id=' + lastEntry.item.id).then(
-          (response) => {
-            lastEntry.previous = response.data
-            this.alert('success', 'Factura guarda correctamente.')
-          },
-          error => { this.alert('danger', error.data) }
-        )
       },
       getItem (item) {
         if (item) {
@@ -162,6 +175,9 @@
             this.items = response.data
           }
         )
+      },
+      setPayTotal () {
+        this.purchase.total = this.purchaseTotal
       },
       pickItem () {
         if (!this.item.code) { return }
@@ -179,13 +195,19 @@
       },
       savePurchase () {
         this.loading = true
+
+        this.purchase.partial_total = this.payTotal ? null : this.partialValue
+
         this.purchase.total = this.purchaseTotal
-        this.$http.post('admin/suppliers/' + this.purchase.supplier.id + '/purchases', { purchase: this.purchase }).then(
+        this.purchase.add_to_partial = this.addToPartial
+        this.purchase.add_expense = this.payExpense
+
+        this.$http.post('admin/suppliers/' + this.supplier.id + '/purchases', { purchase: this.purchase }).then(
           (response) => {
             this.loading = false
             this.alert('success', 'Factura guarda correctamente.')
             this.resetForm()
-            this.$emit('save-purchase', this.purchase)
+            this.$emit('save-purchase')
           },
           error => {
             this.alert('danger', error.data)

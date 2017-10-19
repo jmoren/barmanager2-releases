@@ -151,7 +151,7 @@
                 <table class="table">
                   <thead>
                     <th>Tipo</th>
-                    <th>Usuario</th>
+                    <th>Proveedor</th>
                     <th>Monto</th>
                     <th>Nro Fact</th>
                     <th></th>

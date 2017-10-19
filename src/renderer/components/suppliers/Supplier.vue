@@ -6,44 +6,55 @@
         Proveedor {{supplier.name }}
       </h1>
       <hr>
-      <div>
-        <purchase-form :supplier="supplier" @save-purchase="purchase => addPurchase(purchase)"></purchase-form>
-        <hr>
-        <h4><i class="fa fa-floated fa-tags"></i> Compras Anteriores</h4>
-        <div class="purchases-container">
-          <div class="box" v-if="purchases.length < 1"><span class="is-danger-text">No hay compras registradas</span></div>
-          <collapse accordion v-else>
-            <collapse-item v-for="purchase in purchases" :title="'Factura: ' + purchase.number">
-              <h4><i class="fa fa-calendar fa-floated"></i> {{ purchase.created_at | moment('dddd DD MMMM, YYYY') }}</h4>
-              <table class="table">
-                <thead>
-                  <tr>
+      <purchase-form :supplier="supplier" @save-purchase="refreshPurchases"></purchase-form>
+      <hr>
+      <h4><i class="fa fa-floated fa-tags"></i> Compras Anteriores</h4>
+      <div class="purchases-container">
+        <div class="box" v-if="purchases.length < 1"><span class="is-danger-text">No hay compras registradas</span></div>
+        <collapse accordion v-else>
+          <collapse-item v-for="purchase in purchases" :title="'Factura Nro. ' + purchase.number" :key="purchase.id">
+            <div class="columns">
+              <div class="column is-7">
+                <h4>
+                  <i class="fa fa-calendar fa-floated"></i> {{ purchase.created_at | moment('dddd DD MMMM, YYYY') }} -
+                  <i class="fa fa-dollar fa-floated"></i> Total: ${{purchase.total}}
+                </h4>
+                <table class="table">
+                  <thead>
                     <th>Producto</th>
                     <th>Precio unitario</th>
                     <th>Cantidad</th>
                     <th>Subtotal</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="entry in purchase.entry_items">
-                    <td>{{entry.item.name}}</td>
-                    <td>{{entry.price}}</td>
-                    <td>{{entry.amount}}</td>
-                    <td>{{entry.amount * entry.price}}</td>
-                  </tr>
-                </tbody>
-                <tfoot>
-                  <tr class="text-info">
-                    <td></td>
-                    <td></td>
-                    <td>TOTAL</td>
-                    <td>${{purchase.total}}</td>
-                  </tr>
-                </tfoot>
-              </table>
-            </collapse-item>
-          </collapse>
-        </div>
+                  </thead>
+                  <tbody>
+                    <tr v-for="entry in purchase.entry_items" :key="entry.id">
+                      <td>{{entry.item.name}}</td>
+                      <td>{{entry.price}}</td>
+                      <td>$ {{entry.amount}}</td>
+                      <td>$ {{entry.amount * entry.price}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="column is-5">
+                <h4>Pagos</h4>
+                <table class="table">
+                  <thead>
+                    <th>Fecha de pago</th>
+                    <th>Monto</th>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(expense, index) in purchase.expenses">
+                      <td>{{ expense.created_at | moment('DD/MM/YYYY')}}</td>
+                      <td>$ {{ expense.amount }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <supplier-payment :supplier="supplier" :purchase="purchase"></supplier-payment>
+              </div>
+            </div>
+          </collapse-item>
+        </collapse>
       </div>
     </div>
   </div>
@@ -51,10 +62,10 @@
 <script>
   import Auth from '../../auth'
   import PurchaseForm from './PurchaseForm'
-
+  import SupplierPayment from './SupplierPayment'
   export default {
     name: 'Supplier',
-    components: { PurchaseForm },
+    components: { PurchaseForm, SupplierPayment },
     data () {
       return {
         loading: false,
@@ -74,7 +85,7 @@
       this.fetchPurchases()
     },
     methods: {
-      addPurchase (pur) {
+      refreshPurchases () {
         this.fetchPurchases()
       },
       fetchSupplier () {
