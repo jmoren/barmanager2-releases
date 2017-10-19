@@ -154,7 +154,7 @@ export default {
       isShow: false,
       roles: [
         { name: 'Admin', value: 'admin' },
-        { name: 'User', value: 'user' },
+        { name: 'Usuario', value: 'user' },
         { name: 'Manager', value: 'manager' },
         { name: 'Cocina', value: 'cooker' },
         { name: 'Delivery', value: 'delivery' }
@@ -194,6 +194,7 @@ export default {
           this.cancelUser()
         },
         error => {
+          debugger
           this.alert('danger', error.data)
         }
       )
