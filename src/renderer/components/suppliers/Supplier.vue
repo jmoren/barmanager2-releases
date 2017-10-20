@@ -17,7 +17,6 @@
               <div class="column is-7">
                 <h4>
                   <i class="fa fa-calendar fa-floated"></i> {{ purchase.created_at | moment('dddd DD MMMM, YYYY') }} -
-                  <i class="fa fa-dollar fa-floated"></i> Total: ${{purchase.total}}
                 </h4>
                 <table class="table">
                   <thead>
@@ -34,6 +33,11 @@
                       <td>$ {{entry.amount * entry.price}}</td>
                     </tr>
                   </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="2"><td>Total</td><td><span class="is-danger-text">${{purchase.total}}</span></td>
+                    </tr>
+                  </tfoot>
                 </table>
               </div>
               <div class="column is-5">
@@ -42,15 +46,18 @@
                   <thead>
                     <th>Fecha de pago</th>
                     <th>Monto</th>
+                    <th>Quien Pago</th>
                   </thead>
                   <tbody>
-                    <tr v-for="(expense, index) in purchase.expenses">
-                      <td>{{ expense.created_at | moment('DD/MM/YYYY')}}</td>
+                    <tr v-if="purchase.expenses.length === 0"><td>No hay pagos para esta factura</td><td></td></tr>
+                    <tr v-for="(expense, index) in purchase.expenses" v-else>
+                      <td>{{ expense.created_at | moment('DD/MM/YYYY HH:MM a')}}</td>
                       <td>$ {{ expense.amount }}</td>
+                      <td><span v-if="expense.user">{{ expense.user.name }}</span></td>
                     </tr>
                   </tbody>
+                  <supplier-payment :supplier="supplier" :purchase="purchase"></supplier-payment>
                 </table>
-                <supplier-payment :supplier="supplier" :purchase="purchase"></supplier-payment>
               </div>
             </div>
           </collapse-item>
@@ -122,4 +129,5 @@
   #supplier h4 { font-weight: bold; font-size: 16px; margin-bottom: 15px; }
   #supplier .tickets-container { height: 250px; overflow: auto; }
   #supplier .box:last-child { margin-bottom: 20px; }
+  table tr:hover, table tr td:hover { background-color: #fff !important; }
 </style>
