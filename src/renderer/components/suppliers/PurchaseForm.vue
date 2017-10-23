@@ -61,8 +61,8 @@
         <th>Cantidad</th>
         <th>Stock</th>
         <th>Precio Unitario</th>
-        <th></th>
         <th>Sub Total</th>
+        <th></th>
       </thead>
       <tbody>
         <tr v-for="(entry, index) in purchase.entries" :key="index">
@@ -72,15 +72,15 @@
           <td>
             ${{ entry.price }}
           </td>
+          <td>{{ entry.subtotal }}</td>
           <td>
             <tooltip v-if="entry.previous && entry.price > entry.previous.price" content="El precio del producto es mayor al de la útlima compra.">
-              <span class="is-danger-text">
-                <i class="fa fa-exclamation-triangle"></i>
-                Precio anterior: ${{entry.previous.price}}
-              </span>
+              <tag type="danger" size="medium" rounded>
+                <span class="icon is-small"><i class="fa fa-exclamation-circle"></i></span>
+                <span>Precio anterior: ${{entry.previous.price}}</span>
+              </tag>
             </tooltip>
           </td>
-          <td>{{ entry.subtotal }}</td>
         </tr>
       </tbody>
     </table>
@@ -111,6 +111,7 @@
   </div>
 </template>
 <script>
+  import Vue from 'vue'
   import _ from 'lodash'
   import autocomplete from '../utils/ItemsAutocomplete'
   import alert from '../../mixins/Alert'
@@ -124,7 +125,7 @@
         purchase: { total: '', number: '', entries: [] },
         items: [],
         loading: false,
-        entry: { price: '', quantity: '', item: {} },
+        entry: { price: '', quantity: '', item: {}, previous: {} },
         item: { id: null, name: '', price: null, code: null, description: '' },
         payExpense: false,
         addToPartial: false,
@@ -156,11 +157,28 @@
           this.entry.item = _.clone(this.item)
           this.entry.subtotal = this.entry.quantity * this.entry.price
           this.purchase.entries.push(_.clone(this.entry))
+
+          this.getLastEntry()
+
+          //  clean entry and item
           this.entry = {}
           this.item = {}
         } else {
           this.alert('danger', 'Debe completar todos los datos para agergar un producto')
         }
+      },
+      getLastEntry () {
+        let entry = _.last(this.purchase.entries)
+        this.$http.get('admin/suppliers/' + this.supplier.id + '/purchases/last_entry' + '?item_id=' + entry.item.id).then(
+          (response) => {
+            Vue.nextTick(() => {
+              entry.previous = response.data
+            })
+          },
+          error => {
+            this.alert('danger', error.data)
+          }
+        )
       },
       getItem (item) {
         if (item) {
