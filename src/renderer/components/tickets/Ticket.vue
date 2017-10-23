@@ -5,11 +5,11 @@
     </div>
     <div v-else>
       <div class="print">
-        <div>
+        <div>TICKET # {{ ticket.number | withDash }}</div>
+        <div style="font-weight: 300; font-size: 25px">
           <span v-if="ticket.table_id">MESA {{ ticket.table.description }}</span>
           <span v-else class="is-danger-text">DELIVERY</span>
         </div>
-        <div style="font-weight: 300; font-size: 25px">TICKET # {{ ticket.number | withDash }}</div>
         <div v-if="ticket.client.id"><h4>Cliente: {{ ticket.client.name }}</h4></div>
         <div v-if="ticket.address"><h4>Direccion: {{ ticket.address }}</h4></div>
       </div>
@@ -88,7 +88,7 @@
       </div>
       <hr class="not-print"/>
       <div id="ticket-content">
-        <ticket-content :ticket="ticket" :reasons="reasons" @update-pay="value => updatePayWith(value)" @ticket-paid="setPaid" 
+        <ticket-content :ticket="ticket" :reasons="reasons" @update-pay="value => updatePayWith(value)" @ticket-paid="setPaid"
           @ticket-not-paid="setNotPaid" :kitchenView="kitchenView">
         </ticket-content>
       </div>
@@ -419,7 +419,6 @@ export default {
       this.updateTicket()
     },
     updatePayWith (value) {
-      debugger
       this.ticket.pay_with = value
       this.updateTicket()
     },

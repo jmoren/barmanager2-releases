@@ -52,8 +52,6 @@
           this.$emit('save-entry', this.entry)
           _.extend(this.entry, { comment: null, subtotal: 0, quantity: 1, item: {} })
           _.extend(this.item, { id: null, name: '', price: null, code: null, description: '' })
-        } else {
-          this.alert('danger', 'No hay item seleccionado')
         }
       },
       setTotal () {

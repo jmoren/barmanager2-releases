@@ -194,7 +194,6 @@ export default {
           this.cancelUser()
         },
         error => {
-          debugger
           this.alert('danger', error.data)
         }
       )
