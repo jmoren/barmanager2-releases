@@ -1,10 +1,7 @@
 <template>
   <tfoot>
-    <tr>
-      <td>Total Pagado</td><td>$ {{ paymentTotal }}</td><td></td>
-    </tr>
     <tr v-if="pending > 0">
-      <td style="padding: 10px 0px 0px" colspan="3" >
+      <td style="padding: 10px 0px 0px" colspan="3">
         <div class="control has-addons">
           <input type="number" class="input is-expanded" :max="pending" 
               v-model="payment.amount" :placeholder="'Agregar Pago - Pendiente: $' + pending">
@@ -53,6 +50,7 @@
               this.purchase.expenses.push(response.data)
               this.payment = { amount: '', add_to_cash: false }
               this.pending -= parseFloat(response.data.amount)
+              this.$emit('update-pending', this.pending)
               this.loading = false
             },
             error => {

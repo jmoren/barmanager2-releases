@@ -77,7 +77,7 @@ export default {
   },
   methods: {
     fetchTickets (page) {
-      this.$http.get('tickets?page=' + (page || 1)).then(
+      this.$http.get('tickets?page=' + page).then(
         response => {
           this.tickets = response.data.tickets
           this.meta = response.data.meta

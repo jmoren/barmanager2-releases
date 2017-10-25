@@ -1,7 +1,5 @@
 <template>
-  <div class="box">
-    <h4><i class="fa fa-floated fa-credit-card"></i> Ingresar Factura</h4>
-    <hr>
+  <div class="">
     <div class="columns">
       <div class="column is-6">
         <label class="label">Número de Factura</label>
@@ -65,7 +63,10 @@
         <th></th>
       </thead>
       <tbody>
-        <tr v-for="(entry, index) in purchase.entries" :key="index">
+        <tr v-if="purchase.entries.length < 1">
+          <td colspan="4"><div class="is-danger-text">No hay item seleccionados</div></td>
+        </tr>
+        <tr v-for="(entry, index) in purchase.entries" :key="index" v-else>
           <td>{{ entry.item.name }}</td>
           <td>{{ entry.quantity }}</td>
           <td>{{ entry.item.stock_amount }}</td>
@@ -89,7 +90,7 @@
       <div class="column is-4">
         <checkbox v-model="payExpense" val="true">Pagar factura</checkbox>
       </div>
-      <div class="column is-4">
+      <div class="column is-4" v-if="payExpense">
         <checkbox v-if="supplier.partial_cash_open" v-model="addToPartial" val="true">Cargar el gasto a la caja</checkbox>
       </div>
     </div>

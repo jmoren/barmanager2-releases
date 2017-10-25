@@ -44,47 +44,23 @@
       <div class="columns not-print">
         <div class="column is-6">
           <div class="resume">
-            <h2>Extracciones</h2>
-            <div class="box">
-              <alert class="debit-message">TOTAL <span class="is-danger-text">${{ totalVales + totalHome }}</span></alert>
-              <div class="ticket-form" v-if="!cash.closed_at">
-                <div class="debit-help is-primary-text">
-                  <tag><span class="icon is-small"><i class="fa fa-exclamation"></i></span> Es extraccion si:</tag>
-                  <p>La plata sale de la caja del turno para un vale personal (Marcar como vale)</p>
-                  <p>La plata sale de la caja del turno para llevar a casa</p>
-                </div>
-                <form @keydown.enter.prevent="addExpense('Extraccion')">
-                  <div class="columns">
-                    <div class="column is-2">
-                      <tooltip content="Es vale?">
-                        <div class="select is-fullwidth">
-                          <select v-model="newExpenseExtraccion.has_vale">
-                            <option value="true">Si</option>
-                            <option value="false">No</option>
-                          </select>
-                        </div>
-                      </tooltip>
-                    </div>
-                    <div class="column is-3">
-                      <input class="input is-expanded" step="0.01" type="number" placeholder="Monto" v-model="newExpenseExtraccion.amount">
-                    </div>
-                    <div class="column is-6">
-                      <tooltip content="Ususario que retira o saca vale.">
-                        <div class="select is-fullwidth">
-                          <select v-model="newExpenseExtraccion.user_id">
-                            <option value=''>Usuario</option>
-                            <option v-for="user in users" v-bind:value="user.id">{{ user.name }}</option>
-                          </select>
-                        </div>
-                      </tooltip>
-                    </div>
-                    <div class="column is-1">
-                      <a class="button is-primary" @click.prevent="addExpense('Extraccion')">
-                        <i class="fa fa-plus fa-floated"></i></a>
+            <h2>
+              Extracciones
+              <div class="is-pulled-right">
+                <popover :with="600">
+                  <tag type="danger" rounded><i class="fa fa-question"></i></tag>
+                  <div slot="content">
+                    <div class="debit-help is-primary-text">
+                      <tag><span class="icon is-small"><i class="fa fa-exclamation"></i></span> Es extraccion si:</tag>
+                      <p>La plata sale de la caja del turno para un vale personal (Marcar como vale)</p>
+                      <p>La plata sale de la caja del turno para llevar a casa</p>
                     </div>
                   </div>
-                </form>
+                </popover>
               </div>
+            </h2>
+            <div class="box">
+              <alert class="debit-message">TOTAL <span class="is-danger-text">${{ totalVales + totalHome }}</span></alert>
               <div style="height: 300px; overflow: auto">
                 <table class="table">
                   <thead>
@@ -94,6 +70,32 @@
                     <th></th>
                   </thead>
                   <tbody>
+                    <tr @keydown.enter.prevent="addExpense('Extraccion')" class="form">
+                      <td>
+                        <div class="select is-fullwidth">
+                          <select v-model="newExpenseExtraccion.has_vale">
+                            <option value="true">Si</option>
+                            <option value="false">No</option>
+                          </select>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="select is-fullwidth">
+                          <select v-model="newExpenseExtraccion.user_id">
+                            <option value=''>Usuario</option>
+                            <option v-for="user in users" v-bind:value="user.id">{{ user.name }}</option>
+                          </select>
+                        </div>
+                      </td>
+                      <td>
+                        <input class="input is-expanded" step="0.01" type="number" placeholder="Monto" v-model="newExpenseExtraccion.amount">
+                      </td>
+                      <td>
+                        <a class="button is-primary is-small is-pulled-right" @click.prevent="addExpense('Extraccion')">
+                          <i class="fa fa-plus fa-floated"></i>
+                        </a>
+                      </td>
+                    </tr>
                     <tr v-for="debit in expenseExtracciones" :key="debit.id">
                       <td>{{ debit.has_vale ? 'Vale' : 'Retiro' }}</td>
                       <td>{{ debit.user.name }}</td>
@@ -115,38 +117,6 @@
             <h2>Gastos</h2>
             <div class="box">
               <alert class="debit-message">TOTAL <span class="is-danger-text">${{ totalGasto }}</span></alert>
-              <div class="ticket-form" v-if="!cash.closed_at">
-                <div class="debit-help is-primary-text">
-                  <tag><span class="icon is-small"><i class="fa fa-exclamation"></i></span> Es gasto si:</tag>
-                  <p>Si la plata sale de la caja del turno para pagar gastos del bar (ej: proveedores, mozas, etc)</p>
-                </div>
-                <form @keydown.enter.prevent="addExpense('Gasto')">
-                  <div class="columns">
-                    <div class="column is-5">
-                      <div class="is-fullwidth">
-                        <autocomplete :suppliers="suppliers" @supplier-selected="setSupplier"></autocomplete>
-                      </div>
-                    </div>
-                    <div class="column is-3">
-                      <div class="control is-expanded">
-                        <input class="input" step="0.01" type="number" placeholder="Monto" v-model="newExpenseGasto.amount">
-                      </div>
-                    </div>
-                    <div class="column is-3">
-                      <div class="control is-expanded">
-                        <input class="input" type="text" placeholder="Nro. Factura" v-model="newExpenseGasto.bill_number">
-                      </div>
-                    </div>
-                    <div class="column is-1">
-                      <div class="control">
-                        <a class="button is-primary" @click.prevent="addExpense('Gasto')">
-                          <i class="fa fa-floated fa-plus"></i>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
               <div style="height: 300px; overflow: auto">
                 <table class="table">
                   <thead>
@@ -177,7 +147,7 @@
       </div>
       <hr>
       <div class="resume">
-        <h2><tag rounded class="header-icon"><i class="fa fa-floated fa-bar-chart"></i></tag>Resumen Total</h2>
+        <h2>Resumen Total</h2>
         <table class="table is-bordered">
           <tr class="total">
             <td>CAJA INICIAL</td>
@@ -629,15 +599,10 @@
     border-radius: 4px;
     padding: 10px;
     margin-bottom: 10px;
-    height: 150px;
   }
   .debit-help .tag { text-transform: uppercase; margin-bottom: 5px; }
   .debit-help p {
     padding: 5px 0px;
-  }
-
-  .ticket-form {
-    margin-bottom: 20px;
   }
   .header-icon {
     height: 44px;
@@ -646,6 +611,7 @@
     padding-right: 12px;
     margin-top: -5px;
   }
+  table tr.form:hover { background-color: #fff; }
   input.disabled { background: #0099ff; }
   tr.total td { font-size: 25px; }
   tr.subtotal td { background: #F5F5F5; }

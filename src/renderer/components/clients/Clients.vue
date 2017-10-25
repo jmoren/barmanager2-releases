@@ -33,7 +33,7 @@
           </tr>
         </tbody>
       </table>
-      <pagination layout="pager" align="left" :page-size="12" v-model="page" :total="meta.total" :change="pageChange"></pagination>
+      <pagination layout="pager" align="left" :page-size="12" :total="meta.total" :change="pageChange"></pagination>
     </div>
   </div>
 </template>

@@ -116,14 +116,16 @@
   .autocomplete-dropdown ul {
     position: absolute;
     overflow: auto;
+    display: block;
     top: 45px;
-    z-index: 1000;
+    z-index: 10000;
     background: #fff;
     color: #666;
     right: 0px;
     border-radius: 4px;
     width: 100%;
     box-shadow: 0 2px 3px hsla(0,0%,4%,.1), 0 0 0 1px hsla(0,0%,4%,.1);
+    height: 200px;
   }
   .autocomplete-dropdown ul li {
     display: inline-flex;
@@ -132,11 +134,12 @@
     padding: 5px 10px;
     margin: 5px 0px;
     width: 100%;
+    display: flex;
   }
   .autocomplete-dropdown .control ul li:first-child { margin-top: 0px !important; }
   .autocomplete-dropdown .control ul li:last-child { margin-bottom: 0px !important; }
   .autocomplete-dropdown .control ul li { font-weight: 500; padding: 5px 10px; }
-  .autocomplete-dropdown .control ul li.active { background: #3c81df; }
+  .autocomplete-dropdown .control ul li.active { background: #3c81df; display: flex; }
   .autocomplete-dropdown .control ul li.empty-item:hover { background: #fff; }
   .autocomplete-dropdown .control ul li.empty-item {
     font-weight: 400;
