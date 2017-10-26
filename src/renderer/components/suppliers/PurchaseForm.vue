@@ -10,7 +10,10 @@
       <div class="column is-6">
         <label class="label">Total $</label>
         <p class="control">
-          <input class="input" :disabled="loading" min="1" type="number" v-model="purchaseTotal" readonly="readonly">
+          <input class="input" :disabled="loading" min="1" type="number" v-model="purchase.total">
+          <div>
+            <small>Total parcial: {{purchasePartialTotal}}</small>
+          </div>
         </p>
       </div>
     </div>
@@ -97,10 +100,6 @@
     <div class="columns" v-if="payExpense">
       <div class="column is-4">
         <input type="number" v-model="partialValue" class="input" :disabled="payTotal">
-        <label for="setTotal">
-          <input id="setTotal" type="checkbox" value="true" v-model="payTotal" @change.prevent="setPayTotal"/> 
-          <small>Pago total?</small>
-        </label>
       </div>
     </div>
     <hr>
@@ -141,7 +140,7 @@
       this.fetchItems()
     },
     computed: {
-      purchaseTotal () {
+      purchasePartialTotal () {
         return _.sum(this.purchase.entries.map((e) => e.subtotal))
       }
     },
@@ -195,9 +194,6 @@
           }
         )
       },
-      setPayTotal () {
-        this.purchase.total = this.purchaseTotal
-      },
       pickItem () {
         if (!this.item.code) { return }
 
@@ -217,7 +213,6 @@
 
         this.purchase.partial_total = this.payTotal ? null : this.partialValue
 
-        this.purchase.total = this.purchaseTotal
         this.purchase.add_to_partial = this.addToPartial
         this.purchase.add_expense = this.payExpense
 
