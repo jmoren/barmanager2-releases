@@ -14,6 +14,7 @@
           <div class="divider" style="height: 3px; margin: 6px 0px;"></div>
           <menu-item icon="users" :to="{ name: 'AdminClients'}">Clientes</menu-item>
           <menu-item icon="bars" :to="{ name: 'AdminItems'}">Items</menu-item>
+          <menu-item icon="bars" :to="{ name: 'AdminMaterials'}">Materias primas</menu-item>
           <menu-item icon="lightbulb-o" :to="{ name: 'AdminPromotions'}">Promociones</menu-item>
           <menu-item icon="paperclip" :to="{ name: 'AdminCategories'}">Categorias</menu-item>
           <menu-item icon="address-book-o" :to="{ name: 'AdminSuppliers'}">Proveedores</menu-item>

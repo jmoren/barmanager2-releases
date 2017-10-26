@@ -55,7 +55,7 @@
           </span>
         </div>
       </div>
-      <div class="controle">
+      <div class="control">
         <div class="control is-grouped">
           <div class="control is-expanded">
             <checkbox val="true" :checked="newItem.favorite" v-model="newItem.favorite">Favorito</checkbox>
@@ -68,6 +68,7 @@
         <button class="button is-light" @click.prevent="cancelItem">Cancelar</button>
       </div>
     </b-aside>
+    <AdminRecipe :item="currentItem" @recipe-modal-closed="currentItem = {}" ></AdminRecipe>
     <h1 class="header">
       <i class="fa fa-bars fa-floated"></i>
       Items
@@ -171,6 +172,9 @@
               <a @click.prevent="setToEdit(item)" class="button is-light">
                 <i class="fa fa-pencil"></i>
               </a>
+              <a @click.prevent="currentItem = item" class="button is-light">
+                <i class="fa fa-reorder"></i>
+              </a>
             </div>
           </td>
         </tr>
@@ -183,12 +187,17 @@
 <script>
 import _ from 'lodash'
 import alert from '../../mixins/Alert'
+import AdminRecipe from '@/components/administration/Recipe'
 
 export default {
   name: 'AdminItems',
   mixins: [alert],
+  components: {
+    AdminRecipe
+  },
   data () {
     return {
+      currentItem: {},
       emptyItem: {
         id: null,
         name: null,

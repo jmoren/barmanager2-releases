@@ -19,8 +19,10 @@ import Profile from '@/components/user/Profile'
 import Administration from '@/components/administration/Administration'
 import AdminClients from '@/components/administration/Clients'
 import AdminItems from '@/components/administration/Items'
+import AdminMaterials from '@/components/administration/Materials'
 import AdminSettings from '@/components/administration/AdminSettings'
 import AdminPromotions from '@/components/administration/Promotions'
+import AdminRecipe from '@/components/administration/Recipe'
 import AdminCategories from '@/components/administration/Categories'
 import AdminSuppliers from '@/components/administration/Suppliers'
 import AdminTables from '@/components/administration/Tables'
@@ -77,7 +79,9 @@ const router = new Router({
           component: Administration,
           children: [
             { path: 'clientes', name: 'AdminClients', component: AdminClients, meta: { roles: ['admin', 'manager'] } },
+            { path: 'items/:id/receta', name: 'AdminRecipe', component: AdminRecipe, meta: { roles: ['admin', 'manager'] } },
             { path: 'items', name: 'AdminItems', component: AdminItems, meta: { roles: ['admin', 'manager'] } },
+            { path: 'Materias primas', name: 'AdminMaterials', component: AdminMaterials, meta: { roles: ['admin', 'manager'] } },
             { path: 'promociones', name: 'AdminPromotions', component: AdminPromotions, meta: { roles: ['admin', 'manager'] } },
             { path: 'categorias', name: 'AdminCategories', component: AdminCategories, meta: { roles: ['admin', 'manager'] } },
             { path: 'proveedores', name: 'AdminSuppliers', component: AdminSuppliers, meta: { roles: ['admin', 'manager'] } },

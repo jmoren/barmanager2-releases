@@ -51,7 +51,7 @@
           <div v-else class="is-danger-text">No hay items todavia</div>
         </div>
       </div>
-      <div class="controle">
+      <div class="control">
         <div class="control is-grouped">
           <div class="control is-expanded">
             <checkbox val="true" :checked="!!newPromotion.favorite" v-model="newPromotion.favorite">Favorito</checkbox>
