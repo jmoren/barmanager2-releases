@@ -14,6 +14,16 @@
         </div>
       </div>
       <div class="control">
+        <div class="control is-expanded">
+          <span class="select is-fullwidth">
+            <select v-model="newMaterial.mesuring_unit">
+              <option value="" disabled selected>Unidad de medida</option>
+              <option v-for="(k,v) in units" :key="v" :value="v">{{k}}</option>
+            </select>
+          </span>
+        </div>
+      </div>
+      <div class="control">
         <div class="control is-grouped">
           <div class="control is-expanded">
             <input type="checkbox" id="checkbox" v-model="newMaterial.stockable">
@@ -78,6 +88,7 @@
           Nombre
           <i class="fa fa-floated fa-arrow-down" v-if="sortByField === 'name'"></i>
         </a></th>
+        <th>U. Medida</th>
         <th><a @click.prevent="sortBy('stockable')">
           Descuenta Stock
           <i class="fa fa-floated fa-arrow-down" v-if="sortByField === 'stockable'"></i>
@@ -88,6 +99,7 @@
       <tbody>
         <tr v-for="material in materials" :key="material.id">
           <td>{{ material.name }}</td>
+          <td>{{ units[material.mesuring_unit] }}</td>
           <td>
             {{ material.stockable ? "Si" : "No"}}
           </td>
@@ -114,10 +126,16 @@
 <script>
 import _ from 'lodash'
 import alert from '../../mixins/Alert'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'AdminMaterials',
   mixins: [alert],
+  computed: {
+    ...mapGetters({
+      units: 'allUnits'
+    })
+  },
   data () {
     return {
       emptyMaterial: {
@@ -125,7 +143,8 @@ export default {
         name: null,
         stock_amount: null,
         stock_discount: null,
-        stockable: false
+        stockable: false,
+        mesuring_unit: ''
       },
       meta: {},
       filters: { query: '', stockable: 'null' },

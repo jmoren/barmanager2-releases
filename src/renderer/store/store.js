@@ -30,6 +30,11 @@ const state = {
   users: [],
   reasons: [],
   cash: {},
+  units: {
+    'gr': 'Gramos',
+    'ml': 'Mililitros',
+    'Units': 'Unidades'
+  },
   months: [
     { name: 'Enero', number: 1 },
     { name: 'Febrero', number: 2 },
@@ -54,7 +59,8 @@ const getters = {
   closedTables: state => state.tables.closed,
   allUsers: state => state.users,
   allReasons: state => state.reasons,
-  months: state => state.months
+  months: state => state.months,
+  allUnits: state => state.units
 }
 
 // actions

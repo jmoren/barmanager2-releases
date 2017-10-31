@@ -29,7 +29,7 @@
             <li v-for="entry in materialsEntries" class="item-row">
               <tag type="danger"><a @click.prevent="removeEntry(entry)" style="color: #fff;"><i class="fa fa-floated fa-trash"></i></a></tag>
               <span class="button is-white is-small"><i class="fa fa-floated fa-angle-right"></i></span>
-              <tag><b>{{ entry.quantity }}</b></tag>
+              <tag><b>{{ entry.quantity }} {{ units[entry.material.mesuring_unit] }}</b></tag>
               <tag>{{ entry.material.name }}</tag>
             </li>
           </ul>
@@ -44,11 +44,18 @@
 import _ from 'lodash'
 import autocomplete from '../utils/admin/ItemsAutocomplete'
 import alert from '../../mixins/Alert'
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'AdminRecipe',
   components: { autocomplete },
   props: ['item'],
   mixins: [alert],
+  computed: {
+    ...mapGetters({
+      units: 'allUnits'
+    })
+  },
   data () {
     return {
       isShow: false,
@@ -66,6 +73,9 @@ export default {
     'item': 'fetchRecipe'
   },
   methods: {
+    getMaterialWithUnit (material) {
+      return material.name + '(' + material.mesuring_unit + ')'
+    },
     fetchRecipe () {
       if (this.item.id) {
         let url = 'admin/items/' + this.item.id + '/recipe'
