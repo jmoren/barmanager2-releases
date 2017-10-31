@@ -73,40 +73,29 @@
       <i class="fa fa-bars fa-floated"></i>
       Items
       <div class="control has-addons is-pulled-right">
-        <a @click.prevent="openForm" class="button is-light is-pulled-right">Nuevo Item</a>
-      </div>
-    </h1>
-    <hr>
-    <div class="columns">
-      <div class="column is-4 control is-horizontal">
-        <div class="control-label">
-          <label class="label">Nombre</label>
+        <div class="control is-grouped" style="margin-right: 20px;">
+          <div class="control is-expanded">
+            <input type="text" class="input" v-model="filters.query" placeholder="Filtrar items">
+          </div>
+          <div class="control has-addons">
+            <tooltip content="Descuenta Stock">
+              <radio-group v-model="filters.stockable">
+                <radio-button val="null">Todos</radio-button>
+                <radio-button val="true">Si</radio-button>
+                <radio-button val="false">No</radio-button>
+              </radio-group>
+            </tooltip>
+          </div>
+          <div class="control has-addons">
+            <a class="button is-success" @click.prevent="fetchItems"><i class="fa fa-filter"></i></a>
+            <a class="button is-light" @click.prevent="clearFilters"><i class="fa fa-times"></i></a>
+          </div>
         </div>
         <div class="control">
-          <input type="text" class="input" v-model="filters.query" placeholder="Filtrar items">
+          <a @click.prevent="openForm" class="button is-light is-pulled-right">Nuevo Item</a>
         </div>
       </div>
-      <div class="column is-4 control is-horizontal">
-        <div class="control-label">
-          <label class="label">D. Stock</label>
-        </div>
-        <div class="control has-addons">
-          <radio-group v-model="filters.stockable">
-            <radio-button val="null">-</radio-button>
-            <radio-button val="true">SI</radio-button>
-            <radio-button val="false">No</radio-button>
-          </radio-group>
-        </div>
-      </div>
-      <div class="control is-grouped is-horizontal column is-1">
-        <div class="control is-expanded">
-          <a class="button is-info" @click.prevent="fetchItems">Filtrar</a>
-        </div>
-        <div class="control is-expanded">
-          <a class="button is-warning" @click.prevent="clearFilters">Limpiar filtros</a>
-        </div>
-      </div>
-    </div>
+    </h1>
     <hr>
     <table class="table">
       <thead>
@@ -212,7 +201,7 @@ export default {
         stockable: false
       },
       meta: {},
-      filters: { query: '', stockable: 'null' },
+      filters: { query: '', stockable: null },
       page: 1,
       sortByField: 'code',
       newItem: {},

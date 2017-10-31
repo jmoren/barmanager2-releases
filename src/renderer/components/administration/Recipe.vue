@@ -192,4 +192,5 @@ export default {
 <style lang="css">
   #recipe-item-rows .item-row { margin-bottom: 10px; }
   .switchery {margin-top: 5px; }
+  input.units { width: 50px !important; }
 </style>

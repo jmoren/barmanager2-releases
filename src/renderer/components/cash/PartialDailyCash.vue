@@ -511,10 +511,10 @@
               this.$store.dispatch('updateDailyCash', response.data)
               this.cash = response.data
               _.extend(this.cash, response.data.resume)
-              this.closeModal()
               if (this.lastCash) {
                 this.$store.dispatch('updateDailyCash', {})
               }
+              this.closeModal()
             },
             error => {
               this.errorMessage = error.data.message

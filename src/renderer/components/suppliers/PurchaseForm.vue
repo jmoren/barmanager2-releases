@@ -4,16 +4,13 @@
       <div class="column is-6">
         <label class="label">Número de Factura</label>
         <p class="control">
-          <input class="input" :disabled="loading" type="text" placeholder="Factura" v-model="purchase.number">
+          <input class="input is-medium" :disabled="loading" type="text" placeholder="Factura" v-model="purchase.number">
         </p>
       </div>
       <div class="column is-6">
-        <label class="label">Total $</label>
+        <label class="label">Total $ <span class="is-pulled-right">Suma parcial: {{purchasePartialTotal}}</span></label>
         <p class="control">
-          <input class="input" :disabled="loading" min="1" type="number" v-model="purchase.total">
-          <div>
-            <small>Total parcial: {{purchasePartialTotal}}</small>
-          </div>
+          <input class="input is-medium" :disabled="loading" min="1" type="number" v-model="purchase.total">
         </p>
       </div>
     </div>
@@ -23,11 +20,20 @@
         <div class="column is-6">
           <label class="label">Producto</label>
           <div class="control is-grouped">
-            <div class="control">
+            <div class="control select is-medium">
+             <select v-model="currentType">
+               <option value="material">Material</option>
+               <option value="item">Item</option>
+             </select>
+            </div>
+            <div class="control" v-if="currentType === 'item'">
               <input class="input is-medium" :disabled="loading" id="code" type="text" placeholder="Cod" v-model="item.code" @blur.prevent="pickItem" autofocus>
             </div>
             <div class="control is-expanded">
-              <autocomplete @item-selected="getItem" :status="loading" :name="item.name" :items="items"></autocomplete>
+              <autocomplete @item-selected="getItem" :status="loading" :name="item.name" :items="currentList"></autocomplete>
+            </div>
+            <div class="control" v-if="currentType === 'material'">
+              <input class="input is-medium" disabled :value="item.mesuring_unit">
             </div>
           </div>
         </div>
@@ -45,19 +51,19 @@
             </div>
             <div class="control is-expanded">
               <button @click.prevent="addEntry()" class="button is-light is-medium is-fullwidth">
-                <span class="icon is-small">
-                  <i class="fa fa-plus"></i>
-                </span>
+                <span class="icon is-small"><i class="fa fa-plus"></i></span>
                 <span>Agregar</span>
               </button>
             </div>
           </div>
         </div>
       </div>
+      <p v-for="entry in purchase.entries" :key="entry.item.id">{{entry}}</p>
     </form>
     <br/>
     <table class="table">
       <thead>
+        <th>Tipo</th>
         <th>Producto</th>
         <th>Cantidad</th>
         <th>Stock</th>
@@ -70,12 +76,11 @@
           <td colspan="4"><div class="is-danger-text">No hay item seleccionados</div></td>
         </tr>
         <tr v-for="(entry, index) in purchase.entries" :key="index" v-else>
+          <td>{{ entry.type }}</td>
           <td>{{ entry.item.name }}</td>
           <td>{{ entry.quantity }}</td>
           <td>{{ entry.item.stock_amount }}</td>
-          <td>
-            ${{ entry.price }}
-          </td>
+          <td>${{ entry.price }}</td>
           <td>{{ entry.subtotal }}</td>
           <td>
             <tooltip v-if="entry.previous && entry.price > entry.previous.price" content="El precio del producto es mayor al de la útlima compra.">
@@ -99,7 +104,7 @@
     </div>
     <div class="columns" v-if="payExpense">
       <div class="column is-4">
-        <input type="number" v-model="partialValue" class="input" :disabled="payTotal">
+        <input type="number" v-model="partialValue" class="input" placeholder="Cantidad a pagar">
       </div>
     </div>
     <hr>
@@ -124,13 +129,33 @@
       return {
         purchase: { total: '', number: '', entries: [] },
         items: [],
+        materials: [],
         loading: false,
         entry: { price: '', quantity: '', item: {}, previous: {} },
         item: { id: null, name: '', price: null, code: null, description: '' },
         payExpense: false,
         addToPartial: false,
         payTotal: false,
-        partialValue: ''
+        partialValue: '',
+        currentType: '',
+        currentList: []
+      }
+    },
+    watch: {
+      currentType () {
+        if (this.currentType === 'item') {
+          this.currentList = this.items
+          this.entry.type = 'Item'
+          this.item = {}
+        } else if (this.currentType === 'material') {
+          this.currentList = this.materials
+          this.entry.type = 'Material'
+          this.item = {}
+        } else {
+          this.currentList = []
+          this.entry = { type: '' }
+          this.item = {}
+        }
       }
     },
     created () {
@@ -138,6 +163,7 @@
         this.alert('danger', 'No hay Proveedor seleccionado. Eliga uno nuevamente de la lista de proveedores')
       }
       this.fetchItems()
+      this.fetchMaterials()
     },
     computed: {
       purchasePartialTotal () {
@@ -156,6 +182,7 @@
         if (this.item.id && this.entry.quantity && this.entry.price) {
           this.entry.item = _.clone(this.item)
           this.entry.subtotal = this.entry.quantity * this.entry.price
+
           this.purchase.entries.push(_.clone(this.entry))
 
           this.getLastEntry()
@@ -188,9 +215,16 @@
         this.pickItem()
       },
       fetchItems () {
-        this.$http.get('items').then(
+        this.$http.get('items?paginate=1').then(
           response => {
             this.items = response.data
+          }
+        )
+      },
+      fetchMaterials () {
+        this.$http.get('admin/materials?paginate=1').then(
+          response => {
+            this.materials = response.data
           }
         )
       },

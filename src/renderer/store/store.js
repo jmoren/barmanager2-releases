@@ -31,9 +31,11 @@ const state = {
   reasons: [],
   cash: {},
   units: {
+    'kg': 'Kilogramos',
     'gr': 'Gramos',
     'ml': 'Mililitros',
-    'Units': 'Unidades'
+    'lt': 'Litros',
+    'unit': 'Unidades'
   },
   months: [
     { name: 'Enero', number: 1 },

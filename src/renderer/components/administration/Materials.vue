@@ -24,11 +24,10 @@
         </div>
       </div>
       <div class="control">
+        <div class="control is-expanded">
+          <checkbox val="true" id="checkbox" v-model="newMaterial.stockable">Descuenta Stock</checkbox>
+        </div>
         <div class="control is-grouped">
-          <div class="control is-expanded">
-            <input type="checkbox" id="checkbox" v-model="newMaterial.stockable">
-            <label for="checkbox">Descuenta Stock</label>
-          </div>
           <div class="control is-expanded" v-if="newMaterial.stockable">
             <input type="number" :step="0.01" class="input" v-model="newMaterial.stock_discount"  placeholder="% descuento"></input>
           </div>
@@ -47,40 +46,29 @@
       <i class="fa fa-bars fa-floated"></i>
       Materias primas
       <div class="control has-addons is-pulled-right">
-        <a @click.prevent="openForm" class="button is-light is-pulled-right">Nueva Materia prima</a>
-      </div>
-    </h1>
-    <hr>
-    <div class="columns">
-      <div class="column is-4 control is-horizontal">
-        <div class="control-label">
-          <label class="label">Nombre</label>
+        <div class="control is-grouped" style="margin-right: 20px;">
+          <div class="control is-expanded">
+            <input type="text" class="input" v-model="filters.query" placeholder="Filtrar items">
+          </div>
+          <div class="control has-addons">
+            <tooltip content="Descuenta Stock">
+              <radio-group v-model="filters.stockable">
+                <radio-button val="null">Todos</radio-button>
+                <radio-button val="true">Si</radio-button>
+                <radio-button val="false">No</radio-button>
+              </radio-group>
+            </tooltip>
+          </div>
+          <div class="control has-addons">
+            <a class="button is-success" @click.prevent="fetchMaterials"><i class="fa fa-filter"></i></a>
+            <a class="button is-light" @click.prevent="clearFilters"><i class="fa fa-times"></i></a>
+          </div>
         </div>
         <div class="control">
-          <input type="text" class="input" v-model="filters.query" placeholder="Filtrar items">
+          <a @click.prevent="openForm" class="button is-light is-pulled-right">Nueva Materia prima</a>
         </div>
       </div>
-      <div class="column is-4 control is-horizontal">
-        <div class="control-label">
-          <label class="label">D. Stock</label>
-        </div>
-        <div class="control has-addons">
-          <radio-group v-model="filters.stockable">
-            <radio-button val="null">-</radio-button>
-            <radio-button val="true">SI</radio-button>
-            <radio-button val="false">No</radio-button>
-          </radio-group>
-        </div>
-      </div>
-      <div class="control is-grouped is-horizontal column is-1">
-        <div class="control is-expanded">
-          <a class="button is-info" @click.prevent="fetchMaterials">Filtrar</a>
-        </div>
-        <div class="control is-expanded">
-          <a class="button is-warning" @click.prevent="clearFilters">Limpiar filtros</a>
-        </div>
-      </div>
-    </div>
+    </h1>
     <hr>
     <table class="table">
       <thead>
@@ -139,18 +127,18 @@ export default {
   data () {
     return {
       emptyMaterial: {
-        id: null,
-        name: null,
-        stock_amount: null,
-        stock_discount: null,
+        id: '',
+        name: '',
+        stock_amount: '',
+        stock_discount: '',
         stockable: false,
         mesuring_unit: ''
       },
       meta: {},
-      filters: { query: '', stockable: 'null' },
+      filters: { query: '', stockable: null },
       page: 1,
       sortByField: 'name',
-      newMaterial: {},
+      newMaterial: { stockable: false, name: '', mesuring_unit: '' },
       materials: [],
       isShow: false,
       current: {},

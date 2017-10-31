@@ -1,7 +1,8 @@
 <template>
   <div class="autocomplete-dropdown" style="position:relative">
-    <div class="control">
-      <input type="search" class="input is-expanded"
+    <div class="control has-addons">
+      <input type="text" class="units input" disabled v-model="units" placeholder="Unidad"> 
+      <input type="search" class="search input"
          autocomplete="off"
          placeholder="Buscardor..."
          v-model="query"
@@ -11,18 +12,18 @@
          @focus="focused = true"
          @keydown.esc='reset'
          @blur="reset"/>
-      <ul v-show="focused" id="queryList">
-        <!-- for vue@1.0 use: ($item, item) -->
-        <li class="empty-item is-danger-text" v-if="filteredItems.length === 0">
-          No se encontro ningun resultado
-        </li>
-        <li v-for="(item, $item) in filteredItems" :key="item.id" :class="activeClass($item)" @key.enter="hit" @mousemove="setActive($item)" @mousedown.prevent="hit">
-          <div class="info">
-            <div>{{ item.name }}</div>
-          </div>
-        </li>
-      </ul>
     </div>
+    <ul v-show="focused" id="queryList">
+      <!-- for vue@1.0 use: ($item, item) -->
+      <li class="empty-item is-danger-text" v-if="filteredItems.length === 0">
+        No se encontro ningun resultado
+      </li>
+      <li v-for="(item, $item) in filteredItems" :key="item.id" :class="activeClass($item)" @key.enter="hit" @mousemove="setActive($item)" @mousedown.prevent="hit">
+        <div class="info">
+          <div>{{ item.name }}</div>
+        </div>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -43,6 +44,16 @@
     watch: {
       name () {
         this.query = this.name
+      },
+      query () {
+        if (!this.query) {
+          this.units = ''
+        }
+      }
+    },
+    filters: {
+      titleize (value) {
+        return value.charAt(0).toUpperCase() + value.slice(1)
       }
     },
     computed: {
@@ -62,7 +73,8 @@
         current: -1,
         focused: false,
         selected: false,
-        query: this.name
+        query: this.name,
+        units: ''
       }
     },
     methods: {
@@ -70,6 +82,7 @@
         let index = this.filteredItems.length === 1 ? 0 : this.current
         let found = this.filteredItems[index]
         this.query = found.name
+        this.units = found.mesuring_unit
         this.selected = true
         this.$emit('set-item', found)
       },
@@ -117,7 +130,6 @@
 </script>
 
 <style scoped>
-  input[type=search] { border-radius: 4px; }
   .autocomplete-dropdown ul {
     position: absolute;
     max-height: 300;
@@ -139,18 +151,18 @@
     margin: 5px 0px;
     width: 100%;
   }
-  .autocomplete-dropdown .control input { width: 300px; }
-  .autocomplete-dropdown .control input:focus { background: #fff; }
-  .autocomplete-dropdown .control ul li:first-child { margin-top: 0px !important; }
-  .autocomplete-dropdown .control ul li:last-child { margin-bottom: 0px !important; }
-  .autocomplete-dropdown .control ul li.active {
+  .autocomplete-dropdown .control input.search { width: 250px; }
+  .autocomplete-dropdown input:focus { background: #fff; }
+  .autocomplete-dropdown ul li:first-child { margin-top: 0px !important; }
+  .autocomplete-dropdown ul li:last-child { margin-bottom: 0px !important; }
+  .autocomplete-dropdown ul li.active {
     background: #3c81df
   }
-  .autocomplete-dropdown .control ul li.empty-item:hover { background: #fff; }
-  .autocomplete-dropdown .control ul li.empty-item {
+  .autocomplete-dropdown ul li.empty-item:hover { background: #fff; }
+  .autocomplete-dropdown ul li.empty-item {
     font-weight: 400;
     padding: 10px;
   }
-  .autocomplete-dropdown .control ul li .indicator { float:left; font-weight: 500; color: #333; width: 10%; text-align: left; }
-  .autocomplete-dropdown .control ul li.active .info { float:left; color: #fff; width: 90%; text-align: left; }
+  .autocomplete-dropdown ul li .indicator { float:left; font-weight: 500; color: #333; width: 10%; text-align: left; }
+  .autocomplete-dropdown ul li.active .info { float:left; color: #fff; width: 90%; text-align: left; }
 </style>
