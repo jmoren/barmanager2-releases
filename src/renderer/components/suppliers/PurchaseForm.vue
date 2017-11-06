@@ -58,7 +58,7 @@
           </div>
         </div>
       </div>
-      <p v-for="entry in purchase.entries" :key="entry.item.id">{{entry}}</p>
+
     </form>
     <br/>
     <table class="table">
