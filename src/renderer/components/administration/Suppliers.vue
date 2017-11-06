@@ -10,7 +10,10 @@
     <h1 class="header">
       <i class="fa fa-address-book-o fa-floated"></i>
       Proveedores
-      <a @click.prevent="isShow=true" class="is-pulled-right button is-light">Nuevo proveedor</a>
+      <div class="control has-addons is-pulled-right">
+        <input type="text" class="input" v-model="query" @keyup.prevent="reloadSuppliers" placeholder="Filtrar proveedores">
+        <a @click.prevent="isShow=true" class="is-pulled-right button is-light">Nuevo proveedor</a>
+      </div>
     </h1>
     <hr>
     <table class="table">
@@ -39,6 +42,7 @@
         </tr>
       </tbody>
     </table>
+    <pagination layout="pager" align="left" :page-size="12" v-model="page" :total="meta.total" :change="pageChange"></pagination>
   </div>
 </template>
 
@@ -51,6 +55,9 @@ export default {
   mixins: [alert],
   data () {
     return {
+      query: '',
+      page: 1,
+      meta: {},
       newSupplier: { name: '', phone: '', address: '' },
       originalSupplier: { id: null, name: '', phone: '', address: '' },
       suppliers: [],
@@ -61,10 +68,28 @@ export default {
     this.fetchSuppliers()
   },
   methods: {
+    reloadSuppliers () {
+      this.page = 1
+      let isEmpty = this.query.length === 0
+      if (isEmpty) {
+        this.fetchSuppliers()
+      } else if (!isEmpty && this.query.length > 2) {
+        this.fetchSuppliers()
+      }
+    },
+    pageChange (page) {
+      this.page = page
+      this.fetchSuppliers()
+    },
     fetchSuppliers () {
-      this.$http.get('admin/suppliers').then(
+      let url = 'admin/suppliers?page=' + this.page
+      if (this.query && this.query.length > 2) {
+        url = url + '&query=' + this.query
+      }
+      this.$http.get(url).then(
         response => {
-          this.suppliers = response.data
+          this.suppliers = response.data.suppliers
+          this.meta = response.data.meta
         },
         error => {
           this.alert('danger', error.data)
