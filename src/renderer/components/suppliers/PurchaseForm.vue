@@ -63,6 +63,7 @@
     <br/>
     <table class="table">
       <thead>
+        <th></th>
         <th>Tipo</th>
         <th>Producto</th>
         <th>Cantidad</th>
@@ -76,6 +77,11 @@
           <td colspan="4"><div class="is-danger-text">No hay item seleccionados</div></td>
         </tr>
         <tr v-for="(entry, index) in purchase.entries" :key="index" v-else>
+          <td>
+            <a @click.prevent="removeEntry(index)" class="button is-light">
+              <i class="fa fa-trash"></i>
+            </a>
+          </td>
           <td>{{ entry.type }}</td>
           <td>{{ entry.item.name }}</td>
           <td>{{ entry.quantity }}</td>
@@ -178,6 +184,9 @@
         this.payExpense = false
         this.payTotal = false
       },
+      removeEntry (index) {
+        Vue.delete(this.purchase.entries, index)
+      },
       addEntry () {
         if (this.item.id && this.entry.quantity && this.entry.price) {
           this.entry.item = _.clone(this.item)
@@ -190,6 +199,7 @@
           //  clean entry and item
           this.entry = {}
           this.item = {}
+          this.currentType = ''
         } else {
           this.alert('danger', 'Debe completar todos los datos para agergar un producto')
         }
