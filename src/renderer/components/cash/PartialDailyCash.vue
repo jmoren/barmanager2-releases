@@ -227,13 +227,13 @@
         <div class="box not-print" v-if="!cash.closed_at">
           <div class="columns">
             <div class="column is-6 is-offset-3 has-text-centered">
-              <button class="button is-danger is-large" @click.prevent="openModal">CIERRE TURNO</button>
+              <button class="button is-danger is-large" @click.prevent="openModal" :disabled="closingCash">CIERRE TURNO</button>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <modal :title="'CIERRE DE CAJA No. ' + cash.id" :show-footer="true" :on-ok="closeCash" :on-cancel="closeModal" :is-show="isOpen" transition="zoom">
+    <modal :title="'CIERRE DE CAJA No. ' + cash.id" :show-footer="false"  :is-show="isOpen" transition="zoom">
       <alert type="danger" v-if="errorMessage">{{errorMessage}}</alert>
       <alert class="is-clearfix">
         <div class="is-pulled-left">
@@ -271,6 +271,10 @@
           </div>
         </div>
       </div>
+      <div class="control">
+        <a class="button is-primary" @click="closeCash()" :disabled="closingCash">Cerrar caja</a>
+        <a class="button is-light" @click="closeModal()" :disabled="closingCash">Cancelar</a>
+      </div>
     </modal>
   </div>
 </template>
@@ -304,7 +308,8 @@
         newPartialCash: { init_amount: 0.0, user_id: '', manual_cash: '' },
         isOpen: false,
         lastCash: false,
-        errorMessage: ''
+        errorMessage: '',
+        closingCash: false
       }
     },
     filters: {
@@ -506,6 +511,7 @@
           this.errorMessage = 'No se puede abrir una caja nueva sin responsable'
           return false
         } else {
+          this.closingCash = true
           this.$http.post('admin/partial_daily_cashes/' + this.cash.id + '/close', { last: this.lastCash, partial_daily_cash: this.newPartialCash }).then(
             response => {
               this.$store.dispatch('updateDailyCash', response.data)
@@ -515,9 +521,11 @@
                 this.$store.dispatch('updateDailyCash', {})
               }
               this.closeModal()
+              this.closingCash = false
             },
             error => {
               this.errorMessage = error.data.message
+              this.closingCash = false
             }
           )
         }
