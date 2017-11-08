@@ -8,9 +8,9 @@
           <tag v-if="cash.daily_cash_id" class="tag-header is-pulled-left" rounded>{{ cash.id }}</tag>
         </div>
         <div class="column is-4 has-text-centered">
-          <span class="button is-light is-medium is-not-link"><span>INICIAL: <b>${{ cash.init_amount }}</b></span></span>
+          <span class="button is-light is-medium is-not-link"><span>INICIAL: <b>${{ cash.init_amount | withDecimals }}</b></span></span>
           <span class="button is-white is-not-link"><span class="icon"><i class="fa fa-angle-right"></i></span></span>
-          <span class="button is-light is-medium is-not-link"><span>ACTUAL: <b>${{ total }}</b></span></span>
+          <span class="button is-light is-medium is-not-link"><span>ACTUAL: <b>${{ total | withDecimals  }}</b></span></span>
         </div>
         <div class="column is-7">
           <div class="control has-addons is-pulled-right">
@@ -233,8 +233,14 @@
         </div>
       </div>
     </div>
-    <modal :title="'CIERRE DE CAJA No. ' + cash.id" :show-footer="false"  :is-show="isOpen" transition="zoom">
-      <alert type="danger" v-if="errorMessage">{{errorMessage}}</alert>
+    <modal :title="'CIERRE DE CAJA No. ' + cash.id" :show-footer="false" :is-show="isOpen" transition="zoom">
+      <alert type="danger" v-if="errorMessage">
+        {{errorMessage}}
+        <div v-if="openTickets.length">
+          <label>Tickets abiertos:</label>
+          <router-link v-for="op in openTickets" :to="{ name: 'Ticket', params: { id: op.id } }" class="button is-light is-small" style="margin-right: 5px;">{{op.format_number}}</router-link>
+        </div>
+      </alert>
       <alert class="is-clearfix">
         <div class="is-pulled-left">
           <span class="icon is-small" style="margin: 2px;"><i class="fa fa-exclamation is-danger"></i></span>
@@ -272,7 +278,10 @@
         </div>
       </div>
       <div class="control">
-        <a class="button is-primary" @click="closeCash()" :disabled="closingCash">Cerrar caja</a>
+        <a class="button is-primary" @click="closeCash()" :disabled="closingCash">
+          <i v-if="closingCash" class="fa fa-spin fa-spinner"></i>
+          Cerrar caja
+        </a>
         <a class="button is-light" @click="closeModal()" :disabled="closingCash">Cancelar</a>
       </div>
     </modal>
@@ -309,7 +318,8 @@
         isOpen: false,
         lastCash: false,
         errorMessage: '',
-        closingCash: false
+        closingCash: false,
+        openTickets: []
       }
     },
     filters: {
@@ -453,6 +463,7 @@
         this.isOpen = false
         this.newPartialCash = { init_amount: 0, user_id: '' }
         this.errorMessage = ''
+        this.openTickers = []
       },
       setSupplier (supplier) {
         this.newExpenseGasto.supplier_id = supplier.id
@@ -526,6 +537,7 @@
             error => {
               this.errorMessage = error.data.message
               this.closingCash = false
+              this.openTickets = error.data.open_tickets
             }
           )
         }
