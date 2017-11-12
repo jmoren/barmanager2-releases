@@ -6,6 +6,7 @@
     <div v-else>
       <div class="print">
         <div>TICKET # {{ ticket.number | withDash }}</div>
+        <div>{{ Date.now() | moment('DD MMMM, YYYY h:mm:ss a') }}</div>
         <div style="font-weight: 300; font-size: 25px">
           <span v-if="ticket.table_id">MESA {{ ticket.table.description }}</span>
           <span v-else class="is-danger-text">DELIVERY</span>
