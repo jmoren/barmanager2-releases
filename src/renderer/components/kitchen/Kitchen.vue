@@ -17,6 +17,11 @@
               <span class="icon"><i class="fa fa-refresh" :class="{'fa-spin': loadingTickets }"></i></span>
             </a>
           </tooltip>
+          <tooltip content="Sync kitchen">
+            <a @click.prevent="syncKitchen" class="button is-danger is-medium" :class="{'is-disabled': loadingTickets }">
+              <span class="icon"><i class="fa fa-retweet" :class="{'fa-spin': loadingTickets }"></i></span>
+            </a>
+          </tooltip>
           <div class="button is-light is-medium is-not-link">
             <span class="icon is-small"><i class="fa fa-calendar"></i></span>
             <span>{{ currentTime | moment('DD - MMMM - YYYY') | upercase }}</span>
@@ -133,6 +138,15 @@
         this.mainCall = setInterval(() => {
           this.fetchTickets()
         }, 15000)
+      },
+      syncKitchen () {
+        this.loading = true
+        this.$http.get('kitchen/sync').then(
+          response => {
+            console.log('SYNC')
+            this.fetchTickets()
+          }
+        )
       },
       fetchTickets () {
         this.loading = true
