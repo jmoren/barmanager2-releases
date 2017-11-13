@@ -13,7 +13,7 @@
         <thead>
           <th>Mesa</th>
           <th>Estado</th>
-          <th>Pagado</th>
+          <th>Deuda</th>
           <th>Numero</th>
           <th>Total</th>
           <th>Fecha</th>
@@ -35,7 +35,7 @@
             </td>
             <td>
               <i class="fa fa-floated" :class="{'fa-check is-success': ticket.paid_at, 'fa-exclamation-circle is-warning': !ticket.paid_at }"></i>
-              <span>{{ ticket.paid_at ? 'Pagado' : 'Pendiente' }}</span>
+              <span>{{ ticket.paid_at ? 'Pagado' : 'Pendiente: $' + ticket.pending}}</span>
             </td>
             <td>{{ ticket.number }}</td>
             <td>${{ ticket.partial_total }}</td>
@@ -77,7 +77,16 @@ export default {
   },
   methods: {
     fetchTickets (page) {
-      this.$http.get('tickets?page=' + page).then(
+      let url = 'tickets?page=' + (page || 1)
+
+      if (this.$route.params.partial_daily_cash_id) {
+        url = url + '&partial_daily_cash_id=' + this.$route.params.partial_daily_cash_id
+      }
+      if (typeof (this.$route.params.not_paid) === 'boolean') {
+        url = url + '&not_paid=' + this.$route.params.not_paid
+      }
+
+      this.$http.get(url).then(
         response => {
           this.tickets = response.data.tickets
           this.meta = response.data.meta

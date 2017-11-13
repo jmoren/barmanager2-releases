@@ -76,7 +76,10 @@ export default {
       if (this.$route.params.payment_type) {
         url = url + '&payment_type=' + this.$route.params.payment_type
       }
-      if (this.$route.params.payment_favor) {
+      if (typeof (this.$route.params.debt) === 'boolean') {
+        url = url + '&debt=' + this.$route.params.debt
+      }
+      if (typeof (this.$route.params.payment_favor) === 'boolean') {
         url = url + '&payment_favor=' + this.$route.params.payment_favor
       }
       console.log(url)

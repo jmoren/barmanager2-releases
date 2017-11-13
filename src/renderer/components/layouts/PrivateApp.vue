@@ -52,29 +52,30 @@
                           <h2><b>{{ mapRoles[user.profile.role] }}</b></h2>
                         </div>
                       </div>
-                      <div class="columns">
-                        <div class="column is-6">
-                          <img style="padding: 2px 0px;" :src="setPicture" alt="">
+                      <div>
+                        <div style="margin: 0px;" >
+                          <router-link :to="{ name: 'Profile' }" class="button is-fullwidth is-light">
+                            <span class="icon is-small"><i class="fa fa-user-o"></i></span>
+                            <span>Perfil</span>
+                          </router-link>
                         </div>
-                        <div class="column is-6" style="background: #fff;">
-                          <div style="margin: 0px;" >
-                            <router-link :to="{ name: 'Profile' }" class="button is-fullwidth is-light">
-                              <span class="icon is-small"><i class="fa fa-user-o"></i></span>
-                              <span>Perfil</span>
-                            </router-link>
-                          </div>
-                          <div  style="margin: 15px 0px">
-                            <router-link :to="{ name: 'AdminClients'}" class="button is-light is-fullwidth" v-if="['admin', 'manager'].indexOf(user.profile.role) !== -1">
-                              <span class="icon is-small"><i class="fa fa-cog"></i></span>
-                              <span>Admin</span>
-                            </router-link>
-                          </div>
-                          <div style="margin: 0px;" >
-                            <a @click.prevent="logout" class="button is-light is-fullwidth">
-                              <span class="icon is-small"><i class="fa fa-sign-out"></i></span>
-                              <span>Salir</span>
-                            </a>
-                          </div>
+                        <div  style="margin: 15px 0px" v-if="dailyCash.id">
+                          <router-link :to="{ name: 'PartialDailyCash', params: { id: dailyCash.id }}" class="button is-light is-fullwidth" v-if="['admin', 'manager'].indexOf(user.profile.role) !== -1">
+                            <span class="icon is-small"><i class="fa fa-money"></i></span>
+                            <span>Caja Actual</span>
+                          </router-link>
+                        </div>
+                        <div  style="margin: 15px 0px">
+                          <router-link :to="{ name: 'AdminClients'}" class="button is-light is-fullwidth" v-if="['admin', 'manager'].indexOf(user.profile.role) !== -1">
+                            <span class="icon is-small"><i class="fa fa-cog"></i></span>
+                            <span>Admin</span>
+                          </router-link>
+                        </div>
+                        <div style="margin: 0px;" >
+                          <a @click.prevent="logout" class="button is-light is-fullwidth">
+                            <span class="icon is-small"><i class="fa fa-sign-out"></i></span>
+                            <span>Salir</span>
+                          </a>
                         </div>
                       </div>
                     </div>

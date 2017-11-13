@@ -7,11 +7,6 @@
           <tooltip content="Caja Numero" placement="left"><tag class="tag-header is-pulled-left" rounded>{{ cash.id }}</tag></tooltip>
           <tag v-if="cash.daily_cash_id" class="tag-header is-pulled-left" rounded>{{ cash.id }}</tag>
         </div>
-        <div class="column is-4 has-text-centered">
-          <span class="button is-light is-medium is-not-link"><span>INICIAL: <b>${{ cash.init_amount | withDecimals }}</b></span></span>
-          <span class="button is-white is-not-link"><span class="icon"><i class="fa fa-angle-right"></i></span></span>
-          <span class="button is-light is-medium is-not-link"><span>ACTUAL: <b>${{ total | withDecimals  }}</b></span></span>
-        </div>
         <div class="column is-7">
           <div class="control has-addons is-pulled-right">
             <span class="button is-medium is-not-link" :class="{'is-success': !cash.closed_at, 'is-primary': cash.closed_at}">
@@ -45,7 +40,7 @@
         <div class="column is-6">
           <div class="resume">
             <h2>
-              Extracciones
+              Extracciones y Vales
               <div class="is-pulled-right">
                 <popover :with="600">
                   <tag type="danger" rounded><i class="fa fa-question"></i></tag>
@@ -60,7 +55,7 @@
               </div>
             </h2>
             <div class="box">
-              <alert class="debit-message">TOTAL <span class="is-danger-text">${{ totalVales + totalHome }}</span></alert>
+              <alert class="debit-message">TOTAL <span class="is-danger-text">${{ (parseFloat(cash.total_vales) + parseFloat(cash.total_home)) | withDecimals }}</span></alert>
               <div style="height: 300px; overflow: auto">
                 <table class="table">
                   <thead>
@@ -74,8 +69,8 @@
                       <td>
                         <div class="select is-fullwidth">
                           <select v-model="newExpenseExtraccion.has_vale">
-                            <option value="true">Si</option>
-                            <option value="false">No</option>
+                            <option value="true">Vale</option>
+                            <option value="false">Retiro</option>
                           </select>
                         </div>
                       </td>
@@ -116,7 +111,7 @@
           <div class="resume">
             <h2>Gastos</h2>
             <div class="box">
-              <alert class="debit-message">TOTAL <span class="is-danger-text">${{ totalGasto }}</span></alert>
+              <alert class="debit-message">TOTAL <span class="is-danger-text">${{ parseFloat(cash.total_expenses) | withDecimals }}</span></alert>
               <div style="height: 300px; overflow: auto">
                 <table class="table">
                   <thead>
@@ -146,89 +141,11 @@
         </div>
       </div>
       <hr>
-      <div class="resume">
-        <h2>Resumen Total</h2>
-        <table class="table is-bordered">
-          <tr class="total">
-            <td>CAJA INICIAL</td>
-            <td class="row-value"><span>${{ cash.init_amount | withDecimals  }}</span></td>
-          </tr>
-          <tr>
-            <td>Gastos</td>
-            <td class="row-value"><span class="is-danger-text">${{ totalGasto | withDecimals  }}</span></td>
-          </tr>
-          <tr>
-            <td>Vales</td>
-            <td class="row-value"><span class="is-danger-text">${{ totalVales | withDecimals }}</span></td>
-          </tr>
-          <tr>
-            <td>Retiros</td>
-            <td class="row-value"><span class="is-danger-text">${{ totalHome | withDecimals }}</span></td>
-          </tr>
-          <tr class="subtotal">
-            <td>Total Gastos (Gastos + vales + Extracciones)</td>
-            <td class="row-value"><span class="is-danger-text">${{ debitos  | withDecimals }}</span></td>
-          </tr>
-          <tr>
-            <td>Ventas con Tarjeta</td>
-            <td class="row-value">
-              <router-link :to="{ name: 'Payments', params: { partial_daily_cash_id: cash.id, payment_type: 'tarjeta' } }" class="is-success-text">${{ cash.credit_amount | withDecimals }}</router-link>
-            </td>
-          </tr>
-          <tr>
-            <td>Pago Deuda con Tarjeta</td>
-            <td class="row-value">
-              <router-link :to="{ name: 'Payments', params: { partial_daily_cash_id: -1, payment_type: 'tarjeta' } }" class="is-success-text">${{ cash.debt_credit | withDecimals }}</router-link>
-            </td>
-          </tr>
-          <tr>
-            <td>Pagos a favor de cliente Tarjeta</td>
-            <td class="row-value"><span>${{ cash.favor_credit | withDecimals }}</span></td></tr>
-          <tr class="subtotal">
-            <td>Total Cobrado con Tarjetas</td>
-            <td class="row-value"><span class="is-success-text">${{ subCard | withDecimals }}</span></td></tr>
-          <tr>
-            <td>Pago Efectivo</td>
-            <td class="row-value">
-              <router-link :to="{ name: 'Payments', params: { partial_daily_cash_id: cash.id, payment_type: 'efectivo' } }" class="is-success-text">${{ cash.cash_amount | withDecimals }}</router-link>
-            </td>
-          </tr>
-          <tr>
-            <td>Pago Deuda Efectivo</td>
-            <td class="row-value">
-              <router-link :to="{ name: 'Payments', params: { partial_daily_cash_id: -1, payment_type: 'efectivo' } }" class="is-success-text">${{ cash.debt_cash | withDecimals}}</router-link>
-            </td>
-          </tr>
-          <tr>
-            <td>Pagos a favor de cliente Efectivo</td>
-            <td class="row-value"><span>${{ cash.favor_cash | withDecimals }}</span></td>
-          </tr>
-          <tr class="subtotal">
-            <td>Total Cobrado en Efectivo</td>
-            <td class="row-value"><span class="is-success-text">${{ subCash | withDecimals }}</span></td>
-          </tr>
-          <tr class="subtotal">
-            <td>Total Ventas</td>
-            <td class="row-value"><span class="is-success-text">${{ cash.total_paid | withDecimals }}</span></td>
-          </tr>
-          <tr class="subtotal">
-            <td>Total Fiado</td>
-            <td class="row-value"><span class="is-success-text">${{ cash.not_paid | withDecimals }}</span></td>
-          </tr>
-          <tr class="total">
-            <td>EFECTIVO EN CAJA <span style="font-size: 17px; color: #999">(Sub Efectivo - Gastos - Retirado)</span></td>
-            <td class="row-value"><span class="is-success-text">${{ realCash | withDecimals }}</span></td>
-          </tr>
-          <tr class="subtotal">
-            <td>Rentabilidad <span style="font-size: 17px; color: #999">(Sub Efectivo + Sub Tarjeta - Gastos - Retirado)</span></td>
-            <td class="row-value"><span class="is-success-text">${{ total | withDecimals }}</span></td>
-          </tr>
-        </table>
-        <div class="box not-print" v-if="!cash.closed_at">
-          <div class="columns">
-            <div class="column is-6 is-offset-3 has-text-centered">
-              <button class="button is-danger is-large" @click.prevent="openModal" :disabled="closingCash">CIERRE TURNO</button>
-            </div>
+      <PartialDailySummary :summary="cash"></PartialDailySummary>
+      <div class="box not-print" v-if="!cash.closed_at">
+        <div class="columns">
+          <div class="column is-6 is-offset-3 has-text-centered">
+            <button class="button is-danger is-large" @click.prevent="openModal" :disabled="closingCash">CIERRE TURNO</button>
           </div>
         </div>
       </div>
@@ -294,6 +211,7 @@
   import _ from 'lodash'
   import autocomplete from '../utils/admin/SupplierAutocomplete'
   import alert from '../../mixins/Alert'
+  import PartialDailySummary from '@/components/cash/Summary'
 
   export default {
     name: 'PartialDailyCash',
@@ -305,7 +223,7 @@
       }
     },
     mixins: [alert],
-    components: { autocomplete },
+    components: { autocomplete, PartialDailySummary },
     data () {
       return {
         cash: {},
@@ -343,73 +261,6 @@
         users: 'allUsers',
         current: 'currentCash'
       }),
-      newPartialTotal () {
-        let value = parseFloat(this.newPartialCash.credit_amount) + parseFloat(this.newPartialCash.cash_amount)
-        if (isNaN(value)) {
-          return 0
-        } else {
-          return value
-        }
-      },
-      totalInFavor () {
-        return parseFloat(this.cash.favor_credit) + parseFloat(this.cash.favor_cash)
-      },
-      subCard () {
-        return parseFloat(this.cash.credit_amount) + parseFloat(this.cash.debt_credit) + parseFloat(this.cash.favor_credit)
-      },
-      subCash () {
-        return parseFloat(this.cash.cash_amount) + parseFloat(this.cash.debt_cash) + parseFloat(this.cash.favor_cash)
-      },
-      realCash () {
-        return parseFloat(this.subCash) + parseFloat(this.cash.init_amount) - parseFloat(this.debitos) + parseFloat(this.cash.favor_cash)
-      },
-      total () {
-        return parseFloat(this.subCard) + parseFloat(this.subCash) + parseFloat(this.cash.init_amount) - parseFloat(this.debitos) + parseFloat(this.totalInFavor)
-      },
-      onlyCash () {
-        return parseFloat(this.cash.favor_cash) + parseFloat(this.cash.init_amount) + parseFloat(this.subCash) - parseFloat(this.debitos) - parseFloat(this.cash.cash_at_home)
-      },
-      onlyCard () {
-        return parseFloat(this.cash.favor_credit) + parseFloat(this.subCard)
-      },
-      debitos () {
-        return parseFloat(this.totalGasto) + parseFloat(this.totalVales) + parseFloat(this.totalHome)
-      },
-      totalGasto () {
-        if (this.cash.closed_at) {
-          return this.cash.total_expenses
-        } else {
-          return this.expenseGastos.reduce((sum, expense) => {
-            return parseFloat(sum) + parseFloat(expense.amount)
-          }, 0.0)
-        }
-      },
-      totalVales () {
-        if (this.cash.closed_at) {
-          return this.cash.total_vales
-        } else {
-          return this.expenseExtracciones.reduce((sum, expense) => {
-            if (expense.has_vale) {
-              return parseFloat(sum) + parseFloat(expense.amount)
-            } else {
-              return parseFloat(sum)
-            }
-          }, 0.0)
-        }
-      },
-      totalHome () {
-        if (this.cash.closed_at) {
-          return this.cash.total_home
-        } else {
-          return this.expenseExtracciones.reduce((sum, expense) => {
-            if (!expense.has_vale) {
-              return parseFloat(sum) + parseFloat(expense.amount)
-            } else {
-              return parseFloat(sum)
-            }
-          }, 0.0)
-        }
-      },
       expenseGastos () {
         if (this.cash.closed_at) {
           return []
@@ -494,6 +345,7 @@
             this.cash.expenses.push(response.data)
             this.newExpenseExtraccion = { has_vale: true, amount: null, type: 'Extraccion' }
             this.newExpenseGasto = { supplier_id: '', amount: null, type: 'Gasto' }
+            this.fetchCash()
           }
         )
       },
@@ -514,6 +366,7 @@
           () => {
             let index = this.cash.expenses.indexOf(this.toDelete)
             this.cash.expenses.splice(index, 1)
+            this.fetchCash()
           }
         )
       },
@@ -572,19 +425,6 @@
 </script>
 
 <style scoped>
-  .resume h2{
-    font-weight: bold;
-    font-size: 25px;
-    margin: 20px 0px 10px;
-  }
-
-  .resume .tag-label {
-    padding: 5px 0px;
-    font-weight: bold;
-    text-align: center;
-    margin-top: 5px;
-  }
-
   .tag-header {
     padding: 15px 20px;
     height: 55px;
@@ -592,21 +432,6 @@
     font-weight: 500;
     font-size: 20px;
     margin-top: -5px;
-  }
-  .resume .tag.medium {
-    padding: 15px 25px;
-    height: 90px;
-    width: 90px;
-    font-weight: 500;
-    font-size: 20px;
-  }
-
-  .resume .tag.big {
-    padding: 15px 25px;
-    height: 110px;
-    width: 110px;
-    font-weight: 500;
-    font-size: 20px;
   }
 
   .alert.debit-message {
@@ -633,10 +458,6 @@
   }
   table tr.form:hover { background-color: #fff; }
   input.disabled { background: #0099ff; }
-  tr.total td { font-size: 25px; }
-  tr.subtotal td { background: #F5F5F5; }
-  td.row-value { font-weight: bold; }
-  tr.divider td { background-color: #F5F5F5; height: 5px; padding: 5px 0px; }
 
   @media print {
     .not-print { display: none !important; }
