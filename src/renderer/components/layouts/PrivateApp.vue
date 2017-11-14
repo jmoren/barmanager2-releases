@@ -214,7 +214,7 @@
           </div>
         </div>
       </div>
-      <div class="main-window" :class="isOpen !== '' ? 'column is-9' : 'column is-12'" style="height: 870px; overflow: auto">
+      <div class="main-window" :class="isOpen !== '' ? 'column is-9' : 'column is-12'">
         <router-view></router-view>
       </div>
     </div>

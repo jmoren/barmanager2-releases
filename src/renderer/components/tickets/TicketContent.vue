@@ -69,7 +69,7 @@
           <div class="column is-4">TOTAL $ {{ total | withDecimals }}</div>
           <div class="column is-4">PENDIENTE $ {{(pending || 0) | withDecimals}}</div>
           <div class="column is-4" v-if="!ticket.table_id">
-            <div class="control has-addons is-pulled-right">
+            <div class="control has-addons is-pulled-right not-print">
               <span class="button is-primary is-not-link"><i class="fa fa-dollar"></i></span>
               <input type="number" step="0.01" v-model="pay_with" class="input" placeholder="Paga el delivery con"
               @keydown.enter="setPayWith()">
@@ -314,12 +314,12 @@
 
   tr.is-closed { opacity: 0.8 }
   @media print {
-    .ticket-form, .payments.column.is-3, .resume .resume-sub-row, a.button, button.button { display: none; }
+    .ticket-form, .payments.column.is-3, .resume .resume-sub-row, a.button, button.button, .not-print { display: none; }
     .fa.fa-question-circle { display: none; }
-    .ticket-lines { height: 100%; overflow: visible; border: none; max-height: none;}
+    .ticket-lines { overflow: visible; border: none; max-height: none;}
     .resume .column { float: left; }
     table thead th.hide { display: none !important; }
-    table tbody tr td { text-align: left !important; }
-    .resume .columns .column { font-size: 14px; }
+    table tbody tr td, table thead th { text-align: left; font-size: 12px !important;  }
+    .resume .columns .column { font-size: 12px; }
   }
 </style>
