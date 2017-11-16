@@ -17,7 +17,7 @@
       <div id="ticket-options" class="columns not-print">
         <div class="column is-3">
           <h1 class="header">TICKET # {{ ticket.number | withDash }} </h1>
-          <small>{{ ticket.address }}</small>
+          <small>Direccion: {{ ticket.address }}</small>
         </div>
         <div class="column is-6">
           <div v-if="!ticket.closed">
@@ -545,7 +545,9 @@ export default {
           if (this.ticket.client_id) {
             message = 'Nuevo cliente asignado: ' + this.ticket.client.name
             kind = 'success'
-            this.ticket.address = this.ticket.client.address
+            if (this.ticket.client.address) {
+              this.ticket.address = this.ticket.client.address
+            }
             // should update the store
             if (this.ticket.table_id) {
               this.$store.dispatch('changeUserTable', { table: this.ticket.table_id, client: { id: this.ticket.client_id, name: this.ticket.client.name, address: this.ticket.client.address } })
