@@ -2,10 +2,10 @@
   <div class="kitchen">
     <div class="container">
       <div class="columns header">
-        <div class="column is-2">
+        <div class="column is-3">
           <tag rounded id="header-icon"><i class="fa fa-floated fa-cutlery"></i></tag> COCINA
         </div>
-        <div class="column is-3 has-text-centered">
+        <div class="column is-2 has-text-centered">
           <div class="button is-danger is-not-link" v-if="newRequests">
             <span class="icon is-small"><i class="fa fa-exclamation-circle"></i></span>
             <span>Nuevos Pedidos</span>
@@ -13,28 +13,34 @@
         </div>
         <div class="column is-7 has-text-right" style="margin-top: -5px;">
           <tooltip v-bind:content="'Recargar tickets - Ultimo check: ' + lastCheck">
-            <a @click.prevent="fetchTickets" class="button is-primary is-medium" :class="{'is-disabled': loadingTickets }">
+            <a @click.prevent="fetchTickets" class="button is-primary" :class="{'is-disabled': loadingTickets }">
               <span class="icon"><i class="fa fa-refresh" :class="{'fa-spin': loadingTickets }"></i></span>
             </a>
           </tooltip>
           <tooltip content="Sync kitchen">
-            <a @click.prevent="syncKitchen" class="button is-danger is-medium" :class="{'is-disabled': loadingTickets }">
+            <a @click.prevent="syncKitchen" class="button is-danger" :class="{'is-disabled': loadingTickets }">
               <span class="icon"><i class="fa fa-retweet" :class="{'fa-spin': loadingTickets }"></i></span>
             </a>
           </tooltip>
-          <div class="button is-light is-medium is-not-link">
+          <div class="button is-light is-not-link">
             <span class="icon is-small"><i class="fa fa-calendar"></i></span>
             <span>{{ currentTime | moment('DD - MMMM - YYYY') | upercase }}</span>
           </div>
-          <div class="button is-light is-medium is-not-link">
+          <div class="button is-light is-not-link">
             <span class="icon is-small"><i class="fa fa-clock-o"></i></span>
             <span>{{ currentTime | moment('HH:mm:ss')}}</span>
           </div>
-          <a @click.prevent="logout" class="button is-light is-medium">
+          <a @click.prevent="logout" class="button is-light">
             <span class="icon is-small"><i class="fa fa-sign-out"></i></span>
             <span>Salir</span>
           </a>
         </div>
+      </div>
+      <div class="is-clearfix">
+        <router-link :to="{ name: 'Tables '}" style="float:right" v-if="['admin'].indexOf(user.profile.role) > -1">
+          <span class="icon is-small"><i class="fa fa-arrow-left"></i></span>
+          <span>Volver</span>
+        </router-link>
       </div>
       <hr>
       <div class="kitchen-content">

@@ -113,7 +113,7 @@ export default {
       }
     },
     fetchClients () {
-      let url = 'admin/clients?page=' + this.page
+      let url = 'clients?page=' + this.page
       if (this.query && this.query.length > 2) {
         url = url + '&query=' + this.query
       }
@@ -135,7 +135,7 @@ export default {
       }
     },
     createClient () {
-      this.$http.post('admin/clients', { client: this.newClient }).then(
+      this.$http.post('clients', { client: this.newClient }).then(
         response => {
           this.clients.push(response.data)
           this.cancelClient()
@@ -147,7 +147,7 @@ export default {
     },
     updateClient () {
       let params = { name: this.newClient.name, dni: this.newClient.dni, phone: this.newClient.phone, address: this.newClient.address }
-      this.$http.put('admin/clients/' + this.newClient.id, { client: params }).then(
+      this.$http.put('clients/' + this.newClient.id, { client: params }).then(
         response => {
           _.extend(this.originalClient, response.data)
           this.cancelClient()
@@ -158,7 +158,7 @@ export default {
       )
     },
     removeClient (client) {
-      this.$http.delete('admin/clients/' + client.id).then(
+      this.$http.delete('clients/' + client.id).then(
         () => {
           let index = this.clients.indexOf(client)
           this.clients.splice(index, 1)

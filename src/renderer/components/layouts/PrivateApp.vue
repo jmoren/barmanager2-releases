@@ -402,4 +402,8 @@
   .main.columns { top: 55px; left: 10px; right: 10px; position: absolute; height: 100%; width: 100%; }
   .main.columns .shadow-border { box-shadow: 0px 0px 15px #ccc; height: 95%; overflow: auto; margin-right: 10px;}
   .main.columns .main-window { padding: 30px 15px !important; }
+
+  .pac-container {
+    z-index: 100000 !important;
+  }
 </style>

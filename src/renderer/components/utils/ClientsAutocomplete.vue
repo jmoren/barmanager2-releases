@@ -20,28 +20,58 @@
     </div>
     <ul v-show="focused" id="queryListClient">
       <li class="empty-item is-danger-text" v-if="filteredClients.length === 0">
-        No se encontro ningun resultado
+        <div style="cursor: pointer">Crear nuevo cliente</div>
       </li>
       <li v-for="(item, $item) in filteredClients" :key="item.id" :class="activeClass($item)" @key.enter="hit" @mousemove="setActive($item)"
             @mousedown.prevent="hit">
-        {{ item.name }}
+        <div>{{ item.name }}</div>
+        <div><small>Telefono: <b>{{ item.phone }}</b></small></div>
       </li>
     </ul>
+
+    <modal title="Crear Cliente" ok-text="Guardar" cancel-text="Cancelar" :on-ok="saveClient" :on-cancel="cancelClient" :width="520" :is-show="isShow" transition="zoom" @close="cancelClient">
+      <div class="control">
+        <input type="text" class="input" v-model="newClient.name" placeholder="Nombre">
+      </div>
+      <div class="control">
+        <input type="text" class="input" v-model="newClient.phone" placeholder="Telefono">
+      </div>
+      <div class="control">
+        <input type="text" class="input" v-model="newClient.dni" placeholder="DNI">
+      </div>
+      <div class="control">
+        <vue-google-autocomplete
+          ref="clientAddress"
+          id="clientAddressInput"
+          country="ar"
+          v-model="newClient.Address"
+          :enable-geolocation="true"
+          classname="input"
+          v-on:placechanged="updateAddress"
+          :placeholder="newClient.address || 'Direccion para envio'">
+        </vue-google-autocomplete>
+      </div>
+    </modal>
   </div>
 </template>
 
 <script>
   import Vue from 'vue'
   import _ from 'lodash'
+  import VueGoogleAutocomplete from 'vue-google-autocomplete'
+
   export default {
     name: 'ClientsAutocomplete',
     props: ['ticket'],
+    components: {
+      VueGoogleAutocomplete
+    },
     computed: {
       filteredClients () {
         if (this.query) {
           let regex = new RegExp(this.query.toLowerCase())
           return this.clients.filter((client) => {
-            return regex.test(client.name.toLowerCase())
+            return regex.test(client.name.toLowerCase()) || regex.test(client.phone)
           })
         } else {
           return this.clients
@@ -55,7 +85,9 @@
         current: -1,
         focused: false,
         loadingClients: false,
-        clients: []
+        clients: [],
+        isShow: false,
+        newClient: { name: '', phone: '', dni: '', address: '' }
       }
     },
     mounted () {
@@ -108,6 +140,9 @@
         if (this.query.trim() === '') {
           this.query = this.previousSelection
         }
+        if (this.filteredClients.length === 0) {
+          this.openModal()
+        }
         this.focused = false
       },
       setActive (index) {
@@ -132,6 +167,37 @@
             }
           )
         }
+      },
+      saveClient () {
+        this.$http.post('clients', { client: this.newClient }).then(
+          response => {
+            this.filteredClients.push(response.data)
+            this.cancelClient()
+            this.assignNow(response.data)
+          },
+          error => {
+            this.alert('danger', error.data)
+          }
+        )
+      },
+      updateAddress (data, placeData) {
+        this.newClient.address = placeData.formatted_address
+        this.$refs.clientAddress.update(this.newClient.address)
+      },
+      cancelClient () {
+        this.isShow = false
+        this.newClient = { name: null, phone: null, dni: null, address: null }
+      },
+      openModal () {
+        this.isShow = true
+      },
+      assignNow (client) {
+        this.$emit('set-client', client)
+        this.focused = false
+        this.query = client.name
+        Vue.nextTick(() => {
+          document.getElementById('search-clients').blur()
+        })
       }
     }
   }
@@ -156,4 +222,5 @@
   li { font-weight: 500; padding: 5px 10px; }
   li.active { background: #3c81df; }
   li.active { color: #fff;}
+  
 </style>
