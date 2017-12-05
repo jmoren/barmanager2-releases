@@ -63,7 +63,7 @@
           </div>
           <div>
             <i class="fa fa-clock-o" style="padding:2px"></i>
-            {{ currentTicket.printed_at | moment('DD MMMM, YYYY hh:mm') }}
+            {{ currentTicket.printed_at | moment('DD MMMM, YYYY HH:MM') }}
           </div>
           <hr>
           <p style="font-size: 14px;" v-if="currentTicket.client">
@@ -79,14 +79,12 @@
               <thead>
                 <th>Cant.</th>
                 <th>Producto</th>
-                <th>Comentario</th>
                 <th>Subtotal</th>
               </thead>
               <tbody>
                 <tr v-for="(entry, index) in currentTicket.entries" :key="index">
                   <td>{{ entry.quantity }}</td>
                   <td>{{ entry.name }}</td>
-                  <td>{{ entry.comment }}</td>
                   <td>{{ entry.subtotal }}</td>
                 </tr>
               </tbody>
@@ -97,7 +95,9 @@
             </div>
             <hr>
             <h2 style="font-size: 15px; font-weight: 500;margin-bottom: 10px;">Mapa</h2>
-            <div id="map" style="height: 200px; width: 100%"></div>
+            <div style="margin: auto; height: 250px; width: 250px">
+              <div id="map" style="height: 100%; width: 100%"></div>
+            </div>
             <div style="text-align: center" class="print">
               <barcode :tag="'img'" :value="currentTicket.ticket.number" :options="{ format: barcodeConfig.format, lastChar: barcodeConfig.lastChar, displayValue: true, height: barcodeConfig.height, width: barcodeConfig.width, background: 'transparent' }"></barcode>
               <p>Ticket no valido como factura</p>
@@ -159,7 +159,7 @@
             })
             this.loadMap = false
           } else {
-            alert('Geocode was not successful for the following reason: ' + status)
+            alert('Verificar Quizas el ticket no tiene direccion: ' + status)
           }
         })
       },
