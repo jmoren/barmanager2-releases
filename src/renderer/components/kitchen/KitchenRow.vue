@@ -63,7 +63,7 @@
           </div>
           <div>
             <i class="fa fa-clock-o" style="padding:2px"></i>
-            {{ currentTicket.printed_at | moment('DD MMMM, YYYY h:mm:ss a') }}
+            {{ currentTicket.printed_at | moment('DD MMMM, YYYY hh:mm') }}
           </div>
           <hr>
           <p style="font-size: 14px;" v-if="currentTicket.client">
@@ -77,8 +77,6 @@
           <div v-else>
             <table class="table">
               <thead>
-                <th>Tipo</th>
-                <th>Codigo</th>
                 <th>Cant.</th>
                 <th>Producto</th>
                 <th>Comentario</th>
@@ -86,8 +84,6 @@
               </thead>
               <tbody>
                 <tr v-for="(entry, index) in currentTicket.entries" :key="index">
-                  <td>{{ entry.type }}</td>
-                  <td>{{ entry.code }}</td>
                   <td>{{ entry.quantity }}</td>
                   <td>{{ entry.name }}</td>
                   <td>{{ entry.comment }}</td>
@@ -104,6 +100,7 @@
             <div id="map" style="height: 200px; width: 100%"></div>
             <div style="text-align: center" class="print">
               <barcode :tag="'img'" :value="currentTicket.ticket.number" :options="{ format: barcodeConfig.format, lastChar: barcodeConfig.lastChar, displayValue: true, height: barcodeConfig.height, width: barcodeConfig.width, background: 'transparent' }"></barcode>
+              <p>Ticket no valido como factura</p>
             </div>
           </div>
         </div>
