@@ -1,5 +1,6 @@
 <template>
   <tr>
+    <td><a @click="loadTicket()" class="button is-light"><i class="fa fa-print"></i></a></td>
     <td style="width:15%">
       <span v-if="ticket.table_id" class="table-id button is-fullwidth is-danger">
         <b>#{{ ticket.table_id }}</b>
@@ -54,6 +55,59 @@
           </div>
         </div>
       </div>
+      <modal title="Imprimir" ok-text="Imprimir" cancel-text="Cancelar" :on-ok="print" :on-cancel="cancelPrint" :width="520" :is-show="isShow" transition="zoom" @close="cancelPrint">
+        <div v-if="currentTicket.ticket">
+          <div class="is-clearfix" style="font-size: 20px;">
+            <div class="is-pulled-right">{{ currentTicket.table ? currentTicket.table.description : 'Delivery' }}</div>
+            <div class="is-pulled-left"><b>{{ currentTicket.ticket.number }}</b></div>
+          </div>
+          <div>
+            <i class="fa fa-clock-o" style="padding:2px"></i>
+            {{ currentTicket.printed_at | moment('DD MMMM, YYYY h:mm:ss a') }}
+          </div>
+          <hr>
+          <p style="font-size: 14px;" v-if="currentTicket.client">
+            Cliente: <br><b>{{ currentTicket.client.name }}</b> - <i class="fa fa-phone" style="padding: 2px;"></i> {{ currentTicket.client.phone }}
+          </p>
+          <p style="font-size: 14px;">
+            Direccion: <br><b>{{ currentTicket.ticket.address || currentTicket.client.address }}</b>
+          </p>
+          <hr>
+          <div v-if="loadingModal">Cargando...</div>
+          <div v-else>
+            <table class="table">
+              <thead>
+                <th>Tipo</th>
+                <th>Codigo</th>
+                <th>Cant.</th>
+                <th>Producto</th>
+                <th>Comentario</th>
+                <th>Subtotal</th>
+              </thead>
+              <tbody>
+                <tr v-for="(entry, index) in currentTicket.entries" :key="index">
+                  <td>{{ entry.type }}</td>
+                  <td>{{ entry.code }}</td>
+                  <td>{{ entry.quantity }}</td>
+                  <td>{{ entry.name }}</td>
+                  <td>{{ entry.comment }}</td>
+                  <td>{{ entry.subtotal }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="is-clearfix">
+              <div class="is-pulled-left">Total: {{currentTicket.total}}</div>
+              <div class="is-pulled-right">Pending: {{currentTicket.pending }}</div>
+            </div>
+            <hr>
+            <h2 style="font-size: 15px; font-weight: 500;margin-bottom: 10px;">Mapa</h2>
+            <div id="map" style="height: 200px; width: 100%"></div>
+            <div style="text-align: center" class="print">
+              <barcode :tag="'img'" :value="currentTicket.ticket.number" :options="{ format: barcodeConfig.format, lastChar: barcodeConfig.lastChar, displayValue: true, height: barcodeConfig.height, width: barcodeConfig.width, background: 'transparent' }"></barcode>
+            </div>
+          </div>
+        </div>
+      </modal>
     </td>
   </tr>
 </template>
@@ -63,15 +117,62 @@
   import Vue from 'vue'
   export default {
     name: 'KitchenRow',
-    props: ['ticket'],
+    props: ['ticket', 'barcodeConfig'],
     data () {
       return {
         loading: false,
         removed: false,
-        rowExpanded: false
+        rowExpanded: false,
+        currentTicket: {},
+        isShow: false,
+        loadingModal: false,
+        entries: [],
+        map: null,
+        geocoder: null,
+        config: {
+          zoom: 16,
+          center: { lat: -34.4686234, lng: -58.5181671 }
+        }
       }
     },
     methods: {
+      loadTicket () {
+        this.loadingModal = true
+        this.$http.get('kitchen/ticket?id=' + this.ticket.id).then(
+          response => {
+            this.currentTicket = response.data
+            this.loadingModal = false
+            this.isShow = true
+            setTimeout(() => {
+              this.map = new window.google.maps.Map(document.getElementById('map'), this.config)
+              this.geocoder = new window.google.maps.Geocoder()
+              this.geocodeAddress(this.geocoder, this.map)
+            }, 1000)
+          }
+        )
+      },
+      geocodeAddress (geocoder, resultsMap) {
+        /* eslint-disable no-new */
+        this.geocoder.geocode({ 'address': this.ticket.address || this.ticket.client.address }, function (results, status) {
+          if (status === 'OK') {
+            resultsMap.setCenter(results[0].geometry.location)
+            new window.google.maps.Marker({
+              map: resultsMap,
+              position: results[0].geometry.location
+            })
+            this.loadMap = false
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status)
+          }
+        })
+      },
+      print () {
+        window.print()
+      },
+      cancelPrint () {
+        this.isShow = false
+        this.currentTicket = {}
+      },
       toggleShow () {
         this.rowExpanded = !this.rowExpanded
       },
@@ -122,3 +223,11 @@
     }
   }
 </script>
+
+<style>
+  .print { display: none; }
+  @media print {
+    .modal-card-foot, .modal-card-head { display: none; }
+    .print { display: block; }
+  }
+</style>

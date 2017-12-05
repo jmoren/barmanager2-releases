@@ -15,7 +15,7 @@
           ref="clientAddress"
           id="clientAddressInput"
           country="ar"
-          v-model="newClient.Address"
+          v-model="newClient.address"
           :enable-geolocation="true"
           classname="input"
           v-on:placechanged="updateAddress"

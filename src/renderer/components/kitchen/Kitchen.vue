@@ -46,14 +46,15 @@
       <div class="kitchen-content">
         <table class="table">
           <thead>
+            <th></th>
             <th>Mesa #</th>
             <th>Ticket ID</th>
             <th>Pedido</th>
           </thead>
           <tbody>
-            <kitchen-row v-for="(ticket, id) in currentTickets" :ticket="ticket" :key="id" @remove-ticket="removeTicket(ticket)"></kitchen-row>
+            <kitchen-row v-for="(ticket, id) in currentTickets" :ticket="ticket" :key="id" :barcodeConfig="barcode" @remove-ticket="removeTicket(ticket)"></kitchen-row>
             <tr v-if="currentTickets.length === 0">
-              <td colspan="3">
+              <td colspan="4">
                 <p class="empty-message has-text-centered is-danger-text">No hay item en la cocina</p></td>
             </tr>
           </tbody>
@@ -69,6 +70,8 @@
   import Auth from '../../auth'
   import KitchenRow from './KitchenRow'
   import Vue from 'vue'
+  const Config = require('electron-config')
+  const config = new Config()
 
   export default {
     name: 'Kitchen',
@@ -83,7 +86,13 @@
         newRequests: false,
         lastTimestamp: null,
         audio: null,
-        user: Auth.user
+        user: Auth.user,
+        barcode: {
+          format: config.get('barcode_format', 'EAN13'),
+          width: 1,
+          height: 20,
+          lastChar: config.path
+        }
       }
     },
     filters: {

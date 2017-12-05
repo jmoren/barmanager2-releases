@@ -78,7 +78,7 @@
                         <div class="select is-fullwidth">
                           <select v-model="newExpenseExtraccion.user_id">
                             <option value=''>Usuario</option>
-                            <option v-for="user in users" v-bind:value="user.id">{{ user.name }}</option>
+                            <option v-for="user in users" v-bind:value="user.id" :key="user.id">{{ user.name }}</option>
                           </select>
                         </div>
                       </td>
@@ -155,7 +155,7 @@
         {{errorMessage}}
         <div v-if="openTickets.length">
           <label>Tickets abiertos:</label>
-          <router-link v-for="op in openTickets" :to="{ name: 'Ticket', params: { id: op.id } }" class="button is-light is-small" style="margin-right: 5px;">{{op.format_number}}</router-link>
+          <router-link v-for="op in openTickets" :key="op.id" :to="{ name: 'Ticket', params: { id: op.id } }" class="button is-light is-small" style="margin-right: 5px;">{{op.format_number}}</router-link>
         </div>
       </alert>
       <alert class="is-clearfix">
