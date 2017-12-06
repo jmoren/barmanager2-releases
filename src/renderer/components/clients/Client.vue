@@ -71,7 +71,11 @@
                   <th>Fecha Pago</th>
                 </thead>
                 <tr v-for="ticket in paidTickets">
-                  <td>{{ ticket.number }}</td>
+                  <td>
+                    <router-link :to="{ name: 'Ticket', params: { id: ticket.id } }">
+                      <i class="fa fa-angle-right fa-floated"></i> {{ ticket.number }}
+                    </router-link>
+                  </td>
                   <td>{{ ticket.created_at | moment('DD MMMM, YYYY') }}</td>
                   <td><b>$ {{ ticket.total }}</b></td>
                   <td>{{ ticket.paid_at | moment('DD MMMM, YYYY')}}</td>
@@ -95,11 +99,15 @@
                 <tr v-for="ticket in notPaidTickets">
                   <td>
                     <tooltip v-bind:content="ticket.status === 'closed' ? 'Ticket cerrado' : 'Ticket abierto'">
-                      <i class="fa fa-floated fa-circle" 
+                      <i class="fa fa-floated fa-circle"
                          :class="{'is-success': ticket.status !== 'closed', 'is-danger': ticket.status === 'closed'}"></i>
                     </tooltip>
                   </td>
-                  <td>{{ ticket.number }}</td>
+                  <td>
+                    <router-link :to="{ name: 'Ticket', params: { id: ticket.id } }">
+                      <i class="fa fa-angle-right fa-floated"></i> {{ ticket.number }}
+                    </router-link>
+                  </td>
                   <td>{{ ticket.created_at | moment('DD MMMM, YYYY') }}</td>
                   <td><b>${{ ticket.total }}</b></td>
                   <td><b class="is-danger-text">${{ ticket.pending }}</b></td>
@@ -124,7 +132,7 @@
                 <tbody>
                   <tr v-for="payment in commonPayments" :key="payment.id" v-bind:date="formatDate(payment.created_at)" style="margin-bottom: 5px;">
                     <td>
-                      <router-link :to="{ name: 'Ticket', params: { id: payment.ticket_id } }"> 
+                      <router-link :to="{ name: 'Ticket', params: { id: payment.ticket_id } }">
                         <i class="fa fa-angle-right fa-floated"></i> {{ payment.ticket.number }}
                       </router-link>
                     </td>

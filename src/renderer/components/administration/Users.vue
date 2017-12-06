@@ -49,19 +49,28 @@
         <div class="column is-6">
           <div class="control">
             <label>Direccion</label>
-            <input type="text" class="input" v-model="newUser.address" placeholder="Agregar Direccion">
+            <vue-google-autocomplete
+              ref="userAddress"
+              id="userAddressInput"
+              country="ar"
+              v-model="newUser.address"
+              :enable-geolocation="true"
+              classname="input"
+              v-on:placechanged="updateAddress"
+              :placeholder="newUser.address || 'Agregar Direccion'">
+            </vue-google-autocomplete>
           </div>
         </div>
         <div class="column is-3">
           <div class="control">
             <label>Fecha de Ingreso</label>
-            <datepicker placeholder="Fecha de ingreso" :options="dateOptions" v-model="newUser.start_date"></datepicker>
+            <datepicker :options="dateOptions" :placeholder="newUser.start_date" v-model="newUser.start_date"></datepicker>
           </div>
         </div>
         <div class="column is-3">
           <div class="control">
             <label>Fecha de Salida</label>
-            <datepicker placeholder="Fecha de salida" :options="dateOptions" v-model="newUser.end_date"></datepicker>
+            <datepicker :options="dateOptions" :placeholder="newUser.end_date" v-model="newUser.end_date"></datepicker>
           </div>
         </div>
         <div class="column is-6">
@@ -143,6 +152,7 @@
 import _ from 'lodash'
 import { mapGetters } from 'vuex'
 import alert from '../../mixins/Alert'
+import VueGoogleAutocomplete from 'vue-google-autocomplete'
 
 export default {
   name: 'AdminUsers',
@@ -164,12 +174,19 @@ export default {
       }
     }
   },
+  components: {
+    VueGoogleAutocomplete
+  },
   computed: {
     ...mapGetters({
       users: 'allUsers'
     })
   },
   methods: {
+    updateAddress (data, placeData) {
+      this.newUser.address = placeData.formatted_address
+      this.$refs.userAddress.update(this.newUser.address)
+    },
     fetchUsers () {
       this.$http.get('admin/users').then(
         response => {
@@ -229,6 +246,7 @@ export default {
       this.newUser = {}
       this.newUser = _.clone(user)
       this.isShow = true
+      console.log(this.newUser)
     },
     phones (user) {
       return _.filter([user.phone, user.alt_phone]).join(' / ')

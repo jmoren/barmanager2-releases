@@ -180,7 +180,7 @@
         <hr>
         <div class="control is-grouped" >
           <div class="control">
-            <label>Monto</label>
+            <label>Caja inicial prox turno</label>
             <input type="number" class="input" step="0.01" placeholder="Monto inicial" v-model="newPartialCash.init_amount">
           </div>
           <div class="control is-expanded">
