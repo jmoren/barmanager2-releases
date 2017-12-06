@@ -37,7 +37,7 @@
         </menus>
       </div>
       <div class="column is-10 is-marginless">
-        <router-view></router-view>
+        <router-view :key="$route.fullPath"></router-view>
       </div>
     </div>
   </div>

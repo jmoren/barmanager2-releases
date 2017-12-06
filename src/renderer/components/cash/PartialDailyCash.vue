@@ -3,9 +3,24 @@
     <div v-if="loading">Loading...</div>
     <div v-else>
       <div class="columns not-print">
-        <div class="column is-1">
-          <tooltip content="Caja Numero" placement="left"><tag class="tag-header is-pulled-left" rounded>{{ cash.id }}</tag></tooltip>
-          <tag v-if="cash.daily_cash_id" class="tag-header is-pulled-left" rounded>{{ cash.id }}</tag>
+        <div class="column is-3 pagination">
+          <ul class="is-pulled-left">
+            <li>
+              <router-link :to="{ name: 'PartialDailyCash', params: { id: cash.id - 1 }}" class="button" v-if="['admin', 'manager'].indexOf(user.profile.role) !== -1">
+                <i class="fa fa-angle-left"></i>
+              </router-link>
+            </li>
+            <li>
+              <tooltip content="Caja Numero" placement="left">
+                <a class="button is-primary" rounded>{{ cash.id }}</a>
+              </tooltip>
+            </li>
+            <li>
+              <router-link :to="{ name: 'PartialDailyCash', params: { id: cash.id + 1 }}" :class="{ 'is-disabled': cash.open }" class="button" v-if="['admin', 'manager'].indexOf(user.profile.role) !== -1">
+                <i class="fa fa-angle-right"></i>
+              </router-link>
+            </li>
+          </ul>
         </div>
         <div class="column is-7">
           <div class="control has-addons is-pulled-right">
@@ -15,13 +30,13 @@
             <span class="button is-medium is-light is-not-link">
               <span class="icon is-small"><i class="fa fa-user-o"></i></span><span><b>{{ cash.user.name }}</b></span>
             </span>
-            <pop-confirm content="Imprimir el cierre de la caja parcial" icon="question-circle-o" :on-ok="fiscalPrintCash" :on-cancel="cancelPrint">
+            <pop-confirm content="Imprimir el cierre de la caja parcial" icon="question-circle-o" :on-ok="fiscalPrintCash" :on-cancel="cancelPrint" v-if="cash.open">
               <a class="button is-medium is-danger">
                 <span class="icon is-small"><i class="fa fa-print"></i></span>
                 <span>C. Caja</span>
               </a>
             </pop-confirm>
-            <pop-confirm content="Imprimir el cierre diario" icon="question-circle-o" :on-ok="fiscalPrintDay" :on-cancel="cancelPrint">
+            <pop-confirm content="Imprimir el cierre diario" icon="question-circle-o" :on-ok="fiscalPrintDay" :on-cancel="cancelPrint"  v-if="cash.open">
               <a class="button is-medium is-danger">
                 <span class="icon is-small"><i class="fa fa-print"></i></span>
                 <span>C. Diario</span>
@@ -65,7 +80,7 @@
                     <th></th>
                   </thead>
                   <tbody>
-                    <tr @keydown.enter.prevent="addExpense('Extraccion')" class="form">
+                    <tr @keydown.enter.prevent="addExpense('Extraccion')" class="form" v-if="cash.open">
                       <td>
                         <div class="select is-fullwidth">
                           <select v-model="newExpenseExtraccion.has_vale">
@@ -96,7 +111,7 @@
                       <td>{{ debit.user.name }}</td>
                       <td>${{ debit.amount }}</td>
                       <td>
-                        <a @click.prevent="removeExpense(debit)" class="button is-small is-light is-pulled-right">
+                        <a @click.prevent="removeExpense(debit)" class="button is-small is-light is-pulled-right" v-if="cash.open">
                           <span class="fa fa-times is-danger-text"></span>
                         </a>
                       </td>
@@ -128,7 +143,7 @@
                       <td>${{ debit.amount }}</td>
                       <td>{{ debit.bill_number }}</td>
                       <td>
-                        <a @click.prevent="removeExpense(debit)" class="button is-small is-light is-pulled-right">
+                        <a @click.prevent="removeExpense(debit)" class="button is-small is-light is-pulled-right" v-if="cash.open">
                           <span class="fa fa-times is-danger-text"></span>
                         </a>
                       </td>
@@ -226,6 +241,7 @@
     components: { autocomplete, PartialDailySummary },
     data () {
       return {
+        user: Auth.user,
         cash: {},
         suppliers: [],
         loading: false,
@@ -262,22 +278,14 @@
         current: 'currentCash'
       }),
       expenseGastos () {
-        if (this.cash.closed_at) {
-          return []
-        } else {
-          return this.cash.expenses.filter((expense) => {
-            return expense.type === 'Gasto'
-          })
-        }
+        return this.cash.expenses.filter((expense) => {
+          return expense.type === 'Gasto'
+        })
       },
       expenseExtracciones () {
-        if (this.cash.closed_at) {
-          return []
-        } else {
-          return this.cash.expenses.filter((expense) => {
-            return expense.type === 'Extraccion'
-          })
-        }
+        return this.cash.expenses.filter((expense) => {
+          return expense.type === 'Extraccion'
+        })
       }
     },
     created () {
@@ -295,14 +303,12 @@
           }
         )
       },
-      fetchCash (loader) {
+      fetchCash () {
         this.loading = true
         this.$http.get('admin/partial_daily_cashes/' + this.$route.params.id).then(
           response => {
             this.cash = response.data
-            if (!this.cash.closed_at) {
-              _.extend(this.cash, this.cash.resume)
-            }
+            _.extend(this.cash, this.cash.resume)
             this.loading = false
           }
         )
