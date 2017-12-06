@@ -91,11 +91,11 @@
             </table>
             <div class="is-clearfix">
               <div class="is-pulled-left">Total: {{currentTicket.total}}</div>
-              <div class="is-pulled-right">Pending: {{currentTicket.pending }}</div>
+              <div class="is-pulled-right">Pendiente: {{currentTicket.pending }}</div>
             </div>
             <hr>
             <h2 style="font-size: 15px; font-weight: 500;margin-bottom: 10px;">Mapa</h2>
-            <div style="margin: auto; height: 250px; width: 250px">
+            <div style="margin: auto; height: 200px; width: 200px">
               <div id="map" style="height: 100%; width: 100%"></div>
             </div>
             <div style="text-align: center" class="print">

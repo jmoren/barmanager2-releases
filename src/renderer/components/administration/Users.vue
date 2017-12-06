@@ -98,7 +98,7 @@
     <h1 class="header">
       <i class="fa fa-users fa-floated"></i>
       Usuarios
-      <a @click.prevent="isShow = true" class="button is-light is-pulled-right">Nuevo User</a>
+      <a @click.prevent="isShow = true" class="button is-light is-pulled-right">Nuevo Usuario</a>
     </h1>
     <hr>
     <table class="table">
