@@ -3,50 +3,60 @@
     <div v-if="loading">Loading...</div>
     <div v-else>
       <div class="columns not-print">
-        <div class="column is-3 pagination">
-          <ul class="is-pulled-left">
-            <li>
-              <router-link :to="{ name: 'PartialDailyCash', params: { id: cash.id - 1 }}" class="button" v-if="['admin', 'manager'].indexOf(user.profile.role) !== -1">
-                <i class="fa fa-angle-left"></i>
-              </router-link>
-            </li>
-            <li>
-              <tooltip content="Caja Numero" placement="left">
-                <a class="button is-primary" rounded>{{ cash.id }}</a>
-              </tooltip>
-            </li>
-            <li>
-              <router-link :to="{ name: 'PartialDailyCash', params: { id: cash.id + 1 }}" :class="{ 'is-disabled': cash.open }" class="button" v-if="['admin', 'manager'].indexOf(user.profile.role) !== -1">
-                <i class="fa fa-angle-right"></i>
-              </router-link>
-            </li>
-          </ul>
+        <div class="column is-4" style="padding-bottom: 3px;">
+          <div class="pagination is-pulled-left">
+            <ul>
+              <li>
+                <router-link :to="{ name: 'PartialDailyCash', params: { id: cash.id - 1 }}" class="button" v-if="['admin', 'manager'].indexOf(user.profile.role) !== -1">
+                  <i class="fa fa-angle-left"></i>
+                </router-link>
+              </li>
+              <li>
+                <tooltip content="Caja Numero" placement="left">
+                  <a class="button is-primary" rounded>{{ cash.id }}</a>
+                </tooltip>
+              </li>
+              <li>
+                <router-link :to="{ name: 'PartialDailyCash', params: { id: cash.id + 1 }}" :class="{ 'is-disabled': cash.open }" class="button" v-if="['admin', 'manager'].indexOf(user.profile.role) !== -1">
+                  <i class="fa fa-angle-right"></i>
+                </router-link>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div class="column is-7">
-          <div class="control has-addons is-pulled-right">
-            <span class="button is-medium is-not-link" :class="{'is-success': !cash.closed_at, 'is-primary': cash.closed_at}">
-              Caja {{ cash.closed_at ? 'Cerrada' : 'Abierta' }}
-            </span>
-            <span class="button is-medium is-light is-not-link">
-              <span class="icon is-small"><i class="fa fa-user-o"></i></span><span><b>{{ cash.user.name }}</b></span>
-            </span>
-            <pop-confirm content="Imprimir el cierre de la caja parcial" icon="question-circle-o" :on-ok="fiscalPrintCash" :on-cancel="cancelPrint" v-if="cash.open">
-              <a class="button is-medium is-danger">
-                <span class="icon is-small"><i class="fa fa-print"></i></span>
-                <span>C. Caja</span>
-              </a>
-            </pop-confirm>
-            <pop-confirm content="Imprimir el cierre diario" icon="question-circle-o" :on-ok="fiscalPrintDay" :on-cancel="cancelPrint"  v-if="cash.open">
-              <a class="button is-medium is-danger">
-                <span class="icon is-small"><i class="fa fa-print"></i></span>
-                <span>C. Diario</span>
-              </a>
-            </pop-confirm>
-            <pop-confirm content="Imprimir resumen" icon="question-circle-o" :on-ok="printSummary" :on-cancel="cancelPrint">
-              <a class="button is-medium" v-shortkey.once="['ctrl', 'p']" @shortkey="printSummary()">
-                <span class="icon is-small"><i class="fa fa-print"></i></span>
-              </a>
-            </pop-confirm>
+        <div class="column is-8" style="padding-bottom: 3px;">
+          <div class="is-clearfix">
+            <div class="control has-addons is-pulled-left is-marginless">
+              <span class="button is-not-link" :class="{'is-success': !cash.closed_at, 'is-primary': cash.closed_at}">
+                <span>Caja {{ cash.closed_at ? 'Cerrada' : 'Abierta' }}</span>
+              </span>
+              <span class="button is-light is-not-link">
+                <span class="icon is-small"><i class="fa fa-user-o"></i></span>
+                <span><b>{{ cash.user.name }}</b></span>
+              </span>
+            </div>
+            <div class="control has-addons is-pulled-right is-marginless">
+              <pop-confirm content="Imprimir el cierre de la caja parcial" icon="question-circle-o" :on-ok="fiscalPrintCash" 
+                    :on-cancel="cancelPrint" v-if="cash.open">
+                <a class="button is-light">
+                  <span class="icon is-small"><i class="fa fa-print"></i></span>
+                  <span>Cierre Caja</span>
+                </a>
+              </pop-confirm>
+              <pop-confirm content="Imprimir el cierre diario" icon="question-circle-o" :on-ok="fiscalPrintDay" 
+                    :on-cancel="cancelPrint" v-if="cash.open">
+                <a class="button is-light">
+                  <span class="icon is-small"><i class="fa fa-print"></i></span>
+                  <span>Cierre Diario</span>
+                </a>
+              </pop-confirm>
+              <pop-confirm content="Imprimir resumen" icon="question-circle-o" :on-ok="printSummary" :on-cancel="cancelPrint">
+                <a class="button is-light" v-shortkey.once="['ctrl', 'p']" @shortkey="printSummary()">
+                  <span class="icon is-small"><i class="fa fa-print"></i></span>
+                  <span>Resumen</span>
+                </a>
+              </pop-confirm>
+            </div>
           </div>
         </div>
       </div>

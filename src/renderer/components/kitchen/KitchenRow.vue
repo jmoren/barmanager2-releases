@@ -128,7 +128,8 @@
         geocoder: null,
         config: {
           zoom: 16,
-          center: { lat: -34.4686234, lng: -58.5181671 }
+          center: { lat: -34.4686234, lng: -58.5181671 },
+          disableDefaultUI: true
         }
       }
     },

@@ -157,10 +157,10 @@
   tr.subtotal td { background: #F5F5F5; }
   td.row-value { font-weight: bold; }
   tr.divider td { background-color: #F5F5F5; height: 5px; padding: 5px 0px; }
-  .resume h2{
+  .resume h2 {
     font-weight: bold;
     font-size: 25px;
-    margin: 20px 0px 10px;
+    margin: 0px 0px 10px;
   }
 
   .resume .tag-label {
