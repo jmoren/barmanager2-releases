@@ -96,7 +96,8 @@
             <hr>
             <h2 style="font-size: 15px; font-weight: 500;margin-bottom: 10px;">Mapa</h2>
             <div style="margin: auto; height: 200px; width: 200px">
-              <div id="map" style="height: 100%; width: 100%"></div>
+              <div v-if="loadingMap">cargando mapa...</div>
+              <div v-else><img v-bind:src="mapUrl"></div>
             </div>
             <div style="text-align: center" class="print">
               <barcode :tag="'img'" :value="currentTicket.ticket.number" :options="{ format: barcodeConfig.format, lastChar: barcodeConfig.lastChar, displayValue: true, height: barcodeConfig.height, width: barcodeConfig.width, background: 'transparent' }"></barcode>
@@ -118,19 +119,15 @@
     data () {
       return {
         loading: false,
+        loadingMap: false,
         removed: false,
         rowExpanded: false,
         currentTicket: {},
         isShow: false,
         loadingModal: false,
         entries: [],
-        map: null,
-        geocoder: null,
-        config: {
-          zoom: 16,
-          center: { lat: -34.4686234, lng: -58.5181671 },
-          disableDefaultUI: true
-        }
+        mapUrl: null,
+        geocoder: null
       }
     },
     methods: {
@@ -141,28 +138,27 @@
             this.currentTicket = response.data
             this.loadingModal = false
             this.isShow = true
-            setTimeout(() => {
-              this.map = new window.google.maps.Map(document.getElementById('map'), this.config)
-              this.geocoder = new window.google.maps.Geocoder()
-              this.geocodeAddress(this.geocoder, this.map)
-            }, 1000)
+            this.geocoder = new window.google.maps.Geocoder()
+            this.geocodeAddress(this.geocoder)
           }
         )
       },
-      geocodeAddress (geocoder, resultsMap) {
+      geocodeAddress (geocoder) {
         /* eslint-disable no-new */
+        this.loadingMap = true
+        let center = this.ticket.address || this.ticket.client.address
         this.geocoder.geocode({ 'address': this.ticket.address || this.ticket.client.address }, function (results, status) {
           if (status === 'OK') {
-            resultsMap.setCenter(results[0].geometry.location)
-            new window.google.maps.Marker({
-              map: resultsMap,
-              position: results[0].geometry.location
-            })
-            this.loadMap = false
+            let position = results[0].geometry.location
+            this.mapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${center}&zoom=16&size=200x200&maptype=roadmap&markers=color:red|${position.lat()},${position.lng()}`
+            console.log(this.mapUrl)
+            this.loadingMap = false
+            console.log('listo')
           } else {
+            this.loadingMap = false
             alert('Verificar Quizas el ticket no tiene direccion: ' + status)
           }
-        })
+        }.bind(this))
       },
       print () {
         window.print()
