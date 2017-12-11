@@ -31,7 +31,10 @@
               </div>
               <div class="column is-5 address" v-if="!ticket.table_id">
                 <tooltip content="Direccion para envio" trigger="focus">
-                  <vue-google-autocomplete ref="addressInput" id="map" country="ar" :value="ticket.address" :enable-geolocation="true" classname="input" placeholder="Direccion alternativa para envio" @clear="clearAddress" @placechanged="updateAddress"></vue-google-autocomplete>
+                  <div class="control has-icon has-icon-left">
+                    <i v-if="ticket.address_not_validated" class="fa fa-warning" style="color: red;"></i>
+                    <vue-google-autocomplete ref="addressInput" id="map" country="ar" :value="ticket.address" :enable-geolocation="true" classname="input" placeholder="Direccion alternativa para envio" @clear="clearAddress" @placechanged="updateAddress" @no-results-found="(ob) => notFoundAddress(ob)"></vue-google-autocomplete>
+                  </div>
                 </tooltip>
               </div>
             </div>
@@ -356,7 +359,8 @@ export default {
       },
       new_table_id: '',
       new_client_id: '',
-      cancelTicketModal: false
+      cancelTicketModal: false,
+      noAddressValid: false
     }
   },
   computed: {
@@ -404,19 +408,19 @@ export default {
       )
     },
     clearAddress () {
-      this.$http.put('tickets/' + this.ticket.id, { ticket: { address: '' } }).then(
+      this.$http.put('tickets/' + this.ticket.id, { ticket: { address: '', address_not_validated: false } }).then(
         (response) => {
           _.extend(this.ticket, response.data)
           this.alert('success', 'Se actualizo la direccion para envio')
         },
-        (error) => {
-          console.log(error.data)
+        () => {
           this.alert('danger', 'No se puedo actualizer la direccion')
         }
       )
     },
     updateAddress (a, placeResultData) {
       this.ticket.address = placeResultData.formatted_address
+      this.ticket.address_not_validated = false
       this.updateTicket()
     },
     updatePayWith (value) {
@@ -426,7 +430,8 @@ export default {
     updateTicket () {
       let data = {
         pay_with: this.ticket.pay_with,
-        address: this.ticket.address
+        address: this.ticket.address,
+        address_not_validated: this.ticket.address_not_validated
       }
 
       this.$http.put('tickets/' + this.ticket.id, { ticket: data }).then(
@@ -612,6 +617,11 @@ export default {
     },
     closeCancelTicket () {
       this.cancelTicketModal = false
+    },
+    notFoundAddress (res) {
+      this.ticket.address = res.name
+      this.ticket.address_not_validated = true
+      this.updateTicket()
     }
   }
 }
