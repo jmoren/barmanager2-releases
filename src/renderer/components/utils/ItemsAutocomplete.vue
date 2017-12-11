@@ -20,7 +20,7 @@
         <li v-for="(item, $item) in filteredItems" :key="item.id" :class="activeClass($item)" @key.enter="hit" @mousemove="setActive($item)" @mousedown.prevent="hit">
           <div class="info">
             <div>{{ item.name }}</div>
-            <small class="is-small is-light"><b>{{item.category.name}}</b></small>
+            <small class="is-small is-light"><b>{{categoryName(item.category) }}</b></small>
           </div>
         </li>
       </ul>
@@ -62,6 +62,9 @@
       }
     },
     methods: {
+      categoryName (category) {
+        return category ? category.name : ''
+      },
       hit () {
         let index = this.filteredItems.length === 1 ? 0 : this.current
         let found = this.filteredItems[index]
