@@ -5,14 +5,14 @@
     <table class="table">
       <thead>
         <th>ID</th>
-        <th>Fecha</th>
+        <th>Fecha y Hora Cierre</th>
         <th># Cajas Parciales</th>
         <th></th>
       </thead>
       <tbody>
         <tr v-for="cash in dailyCashes" :key="cash.id">
           <td>{{ cash.id }}</td>
-          <td>{{ cash.cash_date | moment('DD MMMM, YYYY') }}</td>
+          <td>{{ cash.created_at | moment('DD MMMM, YYYY HH:mm') }}</td>
           <td>{{ cash.partial_daily_cashes.length }}</td>
           <td>
             <router-link :to="{ name: 'DailyCash', params: { id: cash.id } }" class="button is-light">Detalles</router-link>

@@ -60,7 +60,7 @@
               <i class="fa fa-angle-right fa-floated" style="margin-right: 10px;"></i> {{ ext.name }}: <b>${{ ext.total }}</b>
               <ul>
                 <li v-for="(e, index) in ext.list" :key="index">
-                  <span>{{e.created_at | moment('DD MMMM, YYYY HH:MM') }} - ${{e.amount}}</span>
+                  <span>{{e.created_at | moment('DD MMMM, YYYY HH:mm') }} - ${{e.amount}}</span>
                 </li>
               </ul>
             </li>
@@ -74,7 +74,7 @@
               <i class="fa fa-angle-right fa-floated" style="margin-right: 10px;"></i> {{ vale.name }}: <b>${{ vale.total }}</b>
               <ul>
                 <li v-for="(v, index) in vale.list" :key="index">
-                  <span>{{v.created_at | moment('DD MMMM, YYYY HH:MM') }} - ${{v.amount}}</span>
+                  <span>{{v.created_at | moment('DD MMMM, YYYY HH:mm') }} - ${{v.amount}}</span>
                 </li>
               </ul>
             </li>
@@ -88,7 +88,7 @@
               <i class="fa fa-angle-right fa-floated" style="margin-right: 10px;"></i> {{ gasto.name }}: <b>${{ gasto.total }}</b>
               <ul>
                 <li v-for="(g, index) in gasto.list" :key="index">
-                  <span>{{g.created_at | moment('DD MMMM, YYYY HH:MM') }} - ${{g.amount}}</span>
+                  <span>{{g.created_at | moment('DD MMMM, YYYY HH:mm') }} - ${{g.amount}}</span>
                 </li>
               </ul>
             </li>
@@ -99,21 +99,24 @@
       <div class="box">
         <h1>Cajas Parciales</h1>
         <div class="partial-bar is-clearfix">
-          <div class="columns is-multiline">
-            <div class="column is-4" v-for="partial in cash.partial_daily_cashes" :key="partial.id">
-              <div class="control has-addons">
-                <tooltip content="Responsable">
-                  <a @click.prevent="showPartial(partial.id)" class="button is-light">
-                    #{{ partial.id }}
-                    <span class="icon is-small"><i class="fa fa-angle-right"></i></span>
-                     {{ partial.user.name }}
-                   </a>
-                 </tooltip>
-                <tooltip content="Caja Total"><div class="button is-light">${{ partial.total }}</div> </tooltip>
-                <tooltip content="Hora cierre"><div class="button is-light">{{ partial.closed_at | moment('HH:MM') + ' hs' }}</div></tooltip>
-              </div>
-            </div>
-          </div>
+          <table class="table">
+            <thead>
+              <th></th>
+              <th>Responsable</th>
+              <th>Total</th>
+              <th>Fecha/hora Apertura</th>
+              <th>Fecha/hora Cierre</th>
+            </thead>
+            <tbody>
+              <tr v-for="partial in cash.partial_daily_cashes" :key="partial.id">
+                <td><a @click.prevent="showPartial(partial.id)">#{{ partial.id }}</a></td>
+                <td>{{ partial.user.name }}</td>
+                <td>${{ partial.total }}</td>
+                <td>{{ partial.created_at | moment('DD MMMM, YYYY HH:mm') }}</td>
+                <td>{{ partial.closed_at | moment('DD MMMM, YYYY HH:mm') }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -123,7 +126,7 @@
           <div class="column is-6">Responsable <b>{{ currentPartial.user.name }}</b></div>
           <div class="column is-6">
             <tooltip content="Fecha hora de cierre">
-              Fecha/Hora <b>{{ currentPartial.closed_at | moment('DD/MM/YYYY hh:mm A')}}</b>
+              Fecha/Hora <b>{{ currentPartial.closed_at | moment('DD/MM/YYYY HH:mm')}}</b>
             </tooltip>
           </div>
         </div>

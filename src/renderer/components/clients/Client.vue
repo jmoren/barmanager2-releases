@@ -136,7 +136,7 @@
                         <i class="fa fa-angle-right fa-floated"></i> {{ payment.ticket.number }}
                       </router-link>
                     </td>
-                    <td>{{ payment.created_at | moment('DD MMMM, YYYY - hh:mm A') }}</td>
+                    <td>{{ payment.created_at | moment('DD MMMM, YYYY - HH:mm') }}</td>
                     <td>{{ payment.type }}</td>
                     <td><b>$ {{ payment.amount }}</b></td>
                   </tr>

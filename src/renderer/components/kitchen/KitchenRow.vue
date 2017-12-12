@@ -63,7 +63,7 @@
           </div>
           <div>
             <i class="fa fa-clock-o" style="padding:2px"></i>
-            {{ currentTicket.printed_at | moment('DD MMMM, YYYY HH:MM') }}
+            {{ currentTicket.printed_at | moment('DD MMMM, YYYY HH:mm') }}
           </div>
           <hr>
           <p style="font-size: 14px;" v-if="currentTicket.client">
@@ -94,10 +94,12 @@
               <div class="is-pulled-right">Pendiente: {{currentTicket.pending }}</div>
             </div>
             <hr>
-            <h2 style="font-size: 15px; font-weight: 500;margin-bottom: 10px;">Mapa</h2>
-            <div style="margin: auto; height: 200px; width: 200px">
-              <div v-if="loadingMap">cargando mapa...</div>
-              <div v-else><img v-bind:src="mapUrl"></div>
+            <div class="not-print">
+              <h2 style="font-size: 15px; font-weight: 500;margin-bottom: 10px;">Mapa</h2>
+              <div style="margin: auto; height: 200px; width: 200px">
+                <div v-if="loadingMap">cargando mapa...</div>
+                <div v-else><img v-bind:src="mapUrl"></div>
+              </div>
             </div>
             <div style="text-align: center" class="print">
               <barcode :tag="'img'" :value="currentTicket.ticket.number" :options="{ format: barcodeConfig.format, lastChar: barcodeConfig.lastChar, displayValue: true, height: barcodeConfig.height, width: barcodeConfig.width, background: 'transparent' }"></barcode>
@@ -221,6 +223,7 @@
 <style>
   .print { display: none; }
   @media print {
+    .not-print { display: none; }
     .modal-card-foot, .modal-card-head { display: none; }
     .print { display: block; }
   }

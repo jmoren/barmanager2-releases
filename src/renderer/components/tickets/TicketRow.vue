@@ -94,7 +94,7 @@
                   </popover>
                   <tag class="is-small is-light" v-else><i class="fa fa-check is-success fa-floated"></i></tag>
                 </span>
-                <tooltip v-if="item.delivered_at" v-bind:content="item.delivered_at | moment('hh:mm') " placement="top" trigger="hover">
+                <tooltip v-if="item.delivered_at" v-bind:content="item.delivered_at | moment('HH:mm') " placement="top" trigger="hover">
                   <i class="fa fa-clock-o fa-floated"></i>
                 </tooltip>
                 <span>{{ item.item_name }}</span>

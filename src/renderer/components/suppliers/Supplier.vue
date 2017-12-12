@@ -77,7 +77,7 @@
                             <tbody>
                               <tr v-if="purchase.expenses.length === 0"><td colspan="3">No hay pagos para esta factura</td></tr>
                               <tr v-for="(expense, index) in purchase.expenses" v-else>
-                                <td>{{ expense.created_at | moment('DD/MM/YYYY HH:MM a')}}</td>
+                                <td>{{ expense.created_at | moment('DD/MM/YYYY HH:mm')}}</td>
                                 <td>$ {{ expense.amount }}</td>
                                 <td><span v-if="expense.user">{{ expense.user.name }}</span></td>
                               </tr>
@@ -130,7 +130,7 @@
                   <tbody>
                     <tr v-for="gasto in expenses.gastos" :key="gasto.id">
                       <td># {{ gasto.id }}</td>
-                      <td>{{ gasto.created_at | moment('DD/MM/YYYY HH:MM a')}}</td>
+                      <td>{{ gasto.created_at | moment('DD/MM/YYYY HH:mm')}}</td>
                       <td>$ {{ gasto.amount }}</td>
                       <td><span v-if="gasto.purchase.id">Nro: {{ gasto.purchase.number }}</span></td>
                       <td><span v-if="gasto.user">{{ gasto.user.name }}</span></td>

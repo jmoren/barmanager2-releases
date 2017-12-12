@@ -16,8 +16,8 @@
         <div class="column is-3">
           <div class="box">
             <table class="table">
-              <tr><td>Creado</td><td><b>{{ delivery.created_at | moment('DD/MM/YY HH:mm A') }}</b></td></tr>
-              <tr><td>Entregado</td><td><b>{{ delivery.delivered_at | moment('DD/MM/YY HH:mm A') }}</b></td></tr>
+              <tr><td>Creado</td><td><b>{{ delivery.created_at | moment('DD/MM/YY HH:mm') }}</b></td></tr>
+              <tr><td>Entregado</td><td><b>{{ delivery.delivered_at | moment('DD/MM/YY HH:mm') }}</b></td></tr>
               <tr><td>Estado</td><td><b>{{ delivery.state }}</b></td></tr>
               <tr><td>Creado</td><td><b>{{ delivery.user.name }}</b></td></tr>
               <tr><td>Total</td><td> <b>$ {{ delivery.total }}</b></td></tr>

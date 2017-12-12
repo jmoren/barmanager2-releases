@@ -110,7 +110,7 @@
             </div>
           </div>
           <div class="column is-3 not-print">
-            <div class="content">{{ date | moment('DD, MMMM YYYY, HH:mm A') | uppercase }}</div>
+            <div class="content">{{ date | moment('DD, MMMM YYYY, HH:mm') | uppercase }}</div>
           </div>
         </div>
       </div>

@@ -38,7 +38,10 @@
           <router-link class="open-table-button button is-fullwidth is-medium is-primary" :to="{ name: 'Ticket', params: { id: ticket.id } }">
             <div style="margin: 5px 0">
               Ticket {{ ticket.number }}
-              <span><i v-if="ticket.full_delivered" class="fa fa-check-circle fa-floated is-success" style="margin: 5px 0px"></i></span>
+              <div class="is-pulled-right">
+                <span v-if="ticket.entries === 0"><i class="fa fa-bell-o fa-floated" style="margin: 5px 0px"></i></span>
+                <span v-if="ticket.full_delivered"><i class="fa fa-check-circle fa-floated is-success" style="margin: 5px 0px"></i></span>
+              </div>
             </div>
             <div><small>{{ ticket.client.id ? ticket.client.name : 'S/C' }}</small></div>
             <div><small>{{ (ticket.address || (ticket.client || {}).address || 'Sin direccion') | truncate }}</small></div>

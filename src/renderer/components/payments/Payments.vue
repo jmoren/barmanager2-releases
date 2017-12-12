@@ -25,7 +25,7 @@
             </td>
             <td>
               <i class="fa fa-floated fa-check is-success"></i>
-              <span>{{ payment.created_at | moment('DD MMMM, YYYY HH:MM') }}</span>
+              <span>{{ payment.created_at | moment('DD MMMM, YYYY HH:mm') }}</span>
             </td>
             <td>{{ payment.type }}</td>
             <td>${{ payment.amount }}</td>

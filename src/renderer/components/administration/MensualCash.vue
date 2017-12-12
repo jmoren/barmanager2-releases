@@ -39,7 +39,7 @@
                       <li v-for="(e, index) in vales.list" :key="index">
                         <div class="padding: 10px 0px">
                           <i class="fa fa-plus fa-floated" style="font-size: 15px"></i>
-                          {{e.created_at | moment('DD MMMM, YYYY HH:MM') }} - ${{e.amount}}
+                          {{e.created_at | moment('DD MMMM, YYYY HH:mm') }} - ${{e.amount}}
                         </div>
                       </li>
                     </ul>
@@ -66,7 +66,7 @@
                       <li v-for="(g, index) in gastos.list" :key="index">
                         <div style="padding: 10px 0px">
                           <i class="fa fa-plus fa-floated" style="font-size: 15px"></i>
-                          {{g.created_at | moment('DD MMMM, YYYY HH:MM') }} - ${{g.amount}}
+                          {{g.created_at | moment('DD MMMM, YYYY HH:mm') }} - ${{g.amount}}
                         </div>
                       </li>
                     </ul>

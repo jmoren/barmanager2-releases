@@ -18,7 +18,7 @@
         <td><router-link :to="{ name: 'Delivery', params: { id: delivery.id } }"># {{ delivery.id }}</router-link></td>
         <td>{{ delivery.state }}</td>
         <td>{{ delivery.user.name }}</td>
-        <td>{{ delivery.created_at | moment('DD/MM/YYYY HH:mm A') }}</td>
+        <td>{{ delivery.created_at | moment('DD/MM/YYYY HH:mm') }}</td>
         <td>$ {{ delivery.total }}</td>
         <td><a @click.prevent="close()" class="button is-small is-danger" v-if="!delivery.delivered_at">Cerrar pedido</a></td>
       </tr>
