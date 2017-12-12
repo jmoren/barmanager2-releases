@@ -1,6 +1,6 @@
 <template>
   <div id="app" >
-    <section class="hero is-primary is-fixed">
+    <section class="hero is-primary is-fixed not-print">
       <div class="hero-head">
         <div class="nav-main">
           <div class="">
@@ -34,7 +34,7 @@
                 <span></span>
                 <span></span>
               </span>
-              <div class="nav-right" v-if="user.profile.role !== 'cooker'">
+              <div class="nav-right not-print" v-if="user.profile.role !== 'cooker'">
                 <div class="nav-item" style="width:300px;">
                   <input type="text" v-model="clientCode" class="input" @keydown.enter.prevent="findClient()"
                         placeholder="Buscar por telefono o credencial">
@@ -405,5 +405,10 @@
 
   .pac-container {
     z-index: 100000 !important;
+  }
+
+  @media print {
+    .not-print { display: none; }
+    .print { display: block; }
   }
 </style>

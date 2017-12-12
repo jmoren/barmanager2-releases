@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="" id="admin-content">
     <div class="columns">
-      <div class="column is-2 is-marginless">
+      <div class="column is-2 is-marginless not-print">
         <h1 class="header">Menu</h1>
         <hr>
         <menus label="">
@@ -74,4 +74,9 @@ export default {
   #admin-content .is-button-text-left { justify-content: left !important; }
   #admin-content .switchery { margin-top: 5px; }
   li .router-link-exact-active.router-link-active { color: #6cc788; font-weight: 500; }
+
+  @media print {
+    .not-print { display: none; }
+    .print { display: block; }
+  }
 </style>
