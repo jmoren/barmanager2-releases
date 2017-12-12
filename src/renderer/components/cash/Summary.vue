@@ -113,6 +113,14 @@
       <td>EFECTIVO EN CAJA <span style="font-size: 17px; color: #999">(Sub Efectivo - Gastos - Retirado)</span></td>
       <td class="row-value"><span class="is-success-text">${{ realCash | withDecimals }}</span></td>
     </tr>
+    <tr class="total" v-if="!summary.open">
+      <td>Arqueo de Caja <span style="font-size: 17px; color: #999">(Recuento manual del efectivo en caja)</span></td>
+      <td class="row-value"><span class="is-success-text">${{ summary.manual_cash | withDecimals }}</span></td>
+    </tr>
+    <tr class="subtotal" v-if="!summary.open">
+      <td>Diferencia <span style="font-size: 17px; color: #999">(Total Efectivo - Recuento manual)</span></td>
+      <td class="row-value"><span class="is-success-text">${{ realCash - summary.manual_cash || withDecimals }}</span></td>
+    </tr>
     <tr class="subtotal">
       <td>Rentabilidad <span style="font-size: 17px; color: #999">(Sub Efectivo + Sub Tarjeta - Gastos - Retirado)</span></td>
       <td class="row-value"><span class="is-success-text">${{ total | withDecimals }}</span></td>
