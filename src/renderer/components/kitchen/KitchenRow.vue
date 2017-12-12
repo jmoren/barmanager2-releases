@@ -55,7 +55,10 @@
           </div>
         </div>
       </div>
-      <modal title="Imprimir" ok-text="Imprimir" cancel-text="Cancelar" :on-ok="print" :on-cancel="cancelPrint" :width="520" :is-show="isShow" transition="zoom" @close="cancelPrint">
+      <modal :width="520" :is-show="isShow" transition="zoom" :show-footer="false" @close="cancelPrint">
+        <div slot="header" class="is-pulled_right" style="width: 100%">
+          <a class="button is-primary" @click="print">Imprimir</a>
+        </div>
         <div v-if="currentTicket.ticket">
           <div class="is-clearfix" style="font-size: 20px;">
             <div class="is-pulled-right">{{ currentTicket.table ? currentTicket.table.description : 'Delivery' }}</div>
@@ -70,10 +73,10 @@
             Cliente: <br><b>{{ currentTicket.client.name }}</b> - <i class="fa fa-phone" style="padding: 2px;"></i> {{ currentTicket.client.phone }}
           </p>
           <p style="font-size: 14px;">
-            Direccion: <br><b>{{ currentTicket.ticket.address || currentTicket.client.address }}</b>
+            Direccion: <br><b>{{ currentTicket.ticket.address || currentTicket.client ? currentTicket.client.address : 'Sin direccion' }}</b>
           </p>
           <hr>
-          <div v-if="loadingModal">Cargando...</div>
+          <div v-if="loadingModal" class="not-print">Cargando...</div>
           <div v-else>
             <table class="table">
               <thead>
@@ -94,11 +97,11 @@
               <div class="is-pulled-right">Pendiente: {{currentTicket.pending }}</div>
             </div>
             <hr>
-            <div class="not-print">
+            <div v-if="mapConfig.showMap === 'true'" class="not-print">
               <h2 style="font-size: 15px; font-weight: 500;margin-bottom: 10px;">Mapa</h2>
-              <div style="margin: auto; height: 200px; width: 200px">
-                <div v-if="loadingMap">cargando mapa...</div>
-                <div v-else><img v-bind:src="mapUrl"></div>
+              <div style="margin: auto;" v-bind:style="{ width: mapConfig.width + 'px', height: mapConfig.height + 'px' }">
+                <div v-if="loadingMap" class="not-print">cargando mapa...</div>
+                <div v-else><img v-bind:src="mapUrl" v-bind:width="mapConfig.width" v-bind:height="mapConfig.height"></div>
               </div>
             </div>
             <div style="text-align: center" class="print">
@@ -117,14 +120,14 @@
   import Vue from 'vue'
   export default {
     name: 'KitchenRow',
-    props: ['ticket', 'barcodeConfig'],
+    props: ['ticket', 'barcodeConfig', 'mapConfig'],
     data () {
       return {
         loading: false,
         loadingMap: false,
         removed: false,
         rowExpanded: false,
-        currentTicket: {},
+        currentTicket: { ticket: { client: {} }, client: {} },
         isShow: false,
         loadingModal: false,
         entries: [],
@@ -148,19 +151,23 @@
       geocodeAddress (geocoder) {
         /* eslint-disable no-new */
         this.loadingMap = true
-        let center = this.ticket.address || this.ticket.client.address
-        this.geocoder.geocode({ 'address': this.ticket.address || this.ticket.client.address }, function (results, status) {
-          if (status === 'OK') {
-            let position = results[0].geometry.location
-            this.mapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${center}&zoom=16&size=200x200&maptype=roadmap&markers=color:red|${position.lat()},${position.lng()}`
-            console.log(this.mapUrl)
-            this.loadingMap = false
-            console.log('listo')
-          } else {
-            this.loadingMap = false
-            alert('Verificar Quizas el ticket no tiene direccion: ' + status)
-          }
-        }.bind(this))
+        let center = this.ticket.address || this.ticket.client ? this.ticket.client.address : 'undefined'
+
+        if (center !== 'undefined') {
+          console.log(center)
+          this.geocoder.geocode({ 'address': center }, function (results, status) {
+            if (status === 'OK') {
+              let position = results[0].geometry.location
+              this.mapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${center}&zoom=16&size=${this.mapConfig.width}x${this.mapConfig.height}&maptype=roadmap&markers=color:red|${position.lat()},${position.lng()}`
+              console.log(this.mapUrl)
+              this.loadingMap = false
+              console.log('listo')
+            } else {
+              this.loadingMap = false
+              alert('Verificar Quizas el ticket no tiene direccion: ' + status)
+            }
+          }.bind(this))
+        }
       },
       print () {
         window.print()
@@ -223,8 +230,12 @@
 <style>
   .print { display: none; }
   @media print {
+<<<<<<< HEAD
     .not-print { display: none; }
     .modal-card-foot, .modal-card-head { display: none; }
+=======
+    .modal-card-foot, .modal-card-head, .not-print { display: none; }
+>>>>>>> make kitchen map configurable and move print to header
     .print { display: block; }
   }
 </style>

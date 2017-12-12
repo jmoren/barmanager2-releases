@@ -52,7 +52,7 @@
             <th>Pedido</th>
           </thead>
           <tbody>
-            <kitchen-row v-for="(ticket, id) in currentTickets" :ticket="ticket" :key="id" :barcodeConfig="barcode" @remove-ticket="removeTicket(ticket)"></kitchen-row>
+            <kitchen-row v-for="(ticket, id) in currentTickets" :ticket="ticket" :key="id" :barcodeConfig="barcode" :mapConfig="mapConfig" @remove-ticket="removeTicket(ticket)"></kitchen-row>
             <tr v-if="currentTickets.length === 0">
               <td colspan="4">
                 <p class="empty-message has-text-centered is-danger-text">No hay item en la cocina</p></td>
@@ -87,6 +87,11 @@
         lastTimestamp: null,
         audio: null,
         user: Auth.user,
+        mapConfig: {
+          showMap: config.get('map_visible', false),
+          width: config.get('map_width', 200),
+          height: config.get('map_height', 200)
+        },
         barcode: {
           format: config.get('barcode_format', 'EAN13'),
           width: 1,
