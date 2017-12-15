@@ -18,6 +18,7 @@
           <th>Nombre</th>
           <th>Telefono</th>
           <th>Direccion</th>
+          <th>Complemento</th>
           <th></th>
         </thead>
         <tbody>
@@ -26,6 +27,7 @@
             <td>{{ client.name }}</td>
             <td>{{ client.phone }}</td>
             <td>{{ client.address }}</td>
+            <td>{{ client.address_complement }}</td>
             <td>
               <a @click.prevent="addTicket(client)" class="button is-danger">Abrir ticket</a>
               <router-link class="button is-light" :to="{ name: 'Client', params: { id: client.id } }">Ver Detalles</router-link>

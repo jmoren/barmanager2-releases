@@ -22,6 +22,9 @@
           :placeholder="newClient.address || 'Direccion para envio'">
         </vue-google-autocomplete>
       </div>
+      <div class="control">
+        <textarea type="text" class="textarea" v-model="newClient.address_complement" placeholder="Piso, departamento, bloque, etc"></textarea>
+      </div>
     </modal>
     <h1 class="header">
       <i class="fa fa-users fa-floated"></i>
@@ -39,6 +42,7 @@
         <th>Telefono</th>
         <th>DNI</th>
         <th>Direción</th>
+        <th>Complemento</th>
         <th>Deuda</th>
         <th></th>
       </thead>
@@ -48,6 +52,7 @@
           <td>{{ client.phone }}</td>
           <td>{{ client.dni }}</td>
           <td>{{ client.address }}</td>
+          <td>{{ client.address_complement }}</td>
           <td><b class="is-danger-text">${{ client.total_debt || '0.0' }}</b></td>
           <td>
             <div class="control has-addons">
@@ -78,8 +83,8 @@ export default {
   mixins: [alert],
   data () {
     return {
-      newClient: { name: '', phone: '', dni: '', address: '' },
-      originalClient: { id: '', name: '', phone: '', dni: '', address: '' },
+      newClient: { name: '', phone: '', dni: '', address: '', address_complement: '' },
+      originalClient: { id: '', name: '', phone: '', dni: '', address: '', address_complement: '' },
       clients: [],
       isShow: false,
       meta: {},
@@ -146,7 +151,14 @@ export default {
       )
     },
     updateClient () {
-      let params = { name: this.newClient.name, dni: this.newClient.dni, phone: this.newClient.phone, address: this.newClient.address }
+      let params = {
+        name: this.newClient.name,
+        dni: this.newClient.dni,
+        phone: this.newClient.phone,
+        address: this.newClient.address,
+        address_complement: this.newClient.address_complement
+      }
+
       this.$http.put('clients/' + this.newClient.id, { client: params }).then(
         response => {
           _.extend(this.originalClient, response.data)

@@ -5,37 +5,34 @@
     </div>
     <div v-else>
       <div class="print">
-        <div>TICKET # {{ ticket.number | withDash }}</div>
-        <div>{{ Date.now() | moment('DD MMMM, YYYY h:mm:ss a') }}</div>
+        <div style="font-weight: 300; font-size: 15px">TICKET # {{ ticket.number | withDash }}</div>
+        <div style="font-weight: 300; font-size: 15px">{{ Date.now() | moment('DD MMMM, YYYY h:mm:ss a') }}</div>
         <div style="font-weight: 300; font-size: 25px">
           <span v-if="ticket.table_id">MESA {{ ticket.table.description }}</span>
           <span v-else class="is-danger-text">DELIVERY</span>
         </div>
         <div v-if="ticket.client.id"><h4>Cliente: {{ ticket.client.name }}</h4></div>
         <div v-if="ticket.address"><h4>Direccion: {{ ticket.address }}</h4></div>
+        <div v-if="ticket.address_complement">Complemento: {{ ticket.address_complement }}</div>
       </div>
       <div id="ticket-options" class="columns not-print">
         <div class="column is-3">
           <h1 class="header">TICKET # {{ ticket.number | withDash }} </h1>
-          <small>Direccion: {{ ticket.address }}</small>
+          <div style="font-size: 13px;">
+            <a @click="editAddress()"><i class="fa fa-edit fa-floated"></i></a> 
+            Direccion: {{ ticket.address }}<br>
+            <span style="color: #7D7E7F">Complementos: {{ ticket.address_complement || '---'}}</span>
+          </div>
         </div>
         <div class="column is-6">
           <div v-if="!ticket.closed">
             <div class="columns" style="margin-bottom:0px;">
-              <div class="column is-3">
+              <div class="column is-6">
                 <table-autocomplete :class="{'is-disabled': ticket.closed || loadingTables, 'is-primary': ticket.table_id, 'is-light': !ticket.table_id }"
                 :query="currentTable" :tables="tables" :ticket="ticket" @remove-table="removeTable" @set-table="table => traslateTicket(table.id)"></table-autocomplete>
               </div>
-              <div class="column is-4">
+              <div class="column is-6">
                 <clients-autocomplete :ticket="ticket" :clients="clients" @remove-client="removeClient" @set-client="client => assignClient(client.id)"></clients-autocomplete>
-              </div>
-              <div class="column is-5 address" v-if="!ticket.table_id">
-                <tooltip content="Direccion para envio" trigger="focus">
-                  <div class="control has-icon has-icon-left">
-                    <i v-if="ticket.address_not_validated" class="fa fa-warning" style="color: red;"></i>
-                    <vue-google-autocomplete ref="addressInput" id="map" country="ar" :value="ticket.address" :enable-geolocation="true" classname="input" placeholder="Direccion alternativa para envio" @clear="clearAddress" @placechanged="updateAddress" @no-results-found="(ob) => notFoundAddress(ob)"></vue-google-autocomplete>
-                  </div>
-                </tooltip>
               </div>
             </div>
           </div>
@@ -256,7 +253,17 @@
           </div>
         </form>
       </modal>
-      <modal :title="'TICKET Nro. ' + ticket.number" :show-footer="false" :on-cancel="closeCancelTicket" :is-show="cancelTicketModal">
+      <modal :title="'Editar Direccion - TICKET Nro. ' + ticket.number" :show-footer="true" :on-ok="updateTicketAddress" :is-show="addressOpen" :on-cancel="closeAddress">
+        <p>Direccion actual: {{ ticket.address }}</p>
+        <p>Complemento: {{ ticket.address_complement }}</p>
+        <hr>
+        <div class="control has-icon has-icon-left">
+          <i v-if="ticket.address_not_validated" class="fa fa-warning" style="color: red;"></i>
+          <vue-google-autocomplete ref="addressInput" id="map" country="ar" :value="ticket.address" :enable-geolocation="true" classname="input" placeholder="Direccion alternativa para envio" @clear="clearAddress" @placechanged="updateAddress" @no-results-found="(ob) => notFoundAddress(ob)"></vue-google-autocomplete>
+          <textarea v-model="ticket.address_complement" rows="5" class="textarea" placeholder="Piso, Departamento, bloque u otros datos."></textarea>
+        </div>
+      </modal>
+      <modal :title="'TICKET Nro. ' + ticket.number" :on-footer="false" :on-cancel="closeCancelTicket" :is-show="cancelTicketModal">
         <alert><b>Estas seguro de cancelar este ticket?</b></alert>
         <hr>
         <h3 style="font-size: 17px; font-weight: 400; margin-bottom: 15px">Seleccione una razon</h3>
@@ -360,7 +367,7 @@ export default {
       new_table_id: '',
       new_client_id: '',
       cancelTicketModal: false,
-      noAddressValid: false
+      addressOpen: false
     }
   },
   computed: {
@@ -431,7 +438,8 @@ export default {
       let data = {
         pay_with: this.ticket.pay_with,
         address: this.ticket.address,
-        address_not_validated: this.ticket.address_not_validated
+        address_not_validated: this.ticket.address_not_validated,
+        address_complement: this.ticket.address_complement
       }
 
       this.$http.put('tickets/' + this.ticket.id, { ticket: data }).then(
@@ -553,6 +561,9 @@ export default {
             if (this.ticket.client.address) {
               this.ticket.address = this.ticket.client.address
             }
+            if (this.ticket.client.address_complement) {
+              this.ticket.address_complement = this.ticket.client.address_complement
+            }
             // should update the store
             if (this.ticket.table_id) {
               this.$store.dispatch('changeUserTable', { table: this.ticket.table_id, client: { id: this.ticket.client_id, name: this.ticket.client.name, address: this.ticket.client.address } })
@@ -622,6 +633,16 @@ export default {
       this.ticket.address = res.name
       this.ticket.address_not_validated = true
       this.updateTicket()
+    },
+    updateTicketAddress () {
+      this.addressOpen = false
+      this.updateTicket()
+    },
+    editAddress () {
+      this.addressOpen = true
+    },
+    closeAddress () {
+      this.addressOpen = false
     }
   }
 }
