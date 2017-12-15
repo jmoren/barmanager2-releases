@@ -2,14 +2,28 @@
   <div class="container" id="client">
     <div v-if="loading"></div>
     <div v-else>
-      <h1 class="header">
+      <h1 class="header not-print">
         Cliente {{client.name }}
-        <div class="control has-addons is-pulled-right">
+        <div class="is-pulled-right">
           <a @click.prevent="addTicket(client)" class="button is-danger">Abrir ticket</a>
+          <dropdown>
+            <a class="button is-light">
+              <span>Imprimir</span>
+              <span class="icon is-small">
+                <i class="fa fa-angle-down"></i>
+              </span>
+            </a>
+            <div slot="content">
+              <menus>
+                <a class="menu-item" @click="print('pagos')">Pagos Anteriores</a>
+                <a class="menu-item" @click="print('deuda')">Deuda</a>
+              </menus>
+            </div>
+          </dropdown>
         </div>
       </h1>
       <hr>
-      <div class="columns">
+      <div class="columns not-print">
         <div class="column is-6">
           <div class="box">
             <h4><i class="fa fa-floated fa-credit-card"></i> Ingresar Pago</h4>
@@ -56,10 +70,45 @@
           <client-codes :client="client"></client-codes>
         </div>
       </div>
-      <div class="box">
-        <h4><i class="fa fa-floated fa-tags"></i> Tickets</h4>
+      <div class="box" :class="{ 'not-print': currentDiv !== 'deuda' }">
+        <h4 class="not-print"><i class="fa fa-floated fa-tags"></i> Tickets</h4>
+        <div class="print" style="font-size: 20px">Deuda de {{ client.name }}</div>
         <div class="columns">
           <div class="column is-6">
+            <div class="button is-light is-not-link">Monto deuda actual:</div>
+            <div class="button is-light is-not-link"><b class="is-danger-text">${{ pending }}</b></div>
+            <a class="button is-light is-pulled-right not-print" @click="print('deuda')"><i class="fa fa-print"></i></a>
+            <hr>
+            <div class="tickets-container">
+              <table class="table">
+                <thead>
+                  <th class="not-print"></th>
+                  <th>Num</th>
+                  <th>Fecha Ticket</th>
+                  <th>Total</th>
+                  <th>Pendiente</th>
+                </thead>
+                <tr v-for="ticket in notPaidTickets">
+                  <td class="not-print">
+                    <tooltip v-bind:content="ticket.status === 'closed' ? 'Ticket cerrado' : 'Ticket abierto'">
+                      <i class="fa fa-floated fa-circle not-print"
+                         :class="{'is-success': ticket.status !== 'closed', 'is-danger': ticket.status === 'closed'}"></i>
+                    </tooltip>
+                  </td>
+                  <td>
+                    <router-link :to="{ name: 'Ticket', params: { id: ticket.id } }" class="not-print">
+                      <i class="fa fa-angle-right fa-floated"></i> {{ ticket.number }}
+                    </router-link>
+                    <span class="print">{{ ticket.number }}</span>
+                  </td>
+                  <td>{{ ticket.created_at | moment('DD MMMM, YYYY') }}</td>
+                  <td><b>${{ ticket.total }}</b></td>
+                  <td><b class="is-danger-text">${{ ticket.pending }}</b></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div class="column is-6 not-print">
             <div class="button is-light is-not-link">Tickets cerrados</div>
             <hr>
             <div class="tickets-container">
@@ -83,88 +132,62 @@
               </table>
             </div>
           </div>
-          <div class="column is-6">
-            <div class="button is-light is-not-link">Monto deuda actual:</div>
-            <div class="button is-light is-not-link"><b class="is-danger-text">${{ pending }}</b></div>
-            <hr>
-            <div class="tickets-container">
-              <table class="table">
-                <thead>
-                  <th></th>
-                  <th>Num</th>
-                  <th>Fecha Ticket</th>
-                  <th>Total</th>
-                  <th>Pendiente</th>
-                </thead>
-                <tr v-for="ticket in notPaidTickets">
-                  <td>
-                    <tooltip v-bind:content="ticket.status === 'closed' ? 'Ticket cerrado' : 'Ticket abierto'">
-                      <i class="fa fa-floated fa-circle"
-                         :class="{'is-success': ticket.status !== 'closed', 'is-danger': ticket.status === 'closed'}"></i>
-                    </tooltip>
-                  </td>
-                  <td>
-                    <router-link :to="{ name: 'Ticket', params: { id: ticket.id } }">
-                      <i class="fa fa-angle-right fa-floated"></i> {{ ticket.number }}
-                    </router-link>
-                  </td>
-                  <td>{{ ticket.created_at | moment('DD MMMM, YYYY') }}</td>
-                  <td><b>${{ ticket.total }}</b></td>
-                  <td><b class="is-danger-text">${{ ticket.pending }}</b></td>
-                </tr>
-              </table>
-            </div>
-          </div>
         </div>
       </div>
-      <div class="columns">
-        <div class="column is-6">
-          <div class="box">
-            <h4><i class="fa fa-floated fa-credit-card"></i> Pagos anteriores</h4>
-            <div v-if="commonPayments.length > 0">
-              <table class="table">
-                <thead>
-                  <th>Ticket</th>
-                  <th>Fecha</th>
-                  <th>Tipo</th>
-                  <th>Monto</th>
-                </thead>
-                <tbody>
-                  <tr v-for="payment in commonPayments" :key="payment.id" v-bind:date="formatDate(payment.created_at)" style="margin-bottom: 5px;">
-                    <td>
-                      <router-link :to="{ name: 'Ticket', params: { id: payment.ticket_id } }">
-                        <i class="fa fa-angle-right fa-floated"></i> {{ payment.ticket.number }}
-                      </router-link>
-                    </td>
-                    <td>{{ payment.created_at | moment('DD MMMM, YYYY - HH:mm') }}</td>
-                    <td>{{ payment.type }}</td>
-                    <td><b>$ {{ payment.amount }}</b></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="column is-6">
-          <div class="box">
-            <h4><i class="fa fa-floated fa-comments"></i> Notas</h4>
-            <div class="ticket-form">
-              <div class="control is-grouped">
-                <div class="control is-expanded">
-                  <input type="text" v-model="newComment.text" class="input" placeholder="Agregar nota">
-                </div>
-                <div class="control"><button @click.prevent="addComment" class="button is-primary">Agregar</button></div>
+      <div class="box" :class="{ 'not-print': currentDiv !== 'pagos' }">
+        <div class="columns">
+          <div class="column is-6">
+            <div class="box">
+              <h4 class="not-print">
+                <i class="fa fa-floated fa-credit-card"></i> Pagos anteriores
+              </h4>
+              <div class="print" style="font-size: 20px">Pagos de {{ client.name }}</div>
+              <div v-if="commonPayments.length > 0">
+                <table class="table">
+                  <thead>
+                    <th>Ticket</th>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Monto</th>
+                  </thead>
+                  <tbody>
+                    <tr v-for="payment in commonPayments" :key="payment.id" v-bind:date="formatDate(payment.created_at)" style="margin-bottom: 5px;">
+                      <td>
+                        <router-link :to="{ name: 'Ticket', params: { id: payment.ticket_id } }" class="not-print">
+                          <i class="fa fa-angle-right fa-floated"></i> {{ payment.ticket.number }}
+                        </router-link>
+                        <span class="print">{{ payment.ticket.number }}</span>
+                      </td>
+                      <td>{{ payment.created_at | moment('DD MMMM, YYYY - HH:mm') }}</td>
+                      <td>{{ payment.type }}</td>
+                      <td><b>$ {{ payment.amount }}</b></td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
-            <div v-if="client.client_comments.length > 0">
-              <hr>
-              <ul>
-                <li v-for="comment in client.client_comments" :key="client.id" v-bind:date="dateFrom(client.date)" type="primary">
-                  <i class="fa fa-angle-right fa-floated"></i>
-                  <span style="font-size: 16px;">{{ comment.text }}</span>
-                  <a @click.prevent="removeComment(comment)" class="is-pulled-right button is-small is-danger"><i class="fa fa-trash"></i></a>
-                </li>
-              </ul>
+          </div>
+          <div class="column is-6 not-print">
+            <div class="box">
+              <h4><i class="fa fa-floated fa-comments"></i> Notas</h4>
+              <div class="ticket-form">
+                <div class="control is-grouped">
+                  <div class="control is-expanded">
+                    <input type="text" v-model="newComment.text" class="input" placeholder="Agregar nota">
+                  </div>
+                  <div class="control"><button @click.prevent="addComment" class="button is-primary">Agregar</button></div>
+                </div>
+              </div>
+              <div v-if="client.client_comments.length > 0">
+                <hr>
+                <ul>
+                  <li v-for="comment in client.client_comments" :key="client.id" v-bind:date="dateFrom(client.date)" type="primary">
+                    <i class="fa fa-angle-right fa-floated"></i>
+                    <span style="font-size: 16px;">{{ comment.text }}</span>
+                    <a @click.prevent="removeComment(comment)" class="is-pulled-right button is-small is-danger"><i class="fa fa-trash"></i></a>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -189,7 +212,8 @@
         new_phone: '',
         newPayment: { type: 'Efectivo', amount: null },
         mode: 'Parcial',
-        newComment: { text: '' }
+        newComment: { text: '' },
+        currentDiv: null
       }
     },
     beforeRouteEnter (to, from, next) {
@@ -303,6 +327,12 @@
             this.client.client_comments.splice(index, 1)
           }
         )
+      },
+      print (div) {
+        this.currentDiv = div
+        setTimeout(() => {
+          window.print()
+        }, 1000)
       }
     }
   }
@@ -312,4 +342,12 @@
   #client h4 { font-weight: bold; font-size: 16px; margin-bottom: 15px; }
   #client .tickets-container { height: 250px; overflow: auto; }
   #client .box:last-child { margin-bottom: 20px; }
+  .print { display: none; }
+  @media print {
+    .not-print { display: none; }
+    .print { display: block; }
+    .not-print .print { display: none; }
+    .column.is-6 { padding: 10px 0px !important; }
+    body { font-size: 12px !important; }
+  }
 </style>
