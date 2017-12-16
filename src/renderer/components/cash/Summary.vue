@@ -1,7 +1,11 @@
 <template>
   <div class="resume">
-    <h2>Resumen Total</h2>
+    <h2>Resumen Total </h2>
     <table class="table is-bordered">
+    <tr>
+      <td>Tickets abiertos en este Turno</td>
+      <td class="row-value"><span>{{ summary.tickets_count }}</span></td>
+    </tr>
     <tr class="total">
       <td>CAJA INICIAL</td>
       <td class="row-value"><span>${{ summary.init_amount | withDecimals  }}</span></td>

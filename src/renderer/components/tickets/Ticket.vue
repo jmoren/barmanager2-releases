@@ -537,6 +537,7 @@ export default {
           }
           message = this.ticket.table_id ? 'Nueva Mesa asignada: ' + this.ticket.table.description : 'Ticket Delivery'
           this.alert(kind, message)
+          document.getElementById('code').focus()
         },
         error => {
           this.alert('danger', error.data)

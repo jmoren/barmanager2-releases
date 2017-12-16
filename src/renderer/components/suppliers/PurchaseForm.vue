@@ -10,7 +10,7 @@
       <div class="column is-6">
         <label class="label">Total $ <span class="is-pulled-right">Suma parcial: {{purchasePartialTotal}}</span></label>
         <p class="control">
-          <input class="input is-medium" :disabled="loading" min="1" type="number" v-model="purchase.total">
+          <input class="input is-medium" :disabled="loading" min="1" type="number" v-model="purchase.total" @blur="copyTotal()">
         </p>
       </div>
     </div>
@@ -102,10 +102,10 @@
     <hr>
     <div class="columns">
       <div class="column is-4">
-        <checkbox v-model="payExpense" val="true">Pagar factura</checkbox>
+        <checkbox v-model="payExpense" val="true" checked>Pagar factura</checkbox>
       </div>
       <div class="column is-4" v-if="payExpense">
-        <checkbox v-if="supplier.partial_cash_open" v-model="addToPartial" val="true">Cargar el gasto a la caja</checkbox>
+        <checkbox v-if="supplier.partial_cash_open" v-model="addToPartial" val="true" checked>Cargar el gasto a la caja</checkbox>
       </div>
     </div>
     <div class="columns" v-if="payExpense">
@@ -139,8 +139,8 @@
         loading: false,
         entry: { price: '', quantity: '', item: {}, previous: {} },
         item: { id: null, name: '', price: null, code: null, description: '' },
-        payExpense: false,
-        addToPartial: false,
+        payExpense: true,
+        addToPartial: true,
         payTotal: false,
         partialValue: '',
         currentType: '',
@@ -177,11 +177,14 @@
       }
     },
     methods: {
+      copyTotal () {
+        this.partialValue = this.purchase.total
+      },
       resetForm () {
         this.purchase = { total: 0, number: '', entries: [] }
         this.partialValue = 0
-        this.addToPartial = false
-        this.payExpense = false
+        this.addToPartial = true
+        this.payExpense = true
         this.payTotal = false
       },
       removeEntry (index) {
@@ -253,6 +256,20 @@
         }
       },
       savePurchase () {
+        if (this.payExpense) {
+          this.$modal.confirm({
+            title: 'Guardar Factura',
+            content: `Seguro desea guardar esta factura. El monto ${this.addToPartial === true ? '' : 'no'} va a ser cargado a la Caja del turno actual.`,
+            onOk: this.confirmPurchase,
+            okText: 'Si, Guardar',
+            transition: 'zoom',
+            icon: ''
+          })
+        } else {
+          this.confirmPurchase()
+        }
+      },
+      confirmPurchase () {
         this.loading = true
 
         this.purchase.partial_total = this.payTotal ? null : this.partialValue
