@@ -19,7 +19,7 @@
         <div class="column is-3">
           <h1 class="header">TICKET # {{ ticket.number | withDash }} </h1>
           <div style="font-size: 13px;">
-            <a @click="editAddress()"><i class="fa fa-edit fa-floated"></i></a> 
+            <a @click="editAddress()"><i class="fa fa-edit fa-floated"></i></a>
             Direccion: {{ ticket.address }}<br>
             <span style="color: #7D7E7F">Complementos: {{ ticket.address_complement || '---'}}</span>
           </div>
@@ -263,7 +263,7 @@
           <textarea v-model="ticket.address_complement" rows="5" class="textarea" placeholder="Piso, Departamento, bloque u otros datos."></textarea>
         </div>
       </modal>
-      <modal :title="'TICKET Nro. ' + ticket.number" :on-footer="false" :on-cancel="closeCancelTicket" :is-show="cancelTicketModal">
+      <modal :title="'TICKET Nro. ' + ticket.number" :on-footer="false" :show-footer="false" :on-cancel="closeCancelTicket" :is-show="cancelTicketModal">
         <alert><b>Estas seguro de cancelar este ticket?</b></alert>
         <hr>
         <h3 style="font-size: 17px; font-weight: 400; margin-bottom: 15px">Seleccione una razon</h3>
