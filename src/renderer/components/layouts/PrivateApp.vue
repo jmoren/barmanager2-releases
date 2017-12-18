@@ -10,6 +10,11 @@
               </div>
               <div class="nav-left" v-if="user.profile.role !== 'cooker'">
                 <div class="nav-item">
+                  <a class="button is-primary" @click.prevent="goBack()" style="font-size:20px;">
+                    <i class="fa fa-arrow-circle-o-left fa-2"></i>
+                  </a>
+                </div>
+                <div class="nav-item">
                   <router-link class="nav-item is-brand" :to="{ name: 'Tables' }">Mesas</router-link>
                 </div>
                 <div class="nav-item">
@@ -266,6 +271,9 @@
       this.loadReasons()
     },
     methods: {
+      goBack () {
+        this.$router.go(-1)
+      },
       toggleSideBar (name) {
         if (this.isOpen === name) {
           this.isOpen = ''
