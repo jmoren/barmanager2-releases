@@ -20,7 +20,7 @@
     </div>
     <ul v-show="focused" id="queryListClient">
       <li class="empty-item is-danger-text" v-if="filteredClients.length === 0">
-        <div style="cursor: pointer">Crear nuevo cliente</div>
+        <div style="cursor: pointer" :key="0" @key.enter="hit" @mousedown.prevent="hit">Crear nuevo cliente</div>
       </li>
       <li v-for="(item, $item) in filteredClients" :key="item.id" :class="activeClass($item)" @key.enter="hit" @mousemove="setActive($item)"
             @mousedown.prevent="hit">
@@ -50,6 +50,9 @@
           v-on:placechanged="updateAddress"
           :placeholder="newClient.address || 'Direccion para envio'">
         </vue-google-autocomplete>
+      </div>
+      <div class="control">
+        <textarea type="text" class="textarea" v-model="newClient.address_complement" placeholder="Piso, departamento, bloque, etc"></textarea>
       </div>
     </modal>
   </div>
@@ -95,14 +98,18 @@
     },
     methods: {
       hit () {
-        let index = this.filteredClients.length === 1 ? 0 : this.current
-        let item = _.clone(this.filteredClients[index])
-        this.$emit('set-client', item)
-        this.focused = false
-        this.query = item.name
-        Vue.nextTick(() => {
-          document.getElementById('search-clients').blur()
-        })
+        if (this.filteredClients.length === 0) {
+          this.openModal()
+        } else {
+          let index = this.filteredClients.length === 1 ? 0 : this.current
+          let item = _.clone(this.filteredClients[index])
+          this.$emit('set-client', item)
+          this.focused = false
+          this.query = item.name
+          Vue.nextTick(() => {
+            document.getElementById('search-clients').blur()
+          })
+        }
       },
       removeClient () {
         this.$emit('remove-client')
@@ -139,9 +146,6 @@
       setBlur () {
         if (this.query.trim() === '') {
           this.query = this.previousSelection
-        }
-        if (this.filteredClients.length === 0) {
-          this.openModal()
         }
         this.focused = false
       },
@@ -222,5 +226,5 @@
   li { font-weight: 500; padding: 5px 10px; }
   li.active { background: #3c81df; }
   li.active { color: #fff;}
-  
+
 </style>
