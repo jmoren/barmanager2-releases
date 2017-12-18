@@ -97,7 +97,7 @@
               <div class="is-pulled-right">Pendiente: {{currentTicket.pending }}</div>
             </div>
             <hr>
-            <div v-if="mapConfig.showMap === 'true'" class="not-print">
+            <div v-if="mapConfig.showMap === 'true'">
               <h2 style="font-size: 15px; font-weight: 500;margin-bottom: 10px;">Mapa</h2>
               <div style="margin: auto;" v-bind:style="{ width: mapConfig.width + 'px', height: mapConfig.height + 'px' }">
                 <div v-if="loadingMap" class="not-print">cargando mapa...</div>
