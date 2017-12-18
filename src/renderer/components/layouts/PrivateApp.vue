@@ -21,9 +21,6 @@
                   <router-link class="nav-item" :to="{ name: 'Clients'}">Clientes</router-link>
                 </div>
                 <div class="nav-item">
-                  <router-link class="nav-item" :to="{ name: 'Deliveries'}">Pedidos</router-link>
-                </div>
-                <div class="nav-item">
                   <router-link class="button is-primary" :to="{ name: 'Kitchen'}">Cocina</router-link>
                 </div>
                 <div class="nav-item">
