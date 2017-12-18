@@ -29,6 +29,8 @@
 </template>
 
 <script>
+  import _ from 'lodash'
+  
   export default {
     name: 'ItemAutocomplete',
     props: {
@@ -44,7 +46,8 @@
     computed: {
       filteredItems () {
         if (this.query) {
-          let regex = new RegExp(this.query.toLowerCase())
+          const pattern = _.escapeRegExp(this.query.toLowerCase())
+          let regex = new RegExp(pattern)
           return this.items.filter((item) => {
             return regex.test(item.code) || regex.test(item.name.toLowerCase())
           })

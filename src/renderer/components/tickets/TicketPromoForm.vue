@@ -57,8 +57,10 @@
           this.entry.subtotal = parseFloat(this.promotion.price) * parseInt(this.entry.quantity)
         }
       },
-      setPromotion (promotion) {
-        this.promotion = promotion
+      setPromotion (p) {
+        if (p) {
+          this.promotion = p
+        }
         this.pickPromotion()
       },
       pickPromotion () {
