@@ -3,7 +3,7 @@
     <div class="control">
       <input type="search" class="input" id="search"
          autocomplete="off"
-         placeholder="Buscardor..."
+         placeholder="Ir a mesa..."
          v-model="query"
          @keydown.down='down'
          @keydown.up='up'
