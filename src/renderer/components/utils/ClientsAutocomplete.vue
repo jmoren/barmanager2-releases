@@ -25,6 +25,7 @@
       <li v-for="(item, $item) in filteredClients" :key="item.id" :class="activeClass($item)" @key.enter="hit" @mousemove="setActive($item)"
             @mousedown.prevent="hit">
         <div>{{ item.name }}</div>
+        <div><small>Direccion: <b>{{ item.address }}</b></small></div>
         <div><small>Telefono: <b>{{ item.phone }}</b></small></div>
       </li>
     </ul>
@@ -74,7 +75,7 @@
         if (this.query) {
           let regex = new RegExp(this.query.toLowerCase())
           return this.clients.filter((client) => {
-            return regex.test(client.name.toLowerCase()) || regex.test(client.phone)
+            return regex.test(client.name.toLowerCase()) || regex.test(client.phone) || regex.test(client.address.toLowerCase())
           })
         } else {
           return this.clients
