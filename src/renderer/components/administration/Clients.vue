@@ -30,7 +30,7 @@
       <i class="fa fa-users fa-floated"></i>
       Clientes
       <div class="control has-addons is-pulled-right">
-        <input type="text" class="input" v-model="query" @keyup.prevent="reloadClients" placeholder="Filtrar clientes">
+        <input type="text" class="input" v-model="query" @keyup.prevent="reloadClients" placeholder="Filtrar clientes (min 3 letras)">
         <a @click.prevent="isShow = true" class="button is-light is-pulled-right">Nuevo Cliente</a>
       </div>
 
@@ -113,13 +113,13 @@ export default {
       let isEmpty = this.query.length === 0
       if (isEmpty) {
         this.fetchClients()
-      } else if (!isEmpty && this.query.length > 2) {
+      } else if (!isEmpty && this.query.length > 3) {
         this.fetchClients()
       }
     },
     fetchClients () {
       let url = 'clients?page=' + this.page
-      if (this.query && this.query.length > 2) {
+      if (this.query && this.query.length > 3) {
         url = url + '&query=' + this.query
       }
       this.$http.get(url).then(

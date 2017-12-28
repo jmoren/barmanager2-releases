@@ -4,7 +4,7 @@
       <tag id="header-icon" rounded><i class="fa fa-users"></i></tag>
       Clientes
       <div class="control has-addons is-pulled-right">
-        <input type="text" class="input" v-model="query" @keyup.prevent="reloadClients" placeholder="Filtrar clientes">
+        <input type="text" class="input" v-model="query" @keyup.prevent="reloadClients" placeholder="Filtrar clientes (min 3 letras)">
       </div>
     </h1>
     <hr>
@@ -78,13 +78,13 @@
         let isEmpty = this.query.length === 0
         if (isEmpty) {
           this.fetchClients()
-        } else if (!isEmpty && this.query.length > 2) {
+        } else if (!isEmpty && this.query.length > 3) {
           this.fetchClients()
         }
       },
       fetchClients () {
         let url = 'clients?page=' + this.page
-        if (this.query && this.query.length > 2) {
+        if (this.query && this.query.length > 3) {
           url = url + '&query=' + this.query
         }
         this.$http.get(url).then(
