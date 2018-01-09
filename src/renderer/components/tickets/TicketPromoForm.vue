@@ -1,5 +1,5 @@
 <template>
-  <form @keyup.enter.prevent="addEntry">
+  <form @keyup.enter.prevent="addEntry" v-shortkey="['esc']" @shortkey="resetEntry">
     <div class="columns">
       <div class="column is-4">
         <div class="control is-grouped">
@@ -24,6 +24,7 @@
           </div>
           <div class="control">
             <button @click.prevent="addEntry()" class="button is-light is-medium"><i class="fa fa-plus"></i></button>
+            <button @click.prevent="resetEntry()" class="button is-light is-medium"><i class="fa fa-times"></i></button>
           </div>
         </div>
       </div>
@@ -44,6 +45,10 @@
       }
     },
     methods: {
+      resetEntry () {
+        this.entry = { comment: null, subtotal: 0, quantity: 1, item: {} }
+        this.promotion = { id: null, name: '', price: null, code: null, description: '' }
+      },
       addEntry () {
         if (this.promotion.id) {
           this.entry.item = this.promotion

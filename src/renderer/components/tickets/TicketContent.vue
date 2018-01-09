@@ -91,26 +91,40 @@
     <div class="column is-3 payments">
       <ticket-payment :ticket="ticket" :total="total" @ticket-paid="setPaid" @ticket-not-paid="setNotPaid"></ticket-payment>
     </div>
-    <b-aside :is-show="isShow" :width="400" :show-footer="false" placement="right" title="Favoritos" @close="isShow=false">
-      <h1><b>ITEMS</b></h1>
-      <hr>
-      <ul>
-        <li v-for="item in favoriteData.items" style="margin-bottom: 10px;">
-          <tag type="warning"><i class="fa fa-star"></i></tag>
-          <tag><b>{{ item.code }}</b></tag>
-          <tag><i v-if="item.category.kitchen" class="fa fa-cutlery" style="margin-right: 10px;"></i> {{ item.name }}</tag>
-        </li>
-      </ul>
-      <br>
-      <h1><b>PROMOCIONES</b></h1>
-      <hr>
-      <ul>
-        <li v-for="promotion in favoriteData.promotions" style="margin-bottom: 10px;">
-          <tag type="warning"><i class="fa fa-star"></i></tag>
-          <tag><b>{{ promotion.code }}</b></tag>
-          <tag>{{ promotion.name }}</tag>
-        </li>
-      </ul>
+    <b-aside :is-show="isShow" :width="500" :show-footer="false" placement="right" title="Favoritos" @close="isShow=false">
+      <form name="itemsbulk">
+        <h1><b>ITEMS</b></h1>
+        <hr>
+        <ul>
+          <li v-for="item in favoriteData.items" style="margin-bottom: 10px;">
+            <tag type="warning"><i class="fa fa-star"></i></tag>
+            <tag><b>{{ item.code }}</b></tag>
+            <tag><i v-if="item.category.kitchen" class="fa fa-cutlery" style="margin-right: 10px;"></i> {{ item.name }}</tag>
+            <div class="is-pulled-right">
+              <tag>{{ item.price }}</tag>
+              <input type="number" class="quantity input is-small" style="width: 60px;" @change.prevent="event => addItemBulk(event, item)">
+            </div>
+          </li>
+        </ul>
+        <br>
+        <h1><b>PROMOCIONES</b></h1>
+        <hr>
+        <ul>
+          <li v-for="promotion in favoriteData.promotions" style="margin-bottom: 10px;">
+            <tag type="warning"><i class="fa fa-star"></i></tag>
+            <tag><b>{{ promotion.code }}</b></tag>
+            <tag>{{ promotion.name }}</tag>
+            <div class="is-pulled-right">
+              <tag>{{ promotion.price }}</tag>
+              <input type="number" class="quantity input is-small" style="width: 60px;" @change.prevent="event => addItemBulk(event, promotion)">
+            </div>
+          </li>
+        </ul>
+        <hr>
+        <div style="text-align: center;">
+          <a @click.prevent="sendBulk()" class="button is-primary">Agregar al Ticket</a>
+        </div>
+      </form>
     </b-aside>
   </div>
 </template>
@@ -123,7 +137,7 @@
   import TicketItemForm from './TicketItemForm'
   import TicketPromoForm from './TicketPromoForm'
   import TicketAdditionalForm from './TicketAdditionalForm'
-
+  import _ from 'lodash'
   export default {
     name: 'TicketContent',
     props: ['ticket', 'reasons', 'kitchenView'],
@@ -151,7 +165,8 @@
         isShow: false,
         loading: false,
         pending: 0,
-        pay_with: this.ticket.pay_with
+        pay_with: this.ticket.pay_with,
+        itemsToAdd: []
       }
     },
     created () {
@@ -289,6 +304,63 @@
             } else {
               this.$emit('update-pay', this.pay_with)
             }
+          }
+        }
+      },
+      sendBulk () {
+        this.$http.post('tickets/' + this.ticket.id + '/entries/bulk', { bulk: { entries: this.itemsToAdd } }).then(
+          response => {
+            _.forEach(response.data.entries, (e) => {
+              this.entries.push(e)
+            })
+            this.$notify.open({
+              content: `${response.data.meta.total} item agregados`,
+              duration: 3000,
+              type: 'success',
+              placement: 'top-center'
+            })
+            this.isShow = false
+            this.itemsToAdd = []
+            let inputs = document.getElementsByClassName('quantity')
+            _.forEach(inputs, (input) => {
+              input.value = ''
+            })
+          },
+          error => {
+            this.isShow = false
+            this.$notify.open({
+              content: error.data || 'Error agregando Items',
+              duration: 3000,
+              type: 'danger',
+              placement: 'top-center'
+            })
+          }
+        )
+      },
+      addItemBulk (evt, item) {
+        let quantity = evt.target.value
+        if (quantity > 0) {
+          let subtotal = parseInt(quantity) * parseFloat(item.price)
+          let params = {
+            ticketable_type: item.type,
+            subtotal: subtotal,
+            quantity: quantity,
+            ticket_id: this.ticket.id,
+            additional_kitchen: item.kitchen,
+            ticketable_id: item.id
+          }
+
+          let exists = this.itemsToAdd.filter((e) => e.ticketable_id === item.id)[0]
+          if (exists) {
+            _.extend(exists, params)
+          } else {
+            this.itemsToAdd.push(params)
+          }
+        } else {
+          let exists = this.itemsToAdd.filter((e) => e.ticketable_id === item.id)[0]
+          if (exists) {
+            let index = this.itemsToAdd.indexOf(exists)
+            this.itemsToAdd.splice(index, 1)
           }
         }
       }

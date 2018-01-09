@@ -182,6 +182,7 @@
           </div>
         </form>
       </modal>
+
       <modal :title="'TICKET Nro. ' + ticket.number" :show-footer="false" :on-cancel="closeModal" :is-show="isOpen" :ok-loading="true" transition="zoom">
         <form @submit.prevent="closeTicket()">
           <div class="columns modal-row with-border">
@@ -253,6 +254,7 @@
           </div>
         </form>
       </modal>
+
       <modal :title="'Editar Direccion - TICKET Nro. ' + ticket.number" :show-footer="true" :on-ok="updateTicketAddress" :is-show="addressOpen" :on-cancel="closeAddress">
         <p>Direccion actual: {{ ticket.address }}</p>
         <p>Complemento: {{ ticket.address_complement }}</p>
@@ -263,6 +265,7 @@
           <textarea v-model="ticket.address_complement" rows="5" class="textarea" placeholder="Piso, Departamento, bloque u otros datos."></textarea>
         </div>
       </modal>
+      
       <modal :title="'TICKET Nro. ' + ticket.number" :on-footer="false" :show-footer="false" :on-cancel="closeCancelTicket" :is-show="cancelTicketModal">
         <alert><b>Estas seguro de cancelar este ticket?</b></alert>
         <hr>
