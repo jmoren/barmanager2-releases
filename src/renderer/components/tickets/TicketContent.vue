@@ -50,7 +50,7 @@
               <th class="has-text-centered">Cant.</th>
               <th class="has-text-centered hide">Cocina</th>
               <th>Item</th>
-              <th class="has-text-centered">P.Unidad</th>
+              <th class="has-text-centered hide">P.Unidad</th>
               <th class="has-text-centered">SubTotal</th>
               <th></th>
             </thead>

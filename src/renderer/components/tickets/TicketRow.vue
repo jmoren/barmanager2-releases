@@ -32,18 +32,18 @@
     <td class="has-text-centered not-print">{{ entry.item.code }}</td>
     <td class="has-text-centered">{{ entry.quantity }}</td>
     <td class="has-text-centered not-print"><i v-if="entry.item.kitchen" class="fa fa-cutlery fa-floated"></i></td>
-    <td style="width: 45%;">
+    <td style="width: 45%;" class="item-desc">
       <div>
         <tooltip v-bind:content="entry.item.description + ' - ' + entry.updated_time" placement="top" trigger="hover">
           <i class="fa fa-question-circle fa-floated"></i>
         </tooltip>
         {{ entry.item.name }}
         <div class="is-pulled-right">
-          <popover title="" placement="top" :width="300" trigger="click" v-if="!entry.canceled && !entry.delivered" class="not-print">
+          <popover title="" placement="top" :width="300" trigger="click" v-if="!entry.canceled && !entry.delivered">
             <span class="is-primary-text" style="cursor: pointer">
-              <i> {{ entry.comment ? entry.comment : 'Agregar nota' }}</i>
+              <i :class="entry.comment ? '' : 'not-print'"> {{ entry.comment ? entry.comment : 'Agregar nota' }}</i>
             </span>
-            <div slot="content">
+            <div slot="content"  class="not-print">
               <h1>Agregar nota</h1>
               <hr>
               <div class="control">
@@ -64,7 +64,7 @@
           </tooltip>
         </div>
       </div>
-      <div class="sub-items" v-if="entry.show">
+      <div class="sub-items not-print" v-if="entry.show">
         <ul>
           <li v-for="item in entry.entry_items">
             <div class="columns">
@@ -122,7 +122,7 @@
         </ul>
       </div>
     </td>
-    <td class="has-text-centered">{{ entry.item.price }} </td>
+    <td class="has-text-centered not-print">{{ entry.item.price }} </td>
     <td class="has-text-centered">{{ entry.subtotal }}</td>
     <td>
       <div class="is-pulled-right">
@@ -236,6 +236,8 @@ export default {
 <style lang="css">
   @media print {
     .not-print { display: none; }
+
+    .item-desc { font-size: 24px;}
   }
 
   .button span.icon { margin: 0px 5px!important; }
