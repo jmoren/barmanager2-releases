@@ -21,6 +21,7 @@
           <menu-item icon="cutlery" :to="{ name: 'AdminTables'}">Mesas</menu-item>
           <menu-item icon="hashtag" :to="{ name: 'AdminCancelReasons'}">Razones</menu-item>
           <menu-item icon="bars" :to="{ name: 'Deliveries'}">Pedidos</menu-item>
+          <menu-item icon="bars" :to="{ name: 'StockForm'}">Control Stock</menu-item>
           <div v-if="profile.role !== 'manager'">
             <div class="divider"></div>
             <h2 style="font-weight:300;padding: 10px; color: #f56954">

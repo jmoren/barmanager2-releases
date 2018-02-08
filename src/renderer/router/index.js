@@ -35,6 +35,7 @@ import Delivery from '@/components/deliveries/Delivery'
 import Deliveries from '@/components/deliveries/Deliveries'
 import MensualCashes from '@/components/administration/MensualCashes'
 import MensualCash from '@/components/administration/MensualCash'
+import StockForm from '@/components/administration/StockForm'
 
 import NotFound from '@/components/notFound/NotFound'
 
@@ -98,6 +99,7 @@ const router = new Router({
             { path: 'cajas/mensuales', name: 'MensualCashes', component: MensualCashes, meta: { roler: ['admin'] } },
             { path: 'cajas/:month/:year', name: 'MensualCash', component: MensualCash, meta: { roler: ['admin'] } },
             { path: 'cajas/:id', name: 'PartialDailyCash', component: PartialDailyCash, meta: { roles: ['admin'] } },
+            { path: 'stock', name: 'StockForm', component: StockForm, meta: { roles: ['admin', 'manager'] } },
             {
               path: 'mesas/:id',
               name: 'AdminTable',

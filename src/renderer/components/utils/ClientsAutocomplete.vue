@@ -75,7 +75,10 @@
         if (this.query) {
           let regex = new RegExp(this.query.toLowerCase())
           return this.clients.filter((client) => {
-            return regex.test(client.name.toLowerCase()) || regex.test(client.phone) || regex.test(client.address.toLowerCase()) || regex.test((client.address_complement || '').toLowerCase())
+            return regex.test(client.name.toLowerCase()) ||
+              regex.test(client.phone) ||
+              regex.test((client.address || '').toLowerCase()) ||
+              regex.test((client.address_complement || '').toLowerCase())
           })
         } else {
           return this.clients
