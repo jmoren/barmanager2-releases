@@ -1,5 +1,5 @@
 <template lang="html">
-  <tr :class="{'not-print': !!entry.canceled , 'kitchen-row': entry.item.kitchen, 'not-kitchen-row': !entry.item.kitchen }" v-if="!(kitchenView && !entry.item.kitchen)">
+  <tr :class="{'not-print': !!entry.canceled , 'kitchen-row': entry.item.kitchen, 'not-kitchen-row': !entry.item.kitchen }" v-if="!(kitchenView && entry.delivered)">
     <td class="has-text-centered not-print">
       <div v-if="!tclosed">
         <popover title="" placement="left" :width="300" trigger="click" :disabled="!!entry.canceled">
