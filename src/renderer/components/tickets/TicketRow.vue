@@ -30,7 +30,7 @@
       </tooltip>
     </td>
     <td class="has-text-centered not-print">{{ entry.item.code }}</td>
-    <td class="has-text-centered">{{ entry.quantity }}</td>
+    <td class="has-text-centered">{{ entryQuantity }}</td>
     <td class="has-text-centered not-print"><i v-if="entry.item.kitchen" class="fa fa-cutlery fa-floated"></i></td>
     <td style="width: 45%;" class="item-desc">
       <div>
@@ -151,6 +151,16 @@ export default {
     return {
       loading: false,
       cancel_reason: null
+    }
+  },
+  computed: {
+    entryQuantity () {
+      if (this.kitchenView) {
+        const notDelivered = this.entry.entry_items.map(item => !item.canceled && !item.delivered_at ? 1 : 0)
+        return notDelivered.reduce((acc, val) => acc + val)
+      } else {
+        return this.entry.quantity
+      }
     }
   },
   methods: {
