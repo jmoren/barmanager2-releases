@@ -34,6 +34,9 @@
           <div class="control is-expanded" v-if="newMaterial.stockable">
             <input type="number" :step="0.01" class="input" v-model="newMaterial.stock_amount"  placeholder="Cantidad disponible"></input>
           </div>
+          <div class="control is-expanded" v-if="newMaterial.stockable">
+            <input type="number" :step="1" class="input" v-model="newMaterial.min_amount"  placeholder="Cantidad minima"></input>
+          </div>
         </div>
       </div>
       <hr>
@@ -82,6 +85,7 @@
           <i class="fa fa-floated fa-arrow-down" v-if="sortByField === 'stockable'"></i>
         </a></th>
         <th>Stock</th>
+        <th>Cantidad minima</th>
         <th></th>
       </thead>
       <tbody>
@@ -93,6 +97,9 @@
           </td>
           <td>
             <span>{{ material.stock_amount }}</span>
+          </td>
+          <td>
+            <span>{{ material.min_amount }}</span>
           </td>
           <td>
             <div class="control has-addons">
