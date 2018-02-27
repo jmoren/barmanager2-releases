@@ -2,14 +2,22 @@
   <div class="">
     <modal title="Administrar Categoria" ok-text="Guardar" cancel-text="Cancelar" :on-ok="saveCategory" :on-cancel="cancelCategory" :width="520" :is-show="isShow" transition="zoom" @close="cancelCategory">
       <div class="control">
+        <lable>Nombre</lable>
         <input type="text" class="input" v-model="newCategory.name" placeholder="Categoria">
       </div>
       <div class="control is-expanded">
-        <checkbox val="true" :checked="newCategory.kitchen" v-model="newCategory.kitchen">Es de cocina?</checkbox>
+        <lable>Zona</lable></br>
+        <div class="select is-fullwidth">
+          <select v-model="newCategory.zone">
+            <option value="">Ninguna</option>
+            <option value="cocina">Cocina</option>
+            <option value="barra">Barra</option>
+          </select>
+        </div>
       </div>
     </modal>
     <h1 class="header">
-      <i class="fa fa-paperclip fa-floated"></i> 
+      <i class="fa fa-paperclip fa-floated"></i>
       Categorias
       <a @click="isShow=true" class="is-pulled-right button is-light">Nueva Categoria</a>
     </h1>
@@ -17,13 +25,13 @@
     <table class="table">
       <thead>
         <th>Nombre</th>
-        <th>Para Cocina</th>
+        <th>Zona</th>
         <th></th>
       </thead>
       <tbody>
         <tr v-for="category in categories" :key="category.id">
           <td>{{ category.name }}</td>
-          <td><tag v-if="category.kitchen"><i class="fa fa-floated fa-cutlery"></i></tag></td>
+          <td>{{ category.zone || "No definida" }}</td>
           <td>
             <div class="control has-addons">
               <a @click.prevent="removeCategory(category)" class="button is-light">
@@ -48,8 +56,8 @@ export default {
   mixins: [alert],
   data () {
     return {
-      newCategory: { name: '', kitchen: false },
-      originalCategory: { id: null, name: '', kitchen: false },
+      newCategory: { name: '', zone: '' },
+      originalCategory: { id: null, name: '', zone: '' },
       categories: [],
       isShow: false
     }
@@ -79,7 +87,7 @@ export default {
       this.$http.post('admin/categories', { category: this.newCategory }).then(
         response => {
           this.categories.push(response.data)
-          this.newCategory = { name: '', kitchen: false }
+          this.newCategory = { name: '', zone: '' }
         },
         error => {
           this.alert('danger', error.data)
@@ -87,7 +95,7 @@ export default {
       )
     },
     updateCategory () {
-      let params = { name: this.newCategory.name, kitchen: this.newCategory.kitchen }
+      let params = { name: this.newCategory.name, zone: this.newCategory.zone }
       this.$http.put('admin/categories/' + this.newCategory.id, { category: params }).then(
         response => {
           _.extend(this.originalCategory, response.data)
@@ -112,7 +120,7 @@ export default {
     cancelCategory () {
       this.isShow = false
       _.extend(this.newCategory, this.originalCategory)
-      this.newCategory = { name: '', kitchen: false }
+      this.newCategory = { name: '', zone: '' }
     },
     setToEdit (category) {
       this.originalCategory = category

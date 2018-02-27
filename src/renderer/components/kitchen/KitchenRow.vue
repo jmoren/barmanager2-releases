@@ -18,7 +18,7 @@
     <td>
       <div v-for="(entry, id) in ticket.entries" class="entry-row">
         <div class="entry-comment" v-if="entry.comment">
-          <i class="fa fa-exclamation-circle fa-floated"></i> {{ entry.comment | titleize }}
+          <i class="fa fa-exclamation-circle fa-floated"></i> {{ entry.comment }}
         </div>
         <div class="columns">
           <div class="column is-2">
@@ -120,7 +120,7 @@
   import Vue from 'vue'
   export default {
     name: 'KitchenRow',
-    props: ['ticket', 'barcodeConfig', 'mapConfig'],
+    props: ['ticket', 'barcodeConfig', 'mapConfig', 'zone'],
     data () {
       return {
         loading: false,
@@ -194,7 +194,7 @@
       },
       deliverEntry (entry) {
         this.loading = true
-        this.$http.post('kitchen/deliver_entry', { entry_id: entry.id }).then(
+        this.$http.post('kitchen/deliver_entry', { entry_id: entry.id, zone: this.zone }).then(
           response => {
             this.loading = false
             Vue.delete(this.ticket.entries, entry.id)
@@ -211,7 +211,7 @@
       },
       deliverTicket () {
         this.loading = true
-        this.$http.post('kitchen/deliver_ticket', { ticket_id: this.ticket.id }).then(
+        this.$http.post('kitchen/deliver_ticket', { ticket_id: this.ticket.id, zone: this.zone }).then(
           response => {
             this.$emit('remove-ticket', this.ticket)
             this.removed = true

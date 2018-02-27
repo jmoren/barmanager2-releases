@@ -3,7 +3,13 @@
     <div class="container">
       <div class="columns header">
         <div class="column is-3">
-          <tag rounded id="header-icon"><i class="fa fa-floated fa-cutlery"></i></tag> COCINA
+          <tag rounded id="header-icon"><i class="fa fa-floated fa-map-marker"></i></tag> ZONA
+          <div class="select">
+            <select v-model="selectedZone" @change="fetchTickets">
+              <option value="cocina">Cocina</option>
+              <option value="barra">Barra</option>
+            </select>
+          </div>
         </div>
         <div class="column is-2 has-text-centered">
           <div class="button is-danger is-not-link" v-if="newRequests">
@@ -52,7 +58,7 @@
             <th>Pedido</th>
           </thead>
           <tbody>
-            <kitchen-row v-for="(ticket, id) in currentTickets" :ticket="ticket" :key="id" :barcodeConfig="barcode" :mapConfig="mapConfig" @remove-ticket="removeTicket(ticket)"></kitchen-row>
+            <kitchen-row v-for="(ticket, id) in currentTickets" :zone="selectedZone" :ticket="ticket" :key="id" :barcodeConfig="barcode" :mapConfig="mapConfig" @remove-ticket="removeTicket(ticket)"></kitchen-row>
             <tr v-if="currentTickets.length === 0">
               <td colspan="4">
                 <p class="empty-message has-text-centered is-danger-text">No hay item en la cocina</p></td>
@@ -78,6 +84,7 @@
     components: { KitchenRow },
     data () {
       return {
+        selectedZone: 'cocina',
         tickets: [],
         current: Date.now(),
         loading: false,
@@ -130,6 +137,7 @@
       }
     },
     created () {
+      console.log('CREATED')
       this.loadTickets()
       this.startClock()
     },
@@ -163,14 +171,13 @@
         this.loading = true
         this.$http.get('kitchen/sync').then(
           response => {
-            console.log('SYNC')
             this.fetchTickets()
           }
         )
       },
       fetchTickets () {
         this.loading = true
-        this.$http.get('kitchen?last_check=' + this.lastTimestamp).then(
+        this.$http.get(`kitchen?zone=${this.selectedZone}&last_check=${this.lastTimestamp}`).then(
           response => {
             this.newRequests = response.data.has_new_items
             this.tickets = response.data.t

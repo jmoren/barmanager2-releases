@@ -21,7 +21,7 @@
                   <router-link class="nav-item" :to="{ name: 'Clients'}">Clientes</router-link>
                 </div>
                 <div class="nav-item">
-                  <router-link class="button is-primary" :to="{ name: 'Kitchen'}">Cocina</router-link>
+                  <router-link class="button is-primary" :to="{ name: 'Kitchen'}">Zonas</router-link>
                 </div>
                 <div class="nav-item">
                   <a class="button is-primary" :class="{'is-disabled': !dailyCash.id }" v-shortkey="['ctrl', 'd']" @shortkey="openDeliveryTicket" @click.prevent="openDeliveryTicket">
