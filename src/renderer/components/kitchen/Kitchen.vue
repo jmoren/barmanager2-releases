@@ -3,12 +3,16 @@
     <div class="container">
       <div class="columns header">
         <div class="column is-3">
-          <tag rounded id="header-icon"><i class="fa fa-floated fa-map-marker"></i></tag> ZONA
-          <div class="select">
-            <select v-model="selectedZone" @change="fetchTickets">
-              <option value="cocina">Cocina</option>
-              <option value="barra">Barra</option>
-            </select>
+          <div class="control has-addons">
+            <span class="button is-medium">
+              <i class="fa fa-floated fa-map-marker"></i>
+            </span>
+            <div class="select is-medium">
+              <select v-model="selectedZone" @change="fetchTickets">
+                <option value="cocina">ZONA Cocina</option>
+                <option value="barra">ZONA Barra</option>
+              </select>
+            </div>
           </div>
         </div>
         <div class="column is-2 has-text-centered">
