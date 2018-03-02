@@ -8,8 +8,12 @@
         <input class="input is-medium" :disabled="status" type="number" step="0.01" placeholder="Sub total" v-model="entry.subtotal" >
       </div>
       <div class="column is-2">
-        <div class="input is-medium">
-          <checkbox v-model="entry.kitchen" val="true"> Cocina?</checkbox>
+        <div class="select is-medium is-fullwidth">
+          <select v-model="entry.zone">
+            <option value="">Zona?</option>
+            <option value="cocina">Cocina</option>
+            <option value="barra">Barra</option>
+          </select>
         </div>
       </div>
       <div class="column is-1">
@@ -27,17 +31,17 @@
     props: ['status'],
     data () {
       return {
-        entry: { quantity: 1, subtotal: 0, comment: null, kitchen: false }
+        entry: { quantity: 1, subtotal: 0, comment: null, zone: '' }
       }
     },
     methods: {
       resetEntry () {
-        this.entry = { comment: null, subtotal: 0, quantity: 1, item: {} }
+        this.entry = { comment: null, subtotal: 0, quantity: 1, item: {}, zone: '' }
       },
       addEntry () {
         if (this.entry.comment) {
           this.$emit('save-entry', this.entry)
-          this.entry = { quantity: 1, subtotal: 0, comment: null, kitchen: false }
+          this.entry = { quantity: 1, subtotal: 0, comment: null, zone: '' }
         } else {
           this.$notify.open({
             content: 'Tenes que ingresar una descripcion',

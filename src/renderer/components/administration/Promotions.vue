@@ -41,9 +41,9 @@
             <span class="button is-white is-small"><i class="fa fa-floated fa-angle-right"></i></span>
             <tag><b>{{ entry.quantity }}</b></tag>
             <tag>{{ entry.item.name }}</tag>
-            <span v-if="entry.item.kitchen">
-              <tooltip content="Es de cocina" placement="right">
-                <tag><i class="fa fa-cutlery"></i></tag>
+            <span v-if="entry.item.zone">
+              <tooltip content="zona especial" placement="right">
+                <tag><i class="fa fa-map-marker"></i></tag>
               </tooltip>
             </span>
           </li>

@@ -140,7 +140,7 @@
             <tooltip v-bind:content="item.favorite ? 'Item favorito' : 'No esta en la lista de favoritos'">
               <i class="fa fa-floated" :class="{'fa-star is-warning': item.favorite, 'fa-star-o': !item.favorite}"></i>
             </tooltip>
-            <tooltip content="Item de cocina"><tag v-if="item.category.kitchen"><i class="fa fa-floated fa-cutlery"></i></tag></tooltip>
+            <tooltip content="Zona especial"><tag v-if="item.category.zone"><i class="fa fa-floated fa-map-marker"></i></tag></tooltip>
           </td>
           <td>{{ item.code }}</td>
           <td>{{ item.category.name }}</td>

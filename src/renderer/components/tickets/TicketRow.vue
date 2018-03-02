@@ -1,5 +1,5 @@
 <template lang="html">
-  <tr :class="{'not-print': !!entry.canceled , 'kitchen-row': entry.item.kitchen, 'not-kitchen-row': !entry.item.kitchen }" v-if="!(kitchenView && entry.delivered)">
+  <tr :class="{'not-print': !!entry.canceled , 'kitchen-row': entry.item.zone, 'not-kitchen-row': !entry.item.zone }" v-if="!(kitchenView && entry.delivered)">
     <td class="has-text-centered not-print">
       <div v-if="!tclosed">
         <popover title="" placement="left" :width="300" trigger="click" :disabled="!!entry.canceled">
@@ -31,7 +31,11 @@
     </td>
     <td class="has-text-centered not-print">{{ entry.item.code }}</td>
     <td class="has-text-centered">{{ entryQuantity }}</td>
-    <td class="has-text-centered not-print"><i v-if="entry.item.kitchen" class="fa fa-cutlery fa-floated"></i></td>
+    <td class="has-text-centered not-print">
+      <tooltip v-bind:content="entry.item.zone" placement="top" trigger="hover">
+        <i v-if="entry.item.zone" class="fa fa-map-marker fa-floated"></i>
+      </tooltip>
+    </td>
     <td style="width: 45%;" class="item-desc">
       <div>
         <tooltip v-bind:content="entry.item.description + ' - ' + entry.updated_time" placement="top" trigger="hover">

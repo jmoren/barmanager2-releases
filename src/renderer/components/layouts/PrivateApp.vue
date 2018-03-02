@@ -6,7 +6,7 @@
           <div class="">
             <nav class="nav">
               <div class="nav-left" v-if="user.profile.role === 'cooker'">
-                <router-link class="nav-item brand" :to="{ name: 'Kitchen' }">Volver a la cocina</router-link>
+                <router-link class="nav-item brand" :to="{ name: 'Kitchen' }">Volver a las zonas</router-link>
               </div>
               <div class="nav-left" v-if="user.profile.role !== 'cooker'">
                 <div class="nav-item">

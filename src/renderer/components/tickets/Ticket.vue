@@ -69,7 +69,7 @@
                 </span>
               </pop-confirm>
             </tooltip>
-            <tooltip content="Imprimir ticket de cocina">
+            <tooltip content="Imprimir ticket con productos no entregados">
               <a class="button is-light" @click.prevent="toggleKitchenView">
                 <span class="icon is-small"><i class="fa fa-cutlery"></i></span>
               </a>
@@ -265,7 +265,7 @@
           <textarea v-model="ticket.address_complement" rows="5" class="textarea" placeholder="Piso, Departamento, bloque u otros datos."></textarea>
         </div>
       </modal>
-      
+
       <modal :title="'TICKET Nro. ' + ticket.number" :on-footer="false" :show-footer="false" :on-cancel="closeCancelTicket" :is-show="cancelTicketModal">
         <alert><b>Estas seguro de cancelar este ticket?</b></alert>
         <hr>

@@ -48,7 +48,7 @@
               <th class="has-text-centered hide">Tipo</th>
               <th class="has-text-centered hide">Cod</th>
               <th class="has-text-centered">Cant.</th>
-              <th class="has-text-centered hide">Cocina</th>
+              <th class="has-text-centered hide">Zona?</th>
               <th>Item</th>
               <th class="has-text-centered hide">P.Unidad</th>
               <th class="has-text-centered">SubTotal</th>
@@ -99,7 +99,7 @@
           <li v-for="item in favoriteData.items" style="margin-bottom: 10px;">
             <tag type="warning"><i class="fa fa-star"></i></tag>
             <tag><b>{{ item.code }}</b></tag>
-            <tag><i v-if="item.category.kitchen" class="fa fa-cutlery" style="margin-right: 10px;"></i> {{ item.name }}</tag>
+            <tag><i v-if="item.category.zone" class="fa fa-map-marker" style="margin-right: 10px;"></i> {{ item.name }}</tag>
             <div class="is-pulled-right">
               <tag>{{ item.price }}</tag>
               <input type="number" class="quantity input is-small" style="width: 60px;" @change.prevent="event => addItemBulk(event, item)">
@@ -239,7 +239,7 @@
           quantity: entry.quantity,
           comment: entry.comment,
           ticket_id: this.ticket.id,
-          additional_kitchen: entry.kitchen
+          additional_zone: entry.zone
         }
         params.ticketable_id = this.type !== 'Additional' ? entry.item.id : null
 
