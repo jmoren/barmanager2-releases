@@ -47,7 +47,7 @@
         </div>
       </div>
       <div class="is-clearfix">
-        <router-link :to="{ name: 'Tables'}" style="float:right" v-if="['admin'].indexOf(user.profile.role) > -1">
+        <router-link :to="{ name: 'Tables'}" style="float:right" v-if="user.profile.role != 'cooker'">
           <span class="icon is-small"><i class="fa fa-arrow-left"></i></span>
           <span>Volver</span>
         </router-link>
