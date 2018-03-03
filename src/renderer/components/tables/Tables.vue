@@ -92,6 +92,7 @@ export default {
     return {
       queryOpen: '',
       queryClosed: '',
+      last_cash: {},
       newCash: { init_amount: null, user_id: '' }
     }
   },
@@ -142,7 +143,22 @@ export default {
       return this.$parent.loading
     }
   },
+  created () {
+    this.loadLastCash()
+  },
   methods: {
+    loadLastCash () {
+      if (this.current.open) { return false }
+      this.$http.get('partial_daily_cashes/last').then(
+        response => {
+          this.last_cash = response.data
+          this.newCash.init_amount = this.last_cash.manual_cash
+        },
+        error => {
+          console.log(error)
+        }
+      )
+    },
     openCailyCash () {
       this.$http.post('partial_daily_cashes', {
         partial_daily_cash: { init_amount: this.newCash.init_amount, user_id: this.newCash.user_id }
