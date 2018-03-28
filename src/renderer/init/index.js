@@ -13,6 +13,9 @@ export default {
     if (config.get('business_phone', null) === null) {
       config.set('business_phone', '')
     }
+    if (config.get('business_address', null) === null) {
+      config.set('business_address', '')
+    }
     if (config.get('barcode_format', null) === null) {
       config.set('barcode_format', 'CODE128')
     }
@@ -24,6 +27,18 @@ export default {
     }
     if (config.get('barcode_last_char', null) === null) {
       config.set('barcode_last_char', '>')
+    }
+    if (config.get('ticketItemInput', null) === null) {
+      config.set('ticketItemInput', 'Classic')
+    }
+    if (config.get('map_visible', null) === null) {
+      config.set('map_visible', false)
+    }
+    if (config.get('map_width', null) === null) {
+      config.set('map_width', 300)
+    }
+    if (config.get('map_height', null) === null) {
+      config.set('map_height', 300)
     }
   }
 }

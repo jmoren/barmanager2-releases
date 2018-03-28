@@ -27,7 +27,8 @@
         </div>
         <hr>
         <div v-if="type === 'Item'">
-          <ticket-item-form :items="items" :status="ticket.closed" @save-entry="entry => addEntry(entry)"></ticket-item-form>
+          <ticket-tactil-form v-if="inputType === 'Tactil'" :categories="getCategories" :items="items" :status="ticket.closed" @save-entry="entry => addEntry(entry)"></ticket-tactil-form>
+          <ticket-item-form v-if="inputType !== 'Tactil'" :items="items" :status="ticket.closed" @save-entry="entry => addEntry(entry)"></ticket-item-form>
         </div>
         <div v-if="type === 'Promotion'">
           <ticket-promo-form :promotions="promotions" :status="ticket.closed" @save-entry="entry => addEntry(entry)"></ticket-promo-form>
@@ -137,7 +138,11 @@
   import TicketItemForm from './TicketItemForm'
   import TicketPromoForm from './TicketPromoForm'
   import TicketAdditionalForm from './TicketAdditionalForm'
+  import TicketTactilForm from './TicketTactilForm'
   import _ from 'lodash'
+  const Config = require('electron-config')
+  const config = new Config()
+
   export default {
     name: 'TicketContent',
     props: ['ticket', 'reasons', 'kitchenView'],
@@ -147,6 +152,7 @@
       TicketItemForm,
       TicketPromoForm,
       TicketAdditionalForm,
+      TicketTactilForm,
       Loader
     },
     watch: {
@@ -158,6 +164,7 @@
     },
     data () {
       return {
+        inputType: config.get('ticketItemInput', 'Classic'),
         type: 'Item',
         items: [],
         promotions: [],
@@ -176,6 +183,12 @@
       this.focusCode()
     },
     computed: {
+      getCategories () {
+        const rawCats = this.items.map(item => item.category)
+        return _.uniqBy(rawCats, function (cat) {
+          return cat.id
+        })
+      },
       favoriteData () {
         let data = {}
         data.promotions = this.promotions.filter(function (promotion) { return promotion.favorite })
