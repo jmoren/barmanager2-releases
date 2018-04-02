@@ -4,11 +4,7 @@
       <div class="ticket-form">
         <div class="columns">
           <div class="column is-3">
-            <a v-if="inputType === 'Tactil'" class="button is-fullwidth" v-shortkey.once="['ctrl', '1']" 
-                :class="{'is-disabled': ticket.closed, 'is-primary': type === 'Item' }" @shortkey="openTactil" @click.prevent="openTactil">
-              <span>Item (Tactil)</span>
-            </a>
-            <a v-else class="button is-fullwidth" v-shortkey.once="['ctrl', '1']" 
+            <a class="button is-fullwidth" v-shortkey.once="['ctrl', '1']" 
                 :class="{'is-disabled': ticket.closed, 'is-primary': type === 'Item' }" @shortkey="toggleEntry('Item')" 
                 @click.prevent="toggleEntry('Item');">
               <span>Item</span>
@@ -243,7 +239,11 @@
       },
       toggleEntry (value) {
         this.type = value
-        this.focusCode()
+        if (this.inputType === 'Tactil' && value === 'Item') {
+          this.openTactil()
+        } else {
+          this.focusCode()
+        }
       },
       focusCode () {
         Vue.nextTick(() => {
