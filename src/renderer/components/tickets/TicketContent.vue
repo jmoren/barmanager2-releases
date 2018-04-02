@@ -4,7 +4,13 @@
       <div class="ticket-form">
         <div class="columns">
           <div class="column is-3">
-            <a class="button is-fullwidth" v-shortkey.once="['ctrl', '1']" :class="{'is-disabled': ticket.closed, 'is-primary': type === 'Item' }" @shortkey="toggleEntry('Item')" @click.prevent="toggleEntry('Item');">
+            <a v-if="inputType === 'Tactil'" class="button is-fullwidth" v-shortkey.once="['ctrl', '1']" 
+                :class="{'is-disabled': ticket.closed, 'is-primary': type === 'Item' }" @shortkey="openTactil" @click.prevent="openTactil">
+              <span>Item (Tactil)</span>
+            </a>
+            <a v-else class="button is-fullwidth" v-shortkey.once="['ctrl', '1']" 
+                :class="{'is-disabled': ticket.closed, 'is-primary': type === 'Item' }" @shortkey="toggleEntry('Item')" 
+                @click.prevent="toggleEntry('Item');">
               <span>Item</span>
             </a>
           </div>
@@ -26,9 +32,8 @@
           </div>
         </div>
         <hr>
-        <div v-if="type === 'Item'">
-          <ticket-tactil-form v-if="inputType === 'Tactil'" :categories="getCategories" :items="items" :status="ticket.closed" @save-entry="entry => addEntry(entry)"></ticket-tactil-form>
-          <ticket-item-form v-if="inputType !== 'Tactil'" :items="items" :status="ticket.closed" @save-entry="entry => addEntry(entry)"></ticket-item-form>
+        <div v-if="type === 'Item' && inputType !== 'Tactil'">
+          <ticket-item-form :items="items" :status="ticket.closed" @save-entry="entry => addEntry(entry)"/>
         </div>
         <div v-if="type === 'Promotion'">
           <ticket-promo-form :promotions="promotions" :status="ticket.closed" @save-entry="entry => addEntry(entry)"></ticket-promo-form>
@@ -36,7 +41,6 @@
         <div v-if="type === 'Additional'">
           <ticket-additional-form :status="ticket.closed" @save-entry="entry => addEntry(entry)"></ticket-additional-form>
         </div>
-        <hr>
       </div>
       <div class="ticket-lines">
         <div v-if="loading">
@@ -127,6 +131,7 @@
         </div>
       </form>
     </b-aside>
+    <ticket-tactil-form ref="tactil" :categories="getCategories" :items="items" :status="ticket.closed" @save-entry="entry => addEntry(entry)"/>
   </div>
 </template>
 
@@ -221,6 +226,9 @@
       }
     },
     methods: {
+      openTactil () {
+        this.$refs.tactil.openForm()
+      },
       fetchEntries () {
         if (typeof (this.ticket.id) === 'undefined') {
           return

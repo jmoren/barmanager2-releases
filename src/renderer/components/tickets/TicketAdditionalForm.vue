@@ -1,7 +1,7 @@
 <template>
   <form @keyup.enter.prevent="addEntry" v-shortkey="['esc']" @shortkey="resetEntry">
     <div class="columns">
-      <div class="column is-7">
+      <div class="column is-6">
         <input class="input is-medium" :disabled="status" type="text" placeholder="Adicional" v-model="entry.comment">
       </div>
       <div class="column is-2">
@@ -16,13 +16,14 @@
           </select>
         </div>
       </div>
-      <div class="column is-1">
+      <div class="column is-2">
         <div class="control">
           <button @click.prevent="addEntry()" class="button is-light is-medium"><i class="fa fa-plus"></i></button>
           <button @click.prevent="resetEntry()" class="button is-light is-medium"><i class="fa fa-times"></i></button>
         </div>
       </div>
     </div>
+    <hr>
   </form>
 </template>
 <script>

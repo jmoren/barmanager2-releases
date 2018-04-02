@@ -29,6 +29,7 @@
         </div>
       </div>
     </div>
+    <hr>
   </form>
 </template>
 <script>
