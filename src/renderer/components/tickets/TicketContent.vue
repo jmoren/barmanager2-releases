@@ -127,7 +127,7 @@
         </div>
       </form>
     </b-aside>
-    <ticket-tactil-form ref="tactil" :categories="getCategories" :items="items" :status="ticket.closed" @save-entry="entry => addEntry(entry)"/>
+    <ticket-tactil-form ref="tactil" :categories="getCategories" :items="items" :status="ticket.closed" :entries="entries" @save-entry="entry => addEntry(entry)"/>
   </div>
 </template>
 
@@ -239,7 +239,7 @@
       },
       toggleEntry (value) {
         this.type = value
-        if (this.inputType === 'Tactil' && value === 'Item') {
+        if (this.inputType === 'Tactil' && this.type === 'Item') {
           this.openTactil()
         } else {
           this.focusCode()

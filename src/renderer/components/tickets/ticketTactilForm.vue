@@ -6,8 +6,10 @@
         <div class="column is-4">
           <div class="list-filter-title">Categorias</div>
           <hr>
+          <input type="search" v-model="qCategory" id="code" placeholder="Filtrar Categorias..." class="input is-medium">
+          <hr>
           <ul class="list-filter">
-            <li class="list-filter-line" v-for="category in categories" :key="category.id" @click="selectCategory(category)">
+            <li class="list-filter-line" v-for="category in catResult" :key="category.id" @click="selectCategory(category)">
               <div class="is-clearfix">
                 <a :disabled="status" :class="{'selected': category.id === selectedCategory.id}">
                   {{ category.name }} 
@@ -17,33 +19,40 @@
             </li>
           </ul>
         </div>
-        <div class="column is-4" v-if="selectedCategory.id">
+        <div class="column is-4">
           <div class="list-filter-title">Items</div>
           <hr>
-          <ul class="list-filter">
-            <li class="list-filter-line" v-for="it in filteredItems" :key="it.id" @click="getItem(it)">
+          <input type="search" v-model="qItem" :disabled="itemResult.length < 1" placeholder="Filtrar Items..." class="input is-medium">
+          <hr>
+          <ul class="list-filter" v-if="selectedCategory.id">
+            <li class="list-filter-line" v-for="it in itemResult" :key="it.id" @click="getItem(it)">
               <a :disabled="status" :class="{'selected': item.id === it.id }">{{ it.name }}</a>
-          </li>
+            </li>
           </ul>
         </div>
-        <div class="column is-4" v-if="item.id">
+        <div class="column is-4">
           <div class="is-clearfix">
-            <div class="list-filter-title" style="float: left">{{item.name}}</div>
-            <div class="control has-addons" style="float: right">
-              <a class="button is-primary" @click="incEntryQuantity" :disabled="status">
-                <span class="icon">
-                  <i class="fa fa-plus"></i>
-                </span>
-              </a>
-              <a class="button" @click="decEntryQuantity" :disabled="status">
-                <span class="icon">
-                  <i class="fa fa-minus"></i>
-                </span>
-              </a>
+            <div v-if="item.id">
+              <div class="list-filter-title" style="float: left">{{item.name }}</div>
+              <div class="control has-addons" style="float: right">
+                <a class="button is-primary" @click="incEntryQuantity" :disabled="status">
+                  <span class="icon">
+                    <i class="fa fa-plus"></i>
+                  </span>
+                </a>
+                <a class="button" @click="decEntryQuantity" :disabled="status">
+                  <span class="icon">
+                    <i class="fa fa-minus"></i>
+                  </span>
+                </a>
+              </div>
+            </div>
+            <div v-else>
+              <div class="list-filter-title" style="float: left; color: #2673db">No hay Item</div>
             </div>
           </div>
           <hr>
-          <ul class="list-filter">
+          <ul class="list-filter" v-if="item.id">
             <li class="list-filter-line is-clearfix">
               <div class="is-pulled-left"><b>Cantidad:</b><span class="count">{{ entry.quantity }}</span></div>
               <div class="is-pulled-right"><b>Total:</b><span class="count">${{ entry.subtotal }}</span></div>
@@ -64,6 +73,16 @@
               </div>
             </li>
           </ul>
+          <div v-else><input type="search" disabled class="input is-medium" value="Seleccione una categoria e item"/></div>
+          <hr>
+          <div class="item-title">Pedido</div>
+          <table class="table entries-list">
+            <tr v-for="(entry, index) in entries" :key="index">
+             <td style="width: 60%">{{ entry.item.name}}</td>
+             <td style="width: 20%">${{ entry.subtotal }}</td>
+             <td style="width: 20%"><tag class="is-pulled-right">{{ entry.quantity }}</tag></td>
+            </tr>
+          </table>
         </div>
       </div>
     </form>
@@ -75,18 +94,34 @@
   import alert from '../../mixins/Alert'
   export default {
     name: 'TicketTactilForm',
-    props: ['categories', 'items', 'status'],
+    props: ['categories', 'items', 'status', 'entries'],
     components: { autocomplete },
     mixins: [alert],
     data () {
       return {
         isShow: false,
+        qItem: '',
+        qCategory: '',
         selectedCategory: {},
         entry: { comment: null, subtotal: 0, code: null, quantity: 1 },
         item: { id: null, name: '', price: null, code: null, description: '' }
       }
     },
     computed: {
+      itemResult () {
+        if (this.qItem) {
+          return this.filteredItems.filter((i) => i.name.toLowerCase().match(this.qItem.toLowerCase()))
+        } else {
+          return this.filteredItems
+        }
+      },
+      catResult () {
+        if (this.qCategory) {
+          return this.categories.filter((i) => i.name.toLowerCase().match(this.qCategory.toLowerCase()))
+        } else {
+          return this.categories
+        }
+      },
       filteredItems () {
         return this.selectedCategory ? this.items.filter(it => it.category.id === this.selectedCategory.id) : this.items
       }
@@ -102,6 +137,7 @@
       },
       selectCategory (category) {
         this.selectedCategory = category
+        this.item = { id: null, name: '', price: null, code: null, description: '' }
       },
       resetEntry () {
         this.entry = { comment: null, subtotal: 0, quantity: 1, item: {} }
@@ -111,8 +147,6 @@
         if (this.item.id) {
           this.entry.item = this.item
           this.$emit('save-entry', this.entry)
-          _.extend(this.entry, { comment: null, subtotal: 0, quantity: 1, item: {} })
-          //  _.extend(this.item, { id: null, name: '', price: null, code: null, description: '' })
         }
       },
       setTotal () {
@@ -159,4 +193,5 @@
   .list-filter .list-filter-line a { cursor: pointer; }
   .list-filter .list-filter-line .selected { color: red; }
   .list-filter .list-filter-line .count { margin-left: 10px; }
+  .table.entries-list td { padding: 5px 0px; }
 </style>
