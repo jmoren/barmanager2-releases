@@ -1,5 +1,5 @@
 <template>
-  <modal title="Ingreso Items" :is-show="isShow" ok-text="Cerrar" :show-cancel="false" 
+  <modal title="Ingreso Items" :is-show="isShow" ok-text="Cerrar" :show-cancel="false"
           transition="fadeDown" @close="isShow=false" class="fullscreen">
     <form @keyup.enter.prevent="addEntry" v-shortkey="['esc']" @shortkey="resetEntry">
       <div class="columns">
@@ -12,7 +12,7 @@
             <li class="list-filter-line" v-for="category in catResult" :key="category.id" @click="selectCategory(category)">
               <div class="is-clearfix">
                 <a :disabled="status" :class="{'selected': category.id === selectedCategory.id}">
-                  {{ category.name }} 
+                  {{ category.name }}
                   <div class="is-pulled-right" style="color: #999">{{ category.zone || "No definida" }}</div>
                 </a>
               </div>
@@ -58,10 +58,10 @@
               <div class="is-pulled-right"><b>Total:</b><span class="count">${{ entry.subtotal }}</span></div>
             </li>
             <li class="list-filter-line">
-              <textarea class="textarea" :disabled="status" type="text" placeholder="Nota o comentario" v-model="entry.comment"></textarea> 
+              <textarea class="textarea" :disabled="status" type="text" placeholder="Nota o comentario" v-model="entry.comment"></textarea>
             </li>
             <li class="list-filter-line">
-              <div class="is-clearfix"> 
+              <div class="is-clearfix">
                 <a class="button is-outlined is-success is-pulled-left" @click="addEntry">
                   <span class="icon"><i class="fa fa-check"></i></span>
                    Agregar
@@ -78,9 +78,21 @@
           <div class="item-title">Pedido</div>
           <table class="table entries-list">
             <tr v-for="(entry, index) in entries" :key="index">
-             <td style="width: 60%">{{ entry.item.name}}</td>
+             <td style="width: 60%">{{ entry.item.name}} </td>
              <td style="width: 20%">${{ entry.subtotal }}</td>
-             <td style="width: 20%"><tag class="is-pulled-right">{{ entry.quantity }}</tag></td>
+             <td style="width: 20%">
+               <a @click="decreaseItem(entry)">
+                 <tag class="is-pulled-right is-danger">
+                   <i class="fa fa-minus"></i>
+                 </tag>
+               </a>
+               <tag class="is-pulled-right">{{ entry.quantity }}</tag>
+               <a @click="increaseItem(entry)">
+                 <tag class="is-pulled-right is-primary">
+                   <i class="fa fa-plus"></i>
+                 </tag>
+               </a>
+             </td>
             </tr>
           </table>
         </div>
@@ -147,6 +159,7 @@
         if (this.item.id) {
           this.entry.item = this.item
           this.$emit('save-entry', this.entry)
+          this.resetEntry()
         }
       },
       setTotal () {
@@ -178,6 +191,27 @@
       },
       openForm () {
         this.isShow = true
+      },
+      decreaseItem (entry) {
+        this.$http.put('tickets/' + entry.ticket_id + '/entries/' + entry.id + '/cancel?item=' + entry.entry_items[0].id + '&reason=1').then(
+          response => {
+            _.extend(entry, response.data)
+            this.$emit('reload-content')
+          },
+          error => {
+            console.log(error.data)
+          }
+        )
+      },
+      increaseItem (entry) {
+        this.$http.put(`tickets/${entry.ticket_id}/entries/${entry.id}/increase`).then(
+          response => {
+            _.extend(entry, response.data)
+          },
+          error => {
+            console.log(error.data)
+          }
+        )
       }
     }
   }
