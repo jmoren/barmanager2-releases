@@ -3,7 +3,7 @@
           transition="fadeDown" @close="isShow=false" class="fullscreen">
     <form @keyup.enter.prevent="addEntry" v-shortkey="['esc']" @shortkey="resetEntry">
       <div class="columns">
-        <div class="column is-4">
+        <div class="column is-4" v-if="!selectedCategory.id">
           <div class="list-filter-title">Categorias</div>
           <hr>
           <input type="search" v-model="qCategory" id="code" placeholder="Filtrar Categorias..." class="input is-medium">
@@ -19,8 +19,13 @@
             </li>
           </ul>
         </div>
-        <div class="column is-4">
-          <div class="list-filter-title">Items</div>
+        <div class="column is-4" v-if="selectedCategory.id">
+          <div class="list-filter-title">
+            <tag type="info" size="large" @click="selectedCategory = {}">
+              <i class="fa fa-arrow-circle-o-left big-icon"></i>
+            </tag>
+            Items
+          </div>
           <hr>
           <input type="search" v-model="qItem" :disabled="itemResult.length < 1" placeholder="Filtrar Items..." class="input is-medium">
           <hr>
@@ -30,7 +35,7 @@
             </li>
           </ul>
         </div>
-        <div class="column is-4">
+        <div class="column is-8">
           <div class="is-clearfix">
             <div v-if="item.id">
               <div class="list-filter-title" style="float: left">{{item.name }}</div>
@@ -81,18 +86,30 @@
              <td style="width: 60%">{{ entry.item.name}} </td>
              <td style="width: 20%">${{ entry.subtotal }}</td>
              <td style="width: 20%">
-               <a @click="decreaseItem(entry)">
+                <a @click="decreaseItem(entry)">
                  <tag class="is-pulled-right is-danger">
-                   <i class="fa fa-minus"></i>
+                   <i class="fa fa-minus big-icon"></i>
                  </tag>
-               </a>
-               <tag class="is-pulled-right">{{ entry.quantity }}</tag>
+                </a>
+                <tag class="is-pulled-right">
+                  <i v-if="updating === entry.id" class="fa fa-spinner fa-spin"></i>
+                  <span v-if="updating !== entry.id">{{ entry.quantity }}</span>
+                </tag>
                <a @click="increaseItem(entry)">
                  <tag class="is-pulled-right is-primary">
-                   <i class="fa fa-plus"></i>
+                   <i class="fa fa-plus big-icon"></i>
                  </tag>
                </a>
              </td>
+            </tr>
+            <tr class="odd">
+              <td><b>Total</b></td>
+              <td>${{ticketTotal}}</td>
+              <td>
+                <tag size="medium" class="is-pulled-right">
+                  {{ticketQuantity}}
+                </tag>
+              </td>
             </tr>
           </table>
         </div>
@@ -111,6 +128,7 @@
     mixins: [alert],
     data () {
       return {
+        updating: '',
         isShow: false,
         qItem: '',
         qCategory: '',
@@ -136,6 +154,20 @@
       },
       filteredItems () {
         return this.selectedCategory ? this.items.filter(it => it.category.id === this.selectedCategory.id) : this.items
+      },
+      ticketTotal () {
+        return this.entries.filter((e) => {
+          return !e.canceled
+        }).reduce(function (total, entry) {
+          return parseFloat(total) + parseFloat(entry.subtotal)
+        }, 0.0)
+      },
+      ticketQuantity () {
+        return this.entries.filter((e) => {
+          return !e.canceled
+        }).reduce(function (total, entry) {
+          return parseFloat(total) + parseFloat(entry.quantity)
+        }, 0.0)
       }
     },
     methods: {
@@ -193,23 +225,29 @@
         this.isShow = true
       },
       decreaseItem (entry) {
+        this.updating = entry.id
         this.$http.put('tickets/' + entry.ticket_id + '/entries/' + entry.id + '/cancel?item=' + entry.entry_items[0].id + '&reason=1').then(
           response => {
             _.extend(entry, response.data)
             this.$emit('reload-content')
+            this.updating = ''
           },
           error => {
             console.log(error.data)
+            this.updating = ''
           }
         )
       },
       increaseItem (entry) {
+        this.updating = entry.id
         this.$http.put(`tickets/${entry.ticket_id}/entries/${entry.id}/increase`).then(
           response => {
             _.extend(entry, response.data)
+            this.updating = ''
           },
           error => {
             console.log(error.data)
+            this.updating = ''
           }
         )
       }
@@ -227,5 +265,5 @@
   .list-filter .list-filter-line a { cursor: pointer; }
   .list-filter .list-filter-line .selected { color: red; }
   .list-filter .list-filter-line .count { margin-left: 10px; }
-  .table.entries-list td { padding: 5px 0px; }
+  .big-icon, .table.entries-list td { padding: 5px 0px; font-size: 18px; }
 </style>
