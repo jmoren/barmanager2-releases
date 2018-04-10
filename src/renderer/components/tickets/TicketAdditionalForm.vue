@@ -1,5 +1,5 @@
 <template>
-  <form @keyup.enter.prevent="addEntry" v-shortkey="['esc']" @shortkey="resetEntry">
+  <form @keyup.enter.prevent="addEntry" v-shortkey="['esc']" @shortkey="resetEntry" style="height: 75px">
     <div class="columns">
       <div class="column is-6">
         <input class="input is-medium" :disabled="status" type="text" placeholder="Adicional" v-model="entry.comment">
@@ -23,7 +23,6 @@
         </div>
       </div>
     </div>
-    <hr>
   </form>
 </template>
 <script>

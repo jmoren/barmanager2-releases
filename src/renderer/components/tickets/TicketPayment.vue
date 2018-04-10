@@ -114,7 +114,16 @@
   export default {
     name: 'TicketPAyment',
     components: { Loader },
-    props: [ 'ticket', 'total' ],
+    props: {
+      ticket: {
+        type: Object,
+        required: true
+      },
+      total: {
+        type: Number,
+        required: true
+      }
+    },
     data () {
       return {
         loading: false,

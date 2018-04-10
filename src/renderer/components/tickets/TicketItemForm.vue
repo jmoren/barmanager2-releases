@@ -1,5 +1,5 @@
 <template>
-  <form @keyup.enter.prevent="addEntry" v-shortkey="['esc']" @shortkey="resetEntry">
+  <form @keyup.enter.prevent="addEntry" v-shortkey="['esc']" @shortkey="resetEntry" style="height: 75px">
     <div class="columns">
       <div class="column is-4">
         <div class="control is-grouped">
@@ -29,7 +29,6 @@
         </div>
       </div>
     </div>
-    <hr>
   </form>
 </template>
 <script>

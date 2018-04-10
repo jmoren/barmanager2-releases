@@ -1,7 +1,6 @@
 export default {
   init (config) {
     if (config.get('api_url', null) === null) {
-      console.log('config')
       config.set('api_url', 'http://localhost:3000/api/')
     }
     if (config.get('business_name', null) === null) {
@@ -39,6 +38,9 @@ export default {
     }
     if (config.get('map_height', null) === null) {
       config.set('map_height', 300)
+    }
+    if (config.get('open_payments', null) === null) {
+      config.set('open_payments', true)
     }
   }
 }

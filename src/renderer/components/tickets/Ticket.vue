@@ -69,9 +69,9 @@
                 </span>
               </pop-confirm>
             </tooltip>
-            <tooltip content="Imprimir ticket con productos no entregados">
-              <a class="button is-light" @click.prevent="toggleKitchenView">
-                <span class="icon is-small"><i class="fa fa-cutlery"></i></span>
+            <tooltip content="Ingresar Pagos">
+              <a class="button is-light" @click.prevent="openPayments = !openPayments">
+                <span class="icon is-small"><i class="fa fa-credit-card"></i></span>
               </a>
             </tooltip>
             <tooltip content="Enviar a la impresora fiscal">
@@ -89,7 +89,7 @@
       </div>
       <hr class="not-print"/>
       <div id="ticket-content">
-        <ticket-content :ticket="ticket" :reasons="reasons" @update-pay="value => updatePayWith(value)" @ticket-paid="setPaid"
+        <ticket-content :open-payments="openPayments" :ticket="ticket" :reasons="reasons" @update-pay="value => updatePayWith(value)" @ticket-paid="setPaid"
           @ticket-not-paid="setNotPaid" :kitchenView="kitchenView">
         </ticket-content>
       </div>
@@ -330,6 +330,7 @@ export default {
   data () {
     return {
       addressInput: '',
+      openPayments: config.get('open_payments', true),
       barcode: {
         format: config.get('barcode_format', 'EAN13'),
         width: config.get('barcode_width', 2),

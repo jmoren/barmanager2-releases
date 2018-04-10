@@ -21,13 +21,13 @@
         </div>
         <div class="column is-4" v-if="selectedCategory.id">
           <div class="list-filter-title">
-            <tag type="info" size="large" @click="selectedCategory = {}">
-              <i class="fa fa-arrow-circle-o-left big-icon"></i>
-            </tag>
-            Items
+            <a class="button is-primary"  @click="selectCategory({})">
+              <i class="fa fa-arrow-left"></i>
+            </a>
+            <span>Items</span>
           </div>
           <hr>
-          <input type="search" v-model="qItem" :disabled="itemResult.length < 1" placeholder="Filtrar Items..." class="input is-medium">
+          <input type="search" v-model="qItem" placeholder="Filtrar Items..." class="input is-medium">
           <hr>
           <ul class="list-filter" v-if="selectedCategory.id">
             <li class="list-filter-line" v-for="it in itemResult" :key="it.id" @click="getItem(it)">
@@ -38,16 +38,16 @@
         <div class="column is-8">
           <div class="is-clearfix">
             <div v-if="item.id">
-              <div class="list-filter-title" style="float: left">{{item.name }}</div>
+              <div class="list-filter-title" style="float: left"><b>{{item.name }}</b></div>
               <div class="control has-addons" style="float: right">
-                <a class="button is-primary" @click="incEntryQuantity" :disabled="status">
-                  <span class="icon">
-                    <i class="fa fa-plus"></i>
-                  </span>
-                </a>
                 <a class="button" @click="decEntryQuantity" :disabled="status">
                   <span class="icon">
                     <i class="fa fa-minus"></i>
+                  </span>
+                </a>
+                <a class="button is-primary" @click="incEntryQuantity" :disabled="status">
+                  <span class="icon">
+                    <i class="fa fa-plus"></i>
                   </span>
                 </a>
               </div>
@@ -58,18 +58,14 @@
           </div>
           <hr>
           <ul class="list-filter" v-if="item.id">
-            <li class="list-filter-line is-clearfix">
-              <div class="is-pulled-left"><b>Cantidad:</b><span class="count">{{ entry.quantity }}</span></div>
-              <div class="is-pulled-right"><b>Total:</b><span class="count">${{ entry.subtotal }}</span></div>
-            </li>
             <li class="list-filter-line">
               <textarea class="textarea" :disabled="status" type="text" placeholder="Nota o comentario" v-model="entry.comment"></textarea>
             </li>
             <li class="list-filter-line">
               <div class="is-clearfix">
-                <a class="button is-outlined is-success is-pulled-left" @click="addEntry">
+                <a class="button is-success is-pulled-left" @click="addEntry">
                   <span class="icon"><i class="fa fa-check"></i></span>
-                   Agregar
+                   <b>Agregar {{ entry.quantity }} unidad(es) (${{entry.subtotal}})</b>
                 </a>
                 <a class="button is-outlined is-pulled-right" @click="resetEntry">
                   <span class="icon"><i class="fa fa-times"></i></span>
@@ -83,23 +79,14 @@
           <div class="item-title">Pedido</div>
           <table class="table entries-list">
             <tr v-for="(entry, index) in entries" :key="index">
-             <td style="width: 60%">{{ entry.item.name}} </td>
-             <td style="width: 20%">${{ entry.subtotal }}</td>
-             <td style="width: 20%">
-                <a @click="decreaseItem(entry)">
-                 <tag class="is-pulled-right is-danger">
-                   <i class="fa fa-minus big-icon"></i>
-                 </tag>
-                </a>
-                <tag class="is-pulled-right">
-                  <i v-if="updating === entry.id" class="fa fa-spinner fa-spin"></i>
-                  <span v-if="updating !== entry.id">{{ entry.quantity }}</span>
-                </tag>
-               <a @click="increaseItem(entry)">
-                 <tag class="is-pulled-right is-primary">
-                   <i class="fa fa-plus big-icon"></i>
-                 </tag>
-               </a>
+             <td style="width: 65%">{{ entry.item.name}} </td>
+             <td style="width: 10%">${{ entry.subtotal }}</td>
+             <td style="width: 10%; text-aligin: center;">
+                <div class="amount-control control has-addons">
+                  <a @click="decreaseItem(entry)" class="button"><i class="fa fa-minus"></i></a>
+                  <input class="input" type="number" v-model="entry.quantity">
+                  <a @click="increaseItem(entry)" class="button is-primary"><i class="fa fa-plus"></i></a>
+                </div>
              </td>
             </tr>
             <tr class="odd">
@@ -107,7 +94,7 @@
               <td>${{ticketTotal}}</td>
               <td>
                 <tag size="medium" class="is-pulled-right">
-                  {{ticketQuantity}}
+                  Items en este ticket: <b>{{ticketQuantity}}</b>
                 </tag>
               </td>
             </tr>
@@ -265,5 +252,7 @@
   .list-filter .list-filter-line a { cursor: pointer; }
   .list-filter .list-filter-line .selected { color: red; }
   .list-filter .list-filter-line .count { margin-left: 10px; }
-  .big-icon, .table.entries-list td { padding: 5px 0px; font-size: 18px; }
+  .table.entries-list td { padding: 5px 0px; font-size: 18px; }
+  .amount-control.control { justify-content: flex-end; }
+  .amount-control input { text-align: center; width: 50% !important; }
 </style>

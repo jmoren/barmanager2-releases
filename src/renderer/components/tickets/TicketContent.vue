@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="columns ticket">
-    <div class="column is-9">
+    <div class="column" :class="{'is-12': !openPayments, 'is-9': !openPayments }">
       <div class="ticket-form">
         <div class="columns">
           <div class="column is-3">
@@ -28,14 +28,18 @@
           </div>
         </div>
         <hr>
-        <div v-if="type === 'Item' && inputType !== 'Tactil'">
-          <ticket-item-form :items="items" :status="ticket.closed" @save-entry="entry => addEntry(entry)"/>
+        <div v-if="type === 'Item'">
+          <ticket-item-form v-if="inputType !== 'Tactil'" 
+            :items="items" :status="ticket.closed" @save-entry="entry => addEntry(entry)"/>
+          <div v-else>
+            <p  style="height: 65px"></p>
+          </div>
         </div>
         <div v-if="type === 'Promotion'">
-          <ticket-promo-form :promotions="promotions" :status="ticket.closed" @save-entry="entry => addEntry(entry)"></ticket-promo-form>
+          <ticket-promo-form :promotions="promotions" :status="ticket.closed" @save-entry="entry => addEntry(entry)"/>
         </div>
         <div v-if="type === 'Additional'">
-          <ticket-additional-form :status="ticket.closed" @save-entry="entry => addEntry(entry)"></ticket-additional-form>
+          <ticket-additional-form :status="ticket.closed" @save-entry="entry => addEntry(entry)"/>
         </div>
       </div>
       <div class="ticket-lines">
@@ -89,8 +93,9 @@
         </div>
       </div>
     </div>
-    <div class="column is-3 payments">
-      <ticket-payment :ticket="ticket" :total="total" @ticket-paid="setPaid" @ticket-not-paid="setNotPaid"></ticket-payment>
+    <div class="column is-3 payments" v-if="openPayments">
+      <ticket-payment :is-open="false" 
+        :ticket="ticket" :total="total" @ticket-paid="setPaid" @ticket-not-paid="setNotPaid"></ticket-payment>
     </div>
     <b-aside :is-show="isShow" :width="500" :show-footer="false" placement="right" title="Favoritos" @close="isShow=false">
       <form name="itemsbulk">
@@ -146,7 +151,7 @@
 
   export default {
     name: 'TicketContent',
-    props: ['ticket', 'reasons', 'kitchenView'],
+    props: ['ticket', 'reasons', 'kitchenView', 'openPayments'],
     components: {
       TicketRow,
       TicketPayment,
