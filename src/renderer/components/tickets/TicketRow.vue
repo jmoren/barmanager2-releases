@@ -33,7 +33,7 @@
     <td class="has-text-centered">{{ entryQuantity }}</td>
     <td class="has-text-centered not-print">
       <tooltip v-bind:content="entry.item.zone" placement="top" trigger="hover">
-        <i v-if="entry.item.zone" class="fa fa-map-marker fa-floated"></i>
+        <i v-if="entry.item.zone" class="fa fa-culery fa-floated"></i>
       </tooltip>
     </td>
     <td style="width: 45%;" class="item-desc">

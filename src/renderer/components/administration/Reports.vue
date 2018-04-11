@@ -13,8 +13,8 @@
           </select>
         </span>
       </div>
-      <div class="column is-3"><datepicker placeholder="Desde..." :options="dateOptions" v-model="range.from"></datepicker></div>
-      <div class="column is-3"><datepicker placeholder="Hasta..." :options="dateOptions" v-model="range.to"></datepicker></div>
+      <div class="column is-3"><datepicker class="is-expanded" placeholder="Desde..." :options="dateOptions" v-model="range.from"></datepicker></div>
+      <div class="column is-3"><datepicker class="is-expanded" placeholder="Hasta..." :options="dateOptions" v-model="range.to"></datepicker></div>
       <div class="column is-3">
         <button class="button is-light" @click.prevent="generateReportBy()">
           <span class="icon is-small"><i class="fa fa-list"></i></span>
@@ -49,7 +49,10 @@
         dateOptions: {
           locale: es,
           format: 'd/m/Y',
-          altInput: true
+          altInput: true,
+          enableTime: true,
+          wrap: true,
+          clickOpens: false
         }
       }
     },
@@ -82,3 +85,10 @@
     }
   }
 </script>
+
+<style>
+  .flatpickr .form-control.input {
+    flex-grow: 1;
+    flex-shrink: 0;
+  }
+</style>

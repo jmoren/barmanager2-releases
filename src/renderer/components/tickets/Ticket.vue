@@ -102,7 +102,16 @@
                 <barcode :tag="'img'" :value="ticket.number" :options="{ format: barcode.format, lastChar: barcode.lastChar, displayValue: true, height: barcode.height, width: barcode.width, background: 'transparent' }"></barcode>
               </div>
               <div class="not-print" v-if="ticket.user">
-                Ud ha sido atendido por: <b>{{ ticket.user.name }}</b>
+                <div class="control has-addons">
+                  <input class="input" style="width:200px" type="text" value="Ud ha sido atendido por: " disabled  readonly="readonly">
+                  <div class="select">
+                    <select v-model="ticket.user_id" @change="updateTicket()">
+                      <option v-for="user in users" :key="user.id" :value="user.id" :disabled="user.id == currentUser.profile.id">
+                        {{ user.name }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -112,7 +121,8 @@
         </div>
       </div>
 
-      <modal :title="'Ticket Nro. ' + ticket.number" :show-footer="false" :on-cancel="closePrintModal" :is-show="isPrintOpen" transition="zoom">
+      <modal :title="'Ticket Nro. ' + ticket.number" 
+        :show-footer="false" :on-cancel="closePrintModal" :is-show="isPrintOpen" transition="zoom">
         <form>
           <div class="columns">
             <div class="column is-5"><input class="input" type="text" v-model="print.customer_name" placeholder="Nombre"></div>
@@ -183,7 +193,8 @@
         </form>
       </modal>
 
-      <modal :title="'TICKET Nro. ' + ticket.number" :show-footer="false" :on-cancel="closeModal" :is-show="isOpen" :ok-loading="true" transition="zoom">
+      <modal :title="'TICKET Nro. ' + ticket.number" 
+        :show-footer="false" :on-cancel="closeModal" :is-show="isOpen" :ok-loading="true" transition="zoom">
         <form @submit.prevent="closeTicket()">
           <div class="columns modal-row with-border">
             <div class="column is-4">
@@ -255,7 +266,8 @@
         </form>
       </modal>
 
-      <modal :title="'Editar Direccion - TICKET Nro. ' + ticket.number" :show-footer="true" :on-ok="updateTicketAddress" :is-show="addressOpen" :on-cancel="closeAddress">
+      <modal :title="'Editar Direccion - TICKET Nro. ' + ticket.number" 
+        :show-footer="true" :on-ok="updateTicketAddress" :is-show="addressOpen" :on-cancel="closeAddress">
         <p>Direccion actual: {{ ticket.address }}</p>
         <p>Complemento: {{ ticket.address_complement }}</p>
         <hr>
@@ -266,7 +278,8 @@
         </div>
       </modal>
 
-      <modal :title="'TICKET Nro. ' + ticket.number" :on-footer="false" :show-footer="false" :on-cancel="closeCancelTicket" :is-show="cancelTicketModal">
+      <modal :title="'TICKET Nro. ' + ticket.number" :on-footer="false" 
+        :show-footer="false" :on-cancel="closeCancelTicket" :is-show="cancelTicketModal">
         <alert><b>Estas seguro de cancelar este ticket?</b></alert>
         <hr>
         <h3 style="font-size: 17px; font-weight: 400; margin-bottom: 15px">Seleccione una razon</h3>
@@ -326,10 +339,12 @@ export default {
   },
   created () {
     this.fetchTicket()
+    this.loadUsers()
   },
   data () {
     return {
       addressInput: '',
+      users: [],
       openPayments: config.get('open_payments', true),
       barcode: {
         format: config.get('barcode_format', 'EAN13'),
@@ -371,7 +386,8 @@ export default {
       new_table_id: '',
       new_client_id: '',
       cancelTicketModal: false,
-      addressOpen: false
+      addressOpen: false,
+      currentUser: Auth.user
     }
   },
   computed: {
@@ -443,7 +459,8 @@ export default {
         pay_with: this.ticket.pay_with,
         address: this.ticket.address,
         address_not_validated: this.ticket.address_not_validated,
-        address_complement: this.ticket.address_complement
+        address_complement: this.ticket.address_complement,
+        user_id: this.ticket.user_id
       }
 
       this.$http.put('tickets/' + this.ticket.id, { ticket: data }).then(
@@ -648,6 +665,16 @@ export default {
     },
     closeAddress () {
       this.addressOpen = false
+    },
+    loadUsers () {
+      this.$http.get('users').then(
+        response => {
+          this.users = response.data
+        },
+        error => {
+          this.alert('danger', error.data)
+        }
+      )
     }
   }
 }
