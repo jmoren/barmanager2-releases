@@ -37,7 +37,7 @@
                       </div>
                       <span class="icon-indicator">
                         <i class="fa" :class="{'fa-angle-right': purchase.id !== currentPurchase.id, 'fa-angle-down': purchase.id === currentPurchase.id}"></i>
-                      </span> 
+                      </span>
                     </div>
                     <div class="content" :class="{ 'active': currentPurchase.id === purchase.id }">
                       <p>Fecha: {{ purchase.created_at | moment('dddd DD MMMM, YYYY') }}</p>
@@ -151,8 +151,10 @@
   import Auth from '../../auth'
   import PurchaseForm from './PurchaseForm'
   import SupplierPayment from './SupplierPayment'
+  import alert from '../../mixins/Alert'
   export default {
     name: 'Supplier',
+    mixins: [alert],
     components: { PurchaseForm, SupplierPayment },
     data () {
       return {
@@ -164,7 +166,7 @@
         expenses: { gastos: [], meta: {} },
         currentPurchase: {},
         query: '',
-        addToPartial: false,
+        add_to_partial: false,
         payment: { amount: '', add_to_partial: false }
       }
     },
@@ -201,6 +203,7 @@
           },
           error => {
             console.log(error)
+            this.alert('danger', 'Error cargando proveedores')
             this.loading = false
           }
         )
@@ -214,6 +217,7 @@
           },
           error => {
             console.log(error)
+            this.alert('danger', 'Error cargando compras')
             this.loadingPurchases = false
           }
         )
@@ -227,6 +231,7 @@
           },
           error => {
             console.log(error)
+            this.alert('danger', 'Error cargando Pagos')
             this.loadingExpenses = false
           }
         )
@@ -244,11 +249,12 @@
       savePayment () {
         this.$http.post('admin/suppliers/' + this.supplier.id + '/add_payment', { payment: this.payment }).then(
           response => {
-            this.payment = { amount: '', addToPartial: false }
+            this.payment = { amount: '', add_to_partial: false }
             this.updateView()
           },
           error => {
             console.log(error)
+            this.alert('danger', 'Hubo un error agregando el pago, verifique que el monto sea mayor a 0')
           }
         )
       }
@@ -269,14 +275,14 @@
   .purchase-list-item .content { display: none; border: solid 1px #d4d4d4; padding: 10px; }
   .purchase-list-item .content.active { display: block; }
   .purchase-list-item .content p { font-size: 15px; }
-  .tabs .purchase-list-item .header-item { 
+  .tabs .purchase-list-item .header-item {
     align-items: stretch;
     box-shadow: 0 1px 2px hsla(0,0%,4%,.1);
     display: flex;
     cursor: pointer;
   }
   .tabs .purchase-list-item .header-item:first-child { box-shadow: none; }
-  .tabs .purchase-list-item .header-item .header-title { 
+  .tabs .purchase-list-item .header-item .header-title {
     align-items: flex-start;
     color: #363636;
     display: flex;
