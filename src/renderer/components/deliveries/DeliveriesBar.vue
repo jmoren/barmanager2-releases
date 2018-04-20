@@ -141,9 +141,9 @@ export default {
     },
     loadDelivery () {
       this.loading = true
-      this.$http.get('tickets?without_table=true').then(
+      this.$http.get('ticket_deliveries').then(
         response => {
-          this.delivery = response.data
+          this.delivery = response.data.deliveries
           this.loading = false
         },
         error => {
