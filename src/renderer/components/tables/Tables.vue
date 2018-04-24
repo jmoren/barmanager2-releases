@@ -6,41 +6,22 @@
     <div v-else>
       <div class="columns" v-if="current.open">
         <div class="column is-12">
-          <div v-if="tablesOpen.length > 0" style="margin-bottom: 40px;">
-            <h1 class="header">
-              Mesas Abiertas
-              <div class="control has-addons is-pulled-right">
-                <input type="text" class="input" v-model="queryOpen" placeholder="Filtrar mesas abiertas">
-              </div>
-            </h1>
-            <hr>
-            <div class="columns is-multiline">
-              <div class="column is-3" v-for="table in filteredOpenTables" :key="table.id">
-                <router-link class="open-table-button is-fullwidth button is-medium" :class="table.color" :to="{ name: 'Ticket', params: { id: table.current.id } }">
-                  <div style="margin: 5px 0">{{ table.description}}</div>
-                  <div v-if="table.current.client.id"><small>{{ table.current.client.name }}</small></div>
-                  <div v-if="table.current.client.id"><small>{{ table.current.client.address || 'Sin direccion' | truncate }}</small></div>
-                </router-link>
-              </div>
-            </div>
-          </div>
-          <div v-if="tablesClosed.length > 0">
-            <h1 class="header">
-              Mesas Cerradas
-              <div class="control has-addons is-pulled-right">
-                <input type="text" class="input" v-model="queryClosed" placeholder="Filtrar mesas cerradas">
-              </div>
-            </h1>
-            <hr>
-            <div class="columns is-multiline">
-              <div class="column is-3" v-for="table in filteredClosedTables" :key="table.id">
-                <div class="is-clearfix">
-                  <a class="button is-fullwidth is-outlined is-medium" :class="table.color" @click.prevent="openTable(table)">
-                    {{ table.description}}
-                  </a>
-                </div>
-              </div>
-            </div>
+          <div style="height: 100vh; width: 100vh; border: 1px solid red; position: relative;">
+            <vue-draggable-resizable
+              @activated="onActivated(t)"
+              @dragstop="updateTable"
+              @resizestop="updateTable"
+              v-for="t in tables"
+              :key="t.id"
+              :w=t.width
+              :h=t.height
+              :x=t.x
+              :y=t.y
+              :parent="true"
+              style="border: 1px solid gray;"
+              :class="{'red-table': t.closed, 'green-table': !t.closed }">
+              <button @click="openTable(t)" class="button">{{t.description}}</button>
+            </vue-draggable-resizable>
           </div>
         </div>
       </div>
@@ -76,11 +57,12 @@ import { mapGetters } from 'vuex'
 import Loader from '@/components/utils/Loader'
 import Auth from '../../auth'
 import alert from '../../mixins/Alert'
+import VueDraggableResizable from 'vue-draggable-resizable'
 
 export default {
   name: 'Tables',
   mixins: [alert],
-  components: { Loader },
+  components: { Loader, VueDraggableResizable },
   beforeRouteEnter (to, from, next) {
     if (Auth.user.profile.role === 'cooker') {
       next(vm => vm.$router.push({ name: 'Kitchen' }))
@@ -90,6 +72,7 @@ export default {
   },
   data () {
     return {
+      selectedTable: { x: 0, y: 0, width: 100, height: 100 },
       queryOpen: '',
       queryClosed: '',
       last_cash: {},
@@ -113,32 +96,6 @@ export default {
       current: 'currentCash',
       users: 'allUsers'
     }),
-    filteredOpenTables () {
-      if (this.queryOpen) {
-        let regex = new RegExp(this.queryOpen.toLowerCase())
-        return this.tablesOpen.filter((table) => {
-          return regex.test(table.description.toLowerCase())
-        })
-      } else {
-        return this.tablesOpen
-      }
-    },
-    filteredClosedTables () {
-      if (this.queryClosed) {
-        let regex = new RegExp(this.queryClosed.toLowerCase())
-        return this.tablesClosed.filter((table) => {
-          return regex.test(table.description.toLowerCase())
-        })
-      } else {
-        return this.tablesClosed
-      }
-    },
-    tablesOpen () {
-      return this.tables.filter((t) => { return !t.closed })
-    },
-    tablesClosed () {
-      return this.tables.filter((t) => { return t.closed })
-    },
     loading () {
       return this.$parent.loading
     }
@@ -147,6 +104,9 @@ export default {
     this.loadLastCash()
   },
   methods: {
+    onActivated (table) {
+      this.selectedTable = table
+    },
     loadLastCash () {
       if (this.current.open) { return false }
       this.$http.get('partial_daily_cashes/last').then(
@@ -171,16 +131,34 @@ export default {
         }
       )
     },
-    openTable (table) {
-      this.$http.post('tables/' + table.id + '/open').then(
+    updateTable (x, y, w, h) {
+      const data = { 'table': { x: x, y: y, width: w, height: h } }
+      this.$http.put('tables/' + this.selectedTable.id, data).then(
         response => {
           this.$store.dispatch('updateTable', response.data)
-          this.$router.push({ name: 'Ticket', params: { id: response.data.current.id } })
         },
         error => {
           this.alert('danger', error.data)
         }
       )
+    },
+    goToTable (tableId) {
+      this.$router.push({ name: 'Ticket', params: { id: tableId } })
+    },
+    openTable (table) {
+      if (!table.closed) {
+        this.goToTable(table.id)
+      } else {
+        this.$http.post('tables/' + table.id + '/open').then(
+          response => {
+            this.$store.dispatch('updateTable', response.data)
+            this.goToTable(response.data.current.id)
+          },
+          error => {
+            this.alert('danger', error.data)
+          }
+        )
+      }
     }
   }
 }
@@ -188,4 +166,6 @@ export default {
 
 <style lang="css" scoped>
   .open-table-button { font-weight: bold; height: 70px; display:inline-block; text-align: left;  }
+  .red-table { background-color: red !important; color: white; text-align: center; }
+  .green-table { background-color: green !important; color: white; text-align: center; }
 </style>

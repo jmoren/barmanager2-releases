@@ -37,6 +37,7 @@
     "vue-barcode": "^1.0.7",
     "vue-blu": "^0.1.9",
     "vue-chartkick": "^0.2.0",
+    "vue-draggable-resizable": "^1.7.1",
     "vue-electron": "^1.0.6",
     "vue-google-autocomplete": "^1.0.13",
     "vue-moment": "^2.0.2",
