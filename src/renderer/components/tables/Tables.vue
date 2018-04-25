@@ -6,7 +6,7 @@
     <div v-else>
       <div class="columns" v-if="current.open">
         <div class="column is-12">
-          <div style="height: 100vh; width: 100vh; border: 1px solid red; position: relative;">
+          <div v-bind:style="screenStyle">
             <vue-draggable-resizable
               @activated="onActivated(t)"
               @dragstop="updateTable"
@@ -20,7 +20,22 @@
               :parent="true"
               style="border: 1px solid gray;"
               :class="{'red-table': t.closed, 'green-table': !t.closed }">
-              <button @click="openTable(t)" class="button">{{t.description}}</button>
+              <a @click="openTable(t)" style="color: white; font-size: 16px;"><b>{{t.description}}</b></a>
+              <div>
+                <p v-if="t.current.id" class="is-fullwidth">
+                  <span class="icon">
+                    <i class="fa fa-dollar"></i>
+                  </span>
+                  <span>{{` ${t.current.pending} / ${t.current.total}`}}</span>
+                </p>
+
+                <p v-if="t.current.id && t.current.client.id" class="is-fullwidth">
+                  <span class="icon">
+                    <i class="fa fa-user"></i>
+                  </span>
+                  <span>{{` ${t.current.client.name}`}}</span>
+                </p>
+              </div>
             </vue-draggable-resizable>
           </div>
         </div>
@@ -72,6 +87,12 @@ export default {
   },
   data () {
     return {
+      screenStyle: {
+        height: '1000px',
+        width: window.innerWidth,
+        border: '1px solid gray',
+        position: 'relative'
+      },
       selectedTable: { x: 0, y: 0, width: 100, height: 100 },
       queryOpen: '',
       queryClosed: '',
@@ -142,12 +163,12 @@ export default {
         }
       )
     },
-    goToTable (tableId) {
-      this.$router.push({ name: 'Ticket', params: { id: tableId } })
+    goToTable (ticketId) {
+      this.$router.push({ name: 'Ticket', params: { id: ticketId } })
     },
     openTable (table) {
       if (!table.closed) {
-        this.goToTable(table.id)
+        this.goToTable(table.current.id)
       } else {
         this.$http.post('tables/' + table.id + '/open').then(
           response => {
