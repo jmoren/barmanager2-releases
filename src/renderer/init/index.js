@@ -42,5 +42,8 @@ export default {
     if (config.get('open_payments', null) === null) {
       config.set('open_payments', true)
     }
+    if (config.get('tablesView', null) === null) {
+      config.set('tablesView', 'classic')
+    }
   }
 }

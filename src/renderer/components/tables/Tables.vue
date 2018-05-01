@@ -4,8 +4,12 @@
       <Loader></Loader>
     </div>
     <div v-else>
+      <alert class="is-fullwidth" style="height: 60px;" title="Vista desactualizada." type="warning" :closable="true" v-if="outdated">
+        Puede que la info que esta viendo en pantalla este desactualizada.
+        <a @click="reloadScreen">Recargar...</a>
+      </alert>
       <div class="columns" v-if="current.open">
-        <div class="column is-12">
+        <div class="column is-12"  v-if="tablesView === 'map'">
           <div v-bind:style="screenStyle">
             <vue-draggable-resizable
               @activated="onActivated(t)"
@@ -37,6 +41,44 @@
                 </p>
               </div>
             </vue-draggable-resizable>
+          </div>
+        </div>
+        <div class="column is-12" v-else>
+          <div v-if="tablesOpen.length > 0" style="margin-bottom: 40px;">
+            <h1 class="header">
+              Mesas Abiertas
+              <div class="control has-addons is-pulled-right">
+                <input type="text" class="input" v-model="queryOpen" placeholder="Filtrar mesas abiertas">
+              </div>
+            </h1>
+            <hr>
+            <div class="columns is-multiline">
+              <div class="column is-3" v-for="table in filteredOpenTables" :key="table.id">
+                <router-link class="open-table-button is-fullwidth button is-medium" :class="table.color" :to="{ name: 'Ticket', params: { id: table.current.id } }">
+                  <div style="margin: 5px 0">{{ table.description}}</div>
+                  <div v-if="table.current.client.id"><small>{{ table.current.client.name }}</small></div>
+                  <div v-if="table.current.client.id"><small>{{ table.current.client.address || 'Sin direccion' | truncate }}</small></div>
+                </router-link>
+              </div>
+            </div>
+          </div>
+          <div v-if="tablesClosed.length > 0">
+            <h1 class="header">
+              Mesas Cerradas
+              <div class="control has-addons is-pulled-right">
+                <input type="text" class="input" v-model="queryClosed" placeholder="Filtrar mesas cerradas">
+              </div>
+            </h1>
+            <hr>
+            <div class="columns is-multiline">
+              <div class="column is-3" v-for="table in filteredClosedTables" :key="table.id">
+                <div class="is-clearfix">
+                  <a class="button is-fullwidth is-outlined is-medium" :class="table.color" @click.prevent="openTable(table)">
+                    {{ table.description}}
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -73,6 +115,13 @@ import Loader from '@/components/utils/Loader'
 import Auth from '../../auth'
 import alert from '../../mixins/Alert'
 import VueDraggableResizable from 'vue-draggable-resizable'
+import ActionCable from 'actioncable'
+
+const Config = require('electron-config')
+const config = new Config()
+
+// 1. Configure your websocket address
+const WEBSOCKET_HOST = 'ws://localhost:3000/cable'
 
 export default {
   name: 'Tables',
@@ -87,6 +136,7 @@ export default {
   },
   data () {
     return {
+      outdated: false,
       screenStyle: {
         height: '1000px',
         width: window.innerWidth,
@@ -94,6 +144,9 @@ export default {
         position: 'relative'
       },
       selectedTable: { x: 0, y: 0, width: 100, height: 100 },
+      tablesView: config.get('tablesView', 'classic'),
+      cable: ActionCable.createConsumer(WEBSOCKET_HOST),
+      channel: {},
       queryOpen: '',
       queryClosed: '',
       last_cash: {},
@@ -117,16 +170,60 @@ export default {
       current: 'currentCash',
       users: 'allUsers'
     }),
+    filteredOpenTables () {
+      if (this.queryOpen) {
+        let regex = new RegExp(this.queryOpen.toLowerCase())
+        return this.tablesOpen.filter((table) => {
+          return regex.test(table.description.toLowerCase())
+        })
+      } else {
+        return this.tablesOpen
+      }
+    },
+    filteredClosedTables () {
+      if (this.queryClosed) {
+        let regex = new RegExp(this.queryClosed.toLowerCase())
+        return this.tablesClosed.filter((table) => {
+          return regex.test(table.description.toLowerCase())
+        })
+      } else {
+        return this.tablesClosed
+      }
+    },
+    tablesOpen () {
+      return this.tables.filter((t) => { return !t.closed })
+    },
+    tablesClosed () {
+      return this.tables.filter((t) => { return t.closed })
+    },
     loading () {
       return this.$parent.loading
     }
   },
   created () {
     this.loadLastCash()
+    this.outdated = false
+    this.channel = this.cable.subscriptions.create(
+      { channel: 'WebNotificationsChannel' },
+      {
+        connected: this.connected,
+        disconnected: this.disconnected,
+        received: this.received,
+        rejected: this.rejected
+      }
+    )
   },
   methods: {
+    reloadScreen () {
+      location.reload()
+    },
     onActivated (table) {
       this.selectedTable = table
+    },
+    received (data) {
+      this.outdated = true
+      this.alert('info', `La mesa ${data.description} fue actualizada.`)
+      console.log(`Message actualizada: ${JSON.stringify(data)}`)
     },
     loadLastCash () {
       if (this.current.open) { return false }
@@ -137,18 +234,6 @@ export default {
         },
         error => {
           console.log(error)
-        }
-      )
-    },
-    openCailyCash () {
-      this.$http.post('partial_daily_cashes', {
-        partial_daily_cash: { init_amount: this.newCash.init_amount, user_id: this.newCash.user_id }
-      }).then(
-        response => {
-          this.$store.dispatch('updateDailyCash', response.data)
-        },
-        error => {
-          this.alert('danger', error.data)
         }
       )
     },
@@ -165,6 +250,18 @@ export default {
     },
     goToTable (ticketId) {
       this.$router.push({ name: 'Ticket', params: { id: ticketId } })
+    },
+    openCailyCash () {
+      this.$http.post('partial_daily_cashes', {
+        partial_daily_cash: { init_amount: this.newCash.init_amount, user_id: this.newCash.user_id }
+      }).then(
+        response => {
+          this.$store.dispatch('updateDailyCash', response.data)
+        },
+        error => {
+          this.alert('danger', error.data)
+        }
+      )
     },
     openTable (table) {
       if (!table.closed) {

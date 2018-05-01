@@ -25,6 +25,7 @@
     "postinstall": "npm run lint:fix"
   },
   "dependencies": {
+    "actioncable": "^5.2.0",
     "chartkick": "^2.2.4",
     "electron-config": "^1.0.0",
     "eventsource-polyfill": "^0.9.6",
