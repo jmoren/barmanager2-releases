@@ -477,5 +477,6 @@
 
   @media print {
     .not-print { display: none !important; }
+    hr { display: none; }
   }
 </style>

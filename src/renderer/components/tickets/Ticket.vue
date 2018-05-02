@@ -701,7 +701,7 @@ export default {
   .print { display: none; }
 
   @media print {
-    .not-print, .hero.is-primary.is-fixed, .popover { display: none !important; }
+    .not-print, .hero.is-primary.is-fixed, .popover, .notifications { display: none !important; }
     .print-center { text-align: center; }
     .print { display: block; }
     .ticket .resume .resume-header { border-bottom: none; }

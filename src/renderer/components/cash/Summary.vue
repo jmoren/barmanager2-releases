@@ -1,5 +1,9 @@
 <template>
   <div class="resume">
+    <div class="summary-header only-print">
+      Fecha: {{ currentDate | moment('DD MMMM, YYYY HH:mm') }} hs
+      - Responsable: {{ summary.user.name }}
+    </div>
     <h2>Resumen Total </h2>
     <table class="table is-bordered">
     <tr>
@@ -137,6 +141,11 @@
   export default {
     name: 'PartialDailySummary',
     props: ['summary'],
+    data () {
+      return {
+        currentDate: new Date()
+      }
+    },
     computed: {
       debitos () {
         return parseFloat(this.summary.total_expenses) + parseFloat(this.summary.total_vales) + parseFloat(this.summary.total_home)
@@ -165,6 +174,12 @@
   }
 </script>
 <style>
+  .only-print { display: none; }
+  @media print {
+    .resume { margin: 0px !important; }
+    .summary-header.only-print { display: block; font-size: 13px; }
+    .not-print { display: none !important; }
+  }
   tr.total td { font-size: 25px; }
   tr.subtotal td { background: #F5F5F5; }
   td.row-value { font-weight: bold; }
@@ -196,9 +211,5 @@
     width: 110px;
     font-weight: 500;
     font-size: 20px;
-  }
-
-  @media print {
-    .not-print { display: none !important; }
   }
 </style>
