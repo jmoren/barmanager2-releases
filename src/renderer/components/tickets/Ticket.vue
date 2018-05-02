@@ -540,15 +540,12 @@ export default {
       this.traslateTicket()
     },
     traslateTicket (newTableId) {
-      let message = null
-      let kind = null
       let oldTable = this.ticket.table
       let params = { table_id: newTableId }
       this.$http.post('tickets/' + this.ticket.id + '/traslate', params).then(
         response => {
           let newTable = response.data.table
           _.extend(this.ticket, response.data)
-          kind = 'success'
           if (newTable) {
             this.$store.dispatch('updateTable', newTable)
           }
@@ -556,8 +553,6 @@ export default {
           if (oldTable) {
             this.$store.dispatch('closeTable', oldTable)
           }
-          message = this.ticket.table_id ? 'Nueva Mesa asignada: ' + this.ticket.table.description : 'Ticket Delivery'
-          this.alert(kind, message)
           document.getElementById('code').focus()
         },
         error => {
