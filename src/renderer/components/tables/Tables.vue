@@ -213,6 +213,9 @@ export default {
       }
     )
   },
+  destroyed () {
+    this.cable.subscriptions.remove(this.channel)
+  },
   methods: {
     reloadScreen () {
       location.reload()
