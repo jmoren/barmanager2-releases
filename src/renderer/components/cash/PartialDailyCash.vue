@@ -36,14 +36,14 @@
               </span>
             </div>
             <div class="control has-addons is-pulled-right is-marginless">
-              <pop-confirm content="Imprimir el cierre de la caja parcial" icon="question-circle-o" :on-ok="fiscalPrintCash" 
+              <pop-confirm content="Imprimir el cierre de la caja parcial" icon="question-circle-o" :on-ok="fiscalPrintCash"
                     :on-cancel="cancelPrint" v-if="cash.open">
                 <a class="button is-light">
                   <span class="icon is-small"><i class="fa fa-print"></i></span>
                   <span>Cierre Caja</span>
                 </a>
               </pop-confirm>
-              <pop-confirm content="Imprimir el cierre diario" icon="question-circle-o" :on-ok="fiscalPrintDay" 
+              <pop-confirm content="Imprimir el cierre diario" icon="question-circle-o" :on-ok="fiscalPrintDay"
                     :on-cancel="cancelPrint" v-if="cash.open">
                 <a class="button is-light">
                   <span class="icon is-small"><i class="fa fa-print"></i></span>

@@ -1,11 +1,11 @@
 <template>
   <div class="resume">
-    <div class="summary-header only-print">
-      Fecha: {{ currentDate | moment('DD MMMM, YYYY HH:mm') }} hs
-      - Responsable: {{ summary.user.name }}
-    </div>
     <h2>Resumen Total </h2>
     <table class="table is-bordered">
+    <tr>
+      <td>Fecha - Responsable</td>
+      <td class="row-value"><span>{{summary.created_at | moment('DD/MM/YYYY HH:mm')}} - {{ summary.user.name || summary.user.email }}</span></td>
+    </tr>
     <tr>
       <td>Tickets abiertos en este Turno</td>
       <td class="row-value"><span>{{ summary.tickets_count }}</span></td>
@@ -141,11 +141,6 @@
   export default {
     name: 'PartialDailySummary',
     props: ['summary'],
-    data () {
-      return {
-        currentDate: new Date()
-      }
-    },
     computed: {
       debitos () {
         return parseFloat(this.summary.total_expenses) + parseFloat(this.summary.total_vales) + parseFloat(this.summary.total_home)
@@ -211,5 +206,11 @@
     width: 110px;
     font-weight: 500;
     font-size: 20px;
+  }
+
+  @media print {
+    .subtotal, .total { background-color: gray; border: 2px solid black;}
+    .row-value { font-size: 12px; }
+    .not-print { display: none !important; }
   }
 </style>
