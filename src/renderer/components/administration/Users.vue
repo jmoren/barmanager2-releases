@@ -229,7 +229,7 @@ export default {
     removeUser (user) {
       this.$http.delete('admin/users/' + user.id).then(
         response => {
-          this.$store.dispatch('updateUser', response.data)
+          this.$store.dispatch('removeUser', user)
         },
         error => {
           this.alert('danger', error.data)

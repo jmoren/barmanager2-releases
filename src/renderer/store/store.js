@@ -15,6 +15,7 @@ const CLOSE_TABLE = 'CLOSE_TABLE'
 const SET_TABLE_BY_ID = 'SET_TABLE_BY_ID'
 const LOAD_USERS = 'LOAD_USERS'
 const ADD_USER = 'ADD_USER'
+const REMOVE_USER = 'REMOVE_USER'
 const UPDATE_USER = 'UPDATE_USER'
 const UPDATE_DAILY_CASH = 'UPDATE_DAILY_CASH'
 const SET_REASONS = 'SET_REASONS'
@@ -105,6 +106,9 @@ const actions = {
   },
   addUser ({ commit }, user) {
     commit(ADD_USER, user)
+  },
+  removeUser ({ commit }, user) {
+    commit(REMOVE_USER, user)
   }
 }
 
@@ -158,6 +162,10 @@ const mutations = {
   },
   [ADD_USER] (state, user) {
     state.users.push(user)
+  },
+  [REMOVE_USER] (state, user) {
+    let index = state.users.indexOf(user)
+    state.users.splice(index, 1)
   },
   [UPDATE_USER] (state, user) {
     _.extend(state.users.find(u => u.id === user.id), user)
