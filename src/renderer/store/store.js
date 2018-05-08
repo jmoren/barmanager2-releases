@@ -11,7 +11,6 @@ const UPDATE_TABLE = 'UPDATE_TABLE'
 const LOAD_TABLES = 'LOAD_TABLES'
 const ADD_TABLE = 'ADD_TABLE'
 const SET_DAILY_CASH = 'SET_DAILY_CASH'
-const CLOSE_TABLE = 'CLOSE_TABLE'
 const SET_TABLE_BY_ID = 'SET_TABLE_BY_ID'
 const LOAD_USERS = 'LOAD_USERS'
 const ADD_USER = 'ADD_USER'
@@ -24,9 +23,7 @@ const CHANGE_USER_TABLE = 'CHANGE_USER_TABLE'
 const state = {
   tables: {
     all: [],
-    current: null,
-    open: [],
-    closed: []
+    current: null
   },
   users: [],
   reasons: [],
@@ -58,8 +55,16 @@ const getters = {
   allTables: state => state.tables.all,
   currentCash: state => state.cash || { user_id: '', init_amount: 0 },
   current: state => state.tables.current,
-  openTables: state => state.tables.open,
-  closedTables: state => state.tables.closed,
+  openTables: state => {
+    return state.tables.all.filter((table) => {
+      return table.status === 'open'
+    })
+  },
+  closedTables: state => {
+    return state.tables.all.filter((table) => {
+      return table.status !== 'open'
+    })
+  },
   allUsers: state => state.users,
   allReasons: state => state.reasons,
   months: state => state.months,
@@ -82,9 +87,6 @@ const actions = {
   },
   setTables ({ commit }, tables) {
     commit(LOAD_TABLES, tables)
-  },
-  closeTable ({ commit }, table) {
-    commit(CLOSE_TABLE, table)
   },
   addTable ({ commit }, table) {
     commit(ADD_TABLE, table)
@@ -129,30 +131,18 @@ const mutations = {
   },
   [LOAD_TABLES] (state, tables) {
     state.tables.all = tables
-    state.tables.open = state.tables.all.filter((t) => { return !t.closed })
-    state.tables.closed = state.tables.all.filter((t) => { return t.closed })
   },
   [ADD_TABLE] (state, table) {
     state.tables.all.push(table)
   },
   [UPDATE_TABLE] (state, table) {
-    _.extend(state.tables.all.find(t => t.id === table.id), table)
-    state.tables.open = state.tables.all.filter((t) => { return !t.closed })
-    state.tables.closed = state.tables.all.filter((t) => { return t.closed })
+    let current = state.tables.all.find(t => t.id === table.id)
+    let index = state.tables.all.indexOf(current)
+    state.tables.all.splice(index, 1, table)
   },
   [DELETE_TABLE] (state, table) {
     let index = state.tables.all.indexOf(table)
     state.tables.all.splice(index, 1)
-    state.tables.open = state.tables.all.filter((t) => { return !t.closed })
-    state.tables.closed = state.tables.all.filter((t) => { return t.closed })
-  },
-  [CLOSE_TABLE] (state, table) {
-    table.satus = 'closed'
-    table.closed = true
-    table.current = {}
-    _.extend(state.tables.all.find(t => t.id === table.id), table)
-    state.tables.open = state.tables.all.filter((t) => { return !t.closed })
-    state.tables.closed = state.tables.all.filter((t) => { return t.closed })
   },
   [SET_TABLE_BY_ID] (state, id) {
     state.tables.current = state.tables.all.find((table) => table.id === id)

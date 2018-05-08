@@ -5,12 +5,45 @@
 </template>
 
 <script>
+  import ActionCable from 'actioncable'
+  const Config = require('electron-config')
+  const config = new Config()
+
+  const WEBSOCKET_HOST = config.get('websocket', 'ws://localhost:3000/cable')
+
   export default {
-    name: 'app'
+    name: 'app',
+    data () {
+      return {
+        cable: ActionCable.createConsumer(WEBSOCKET_HOST),
+        channel: {}
+      }
+    },
+    created () {
+      this.outdated = false
+      this.channel = this.cable.subscriptions.create(
+        { channel: 'WebNotificationsChannel' },
+        {
+          connected: this.connected,
+          disconnected: this.disconnected,
+          received: this.received,
+          rejected: this.rejected
+        }
+      )
+    },
+    destroyed () {
+      this.cable.subscriptions.remove(this.channel)
+    },
+    methods: {
+      received (data) {
+        console.log('Data from APP', data)
+        this.$store.dispatch('updateTable', data)
+      }
+    }
   }
 </script>
 
-<style>
+<style lang="css">
   html { height: 100% !important; padding: 0px !important; margin: 0px !important; }
   body { min-height: 100%; background: #fff; }
   .is-not-link { pointer-events: none; }

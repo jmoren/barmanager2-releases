@@ -3,6 +3,9 @@ export default {
     if (config.get('api_url', null) === null) {
       config.set('api_url', 'http://localhost:3000/api/')
     }
+    if (config.get('websocket', null) === null) {
+      config.set('websocket', 'ws://localhost:3000/cable')
+    }
     if (config.get('business_name', null) === null) {
       config.set('business_name', '')
     }

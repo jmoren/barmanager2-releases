@@ -14,7 +14,8 @@ module.exports = function () {
     map_width: 300,
     map_height: 300,
     open_payments: true,
-    tablesView: 'classic'
+    tablesView: 'classic',
+    websocket: 'ws://localhost:3000/cable'
   }
   this.set = function (key, value) {
     config[key] = value

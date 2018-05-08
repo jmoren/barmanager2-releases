@@ -551,7 +551,7 @@ export default {
           }
 
           if (oldTable) {
-            this.$store.dispatch('closeTable', oldTable)
+            this.$store.dispatch('updateTable', oldTable)
           }
           document.getElementById('code').focus()
         },

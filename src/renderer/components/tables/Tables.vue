@@ -4,10 +4,6 @@
       <Loader></Loader>
     </div>
     <div v-else>
-      <alert class="is-fullwidth" style="height: 60px;" title="Vista desactualizada." type="warning" :closable="true" v-if="outdated">
-        Puede que la info que esta viendo en pantalla este desactualizada.
-        <a @click="reloadScreen">Recargar...</a>
-      </alert>
       <div class="columns" v-if="current.open">
         <div class="column is-12"  v-if="tablesView === 'map'">
           <div v-bind:style="screenStyle">
@@ -44,9 +40,9 @@
           </div>
         </div>
         <div class="column is-12" v-else>
-          <div v-if="tablesOpen.length > 0" style="margin-bottom: 40px;">
+          <div v-if="openTables.length > 0" style="margin-bottom: 40px;">
             <h1 class="header">
-              Mesas Abiertas
+              Mesas Abiertas ({{ openTables.length }})
               <div class="control has-addons is-pulled-right">
                 <input type="text" class="input" v-model="queryOpen" placeholder="Filtrar mesas abiertas">
               </div>
@@ -62,9 +58,9 @@
               </div>
             </div>
           </div>
-          <div v-if="tablesClosed.length > 0">
+          <div v-if="closedTables.length > 0">
             <h1 class="header">
-              Mesas Cerradas
+              Mesas Cerradas ({{ closedTables.length }})
               <div class="control has-addons is-pulled-right">
                 <input type="text" class="input" v-model="queryClosed" placeholder="Filtrar mesas cerradas">
               </div>
@@ -115,13 +111,9 @@ import Loader from '@/components/utils/Loader'
 import Auth from '../../auth'
 import alert from '../../mixins/Alert'
 import VueDraggableResizable from 'vue-draggable-resizable'
-import ActionCable from 'actioncable'
 
 const Config = require('electron-config')
 const config = new Config()
-
-// 1. Configure your websocket address
-const WEBSOCKET_HOST = 'ws://localhost:3000/cable'
 
 export default {
   name: 'Tables',
@@ -136,7 +128,6 @@ export default {
   },
   data () {
     return {
-      outdated: false,
       screenStyle: {
         height: '1000px',
         width: window.innerWidth,
@@ -145,8 +136,6 @@ export default {
       },
       selectedTable: { x: 0, y: 0, width: 100, height: 100 },
       tablesView: config.get('tablesView', 'classic'),
-      cable: ActionCable.createConsumer(WEBSOCKET_HOST),
-      channel: {},
       queryOpen: '',
       queryClosed: '',
       last_cash: {},
@@ -167,34 +156,30 @@ export default {
   computed: {
     ...mapGetters({
       tables: 'allTables',
+      openTables: 'openTables',
+      closedTables: 'closedTables',
       current: 'currentCash',
       users: 'allUsers'
     }),
     filteredOpenTables () {
       if (this.queryOpen) {
         let regex = new RegExp(this.queryOpen.toLowerCase())
-        return this.tablesOpen.filter((table) => {
+        return this.openTables.filter((table) => {
           return regex.test(table.description.toLowerCase())
         })
       } else {
-        return this.tablesOpen
+        return this.openTables
       }
     },
     filteredClosedTables () {
       if (this.queryClosed) {
         let regex = new RegExp(this.queryClosed.toLowerCase())
-        return this.tablesClosed.filter((table) => {
+        return this.closedTables.filter((table) => {
           return regex.test(table.description.toLowerCase())
         })
       } else {
-        return this.tablesClosed
+        return this.closedTables
       }
-    },
-    tablesOpen () {
-      return this.tables.filter((t) => { return !t.closed })
-    },
-    tablesClosed () {
-      return this.tables.filter((t) => { return t.closed })
     },
     loading () {
       return this.$parent.loading
@@ -202,31 +187,10 @@ export default {
   },
   created () {
     this.loadLastCash()
-    this.outdated = false
-    this.channel = this.cable.subscriptions.create(
-      { channel: 'WebNotificationsChannel' },
-      {
-        connected: this.connected,
-        disconnected: this.disconnected,
-        received: this.received,
-        rejected: this.rejected
-      }
-    )
-  },
-  destroyed () {
-    this.cable.subscriptions.remove(this.channel)
   },
   methods: {
-    reloadScreen () {
-      location.reload()
-    },
     onActivated (table) {
       this.selectedTable = table
-    },
-    received (data) {
-      this.outdated = true
-      this.alert('info', `La mesa ${data.description} fue actualizada.`)
-      console.log(`Message actualizada: ${JSON.stringify(data)}`)
     },
     loadLastCash () {
       if (this.current.open) { return false }
