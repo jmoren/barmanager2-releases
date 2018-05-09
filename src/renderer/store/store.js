@@ -145,14 +145,16 @@ const mutations = {
     state.tables.all.splice(index, 1, table)
   },
   [TRANSLATE_TABLE] (state, data) {
-    let oldTable = state.tables.all.find(t => t.id === data.oldTable.id)
-    let newTable = state.tables.all.find(t => t.id === data.newTable.id)
-    let indexOld = state.tables.all.indexOf(oldTable)
-    let indexNew = state.tables.all.indexOf(newTable)
-    oldTable.status = 'closed'
-    newTable.status = 'open'
-    state.tables.all.splice(indexOld, 1, oldTable)
-    state.tables.all.splice(indexNew, 1, newTable)
+    if (data.oldTable) {
+      let oldTable = state.tables.all.find(t => t.id === data.oldTable.id)
+      let indexOld = state.tables.all.indexOf(oldTable)
+      state.tables.all.splice(indexOld, 1, oldTable)
+    }
+    if (data.oldTable) {
+      let newTable = state.tables.all.find(t => t.id === data.newTable.id)
+      let indexNew = state.tables.all.indexOf(newTable)
+      state.tables.all.splice(indexNew, 1, newTable)
+    }
   },
   [DELETE_TABLE] (state, table) {
     let index = state.tables.all.indexOf(table)

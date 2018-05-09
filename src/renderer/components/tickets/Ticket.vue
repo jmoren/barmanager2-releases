@@ -487,9 +487,6 @@ export default {
       this.$http.post('tickets/' + this.ticket.id + '/cancel', { ticket: { cancel_reason_id: this.ticket.cancel_reason_id } }).then(
         (response) => {
           _.extend(this.ticket, response.data)
-          if (this.ticket.table) {
-            this.$store.dispatch('closeTable', this.ticket.table)
-          }
           this.cancelTicketModal = false
           this.alert('success', 'Ticket eliminado!')
         },
