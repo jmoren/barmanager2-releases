@@ -121,7 +121,7 @@
         </div>
       </div>
 
-      <modal :title="'Ticket Nro. ' + ticket.number" 
+      <modal :title="'Ticket Nro. ' + ticket.number"
         :show-footer="false" :on-cancel="closePrintModal" :is-show="isPrintOpen" transition="zoom">
         <form>
           <div class="columns">
@@ -193,7 +193,7 @@
         </form>
       </modal>
 
-      <modal :title="'TICKET Nro. ' + ticket.number" 
+      <modal :title="'TICKET Nro. ' + ticket.number"
         :show-footer="false" :on-cancel="closeModal" :is-show="isOpen" :ok-loading="true" transition="zoom">
         <form @submit.prevent="closeTicket()">
           <div class="columns modal-row with-border">
@@ -266,7 +266,7 @@
         </form>
       </modal>
 
-      <modal :title="'Editar Direccion - TICKET Nro. ' + ticket.number" 
+      <modal :title="'Editar Direccion - TICKET Nro. ' + ticket.number"
         :show-footer="true" :on-ok="updateTicketAddress" :is-show="addressOpen" :on-cancel="closeAddress">
         <p>Direccion actual: {{ ticket.address }}</p>
         <p>Complemento: {{ ticket.address_complement }}</p>
@@ -278,7 +278,7 @@
         </div>
       </modal>
 
-      <modal :title="'TICKET Nro. ' + ticket.number" :on-footer="false" 
+      <modal :title="'TICKET Nro. ' + ticket.number" :on-footer="false"
         :show-footer="false" :on-cancel="closeCancelTicket" :is-show="cancelTicketModal">
         <alert><b>Estas seguro de cancelar este ticket?</b></alert>
         <hr>
@@ -547,12 +547,9 @@ export default {
           let newTable = response.data.table
           _.extend(this.ticket, response.data)
           if (newTable) {
-            this.$store.dispatch('updateTable', newTable)
+            this.$store.dispatch('translateTable', {oldTable: oldTable, newTable: newTable})
           }
 
-          if (oldTable) {
-            this.$store.dispatch('updateTable', oldTable)
-          }
           document.getElementById('code').focus()
         },
         error => {
