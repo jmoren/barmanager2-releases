@@ -115,7 +115,7 @@ export default {
 
       this.$http.put('admin/tables/' + this.newTable.id, { table: params }).then(
         (response) => {
-          this.$store.dispatch('updateTable', response.data)
+          this.$store.dispatch('updateTable', [response.data])
           this.cancelTable()
         },
         error => {

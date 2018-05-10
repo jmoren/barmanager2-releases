@@ -8,7 +8,6 @@ const debug = process.env.NODE_ENV !== 'production'
 
 const DELETE_TABLE = 'DELETE_TABLE'
 const UPDATE_TABLE = 'UPDATE_TABLE'
-const TRANSLATE_TABLE = 'TRANSLATE_TABLE'
 const LOAD_TABLES = 'LOAD_TABLES'
 const ADD_TABLE = 'ADD_TABLE'
 const SET_DAILY_CASH = 'SET_DAILY_CASH'
@@ -112,9 +111,6 @@ const actions = {
   },
   removeUser ({ commit }, user) {
     commit(REMOVE_USER, user)
-  },
-  translateTable ({ commit }, data) {
-    commit(TRANSLATE_TABLE, data)
   }
 }
 
@@ -139,22 +135,16 @@ const mutations = {
   [ADD_TABLE] (state, table) {
     state.tables.all.push(table)
   },
-  [UPDATE_TABLE] (state, table) {
-    let current = state.tables.all.find(t => t.id === table.id)
-    let index = state.tables.all.indexOf(current)
-    state.tables.all.splice(index, 1, table)
-  },
-  [TRANSLATE_TABLE] (state, data) {
-    if (data.oldTable) {
-      let oldTable = state.tables.all.find(t => t.id === data.oldTable.id)
-      let indexOld = state.tables.all.indexOf(oldTable)
-      state.tables.all.splice(indexOld, 1, oldTable)
-    }
-    if (data.oldTable) {
-      let newTable = state.tables.all.find(t => t.id === data.newTable.id)
-      let indexNew = state.tables.all.indexOf(newTable)
-      state.tables.all.splice(indexNew, 1, newTable)
-    }
+  [UPDATE_TABLE] (state, data) {
+    _.forEach(data, (obj) => {
+      if (obj.id) {
+        console.log('Table id', obj.id)
+        console.log('Status', obj.status)
+        let table = state.tables.all.find(t => t.id === obj.id)
+        let indexOld = state.tables.all.indexOf(table)
+        state.tables.all.splice(indexOld, 1, obj)
+      }
+    })
   },
   [DELETE_TABLE] (state, table) {
     let index = state.tables.all.indexOf(table)

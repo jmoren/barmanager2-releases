@@ -208,7 +208,7 @@ export default {
       const data = { 'table': { x: x, y: y, width: w, height: h } }
       this.$http.put('tables/' + this.selectedTable.id, data).then(
         response => {
-          this.$store.dispatch('updateTable', response.data)
+          this.$store.dispatch('updateTable', [response.data])
         },
         error => {
           this.alert('danger', error.data)
@@ -236,7 +236,7 @@ export default {
       } else {
         this.$http.post('tables/' + table.id + '/open').then(
           response => {
-            this.$store.dispatch('updateTable', response.data)
+            this.$store.dispatch('updateTable', [response.data])
             this.goToTable(response.data.current.id)
           },
           error => {

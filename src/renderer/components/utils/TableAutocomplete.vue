@@ -73,7 +73,7 @@
         } else {
           this.$http.post('tables/' + item.id + '/open').then(
             response => {
-              this.$store.dispatch('updateTable', response.data)
+              this.$store.dispatch('updateTable', [response.data])
               this.$router.push({ name: 'Ticket', params: { id: response.data.current.id } })
               this.reset()
             },

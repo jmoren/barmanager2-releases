@@ -505,7 +505,7 @@ export default {
           this.isOpen = false
           _.extend(this.ticket, response.data)
           if (this.ticket.table) {
-            this.$store.dispatch('updateTable', response.data.table)
+            this.$store.dispatch('updateTable', [response.data.table])
           }
           this.alert('success', 'Ticket cerrado!')
         },
@@ -543,10 +543,6 @@ export default {
         response => {
           let newTable = response.data.table
           _.extend(this.ticket, response.data)
-          if (newTable) {
-            this.$store.dispatch('translateTable', {oldTable: oldTable, newTable: newTable})
-          }
-
           document.getElementById('code').focus()
         },
         error => {

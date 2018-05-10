@@ -17,6 +17,7 @@
       return {
         cable: ActionCable.createConsumer(WEBSOCKET_HOST),
         channel: {}
+
       }
     },
     created () {
@@ -37,6 +38,7 @@
     methods: {
       received (data) {
         console.log('Data from APP', data)
+        // data should came from backend as array
         this.$store.dispatch('updateTable', data)
       }
     }
