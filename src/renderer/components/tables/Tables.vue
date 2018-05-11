@@ -52,8 +52,8 @@
               <div class="column is-3" v-for="table in filteredOpenTables" :key="table.id">
                 <router-link class="open-table-button is-fullwidth button is-medium" :class="table.color" :to="{ name: 'Ticket', params: { id: table.current.id } }">
                   <div style="margin: 5px 0">{{ table.description}}</div>
-                  <div v-if="table.current.client.id"><small>{{ table.current.client.name }}</small></div>
-                  <div v-if="table.current.client.id"><small>{{ table.current.client.address || 'Sin direccion' | truncate }}</small></div>
+                  <div v-if="table.current.client"><small>{{ table.current.client.name }}</small></div>
+                  <div v-if="table.current.client"><small>{{ table.current.client.address || 'Sin direccion' | truncate }}</small></div>
                 </router-link>
               </div>
             </div>

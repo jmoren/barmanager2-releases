@@ -537,11 +537,9 @@ export default {
       this.traslateTicket()
     },
     traslateTicket (newTableId) {
-      let oldTable = this.ticket.table
       let params = { table_id: newTableId }
       this.$http.post('tickets/' + this.ticket.id + '/traslate', params).then(
         response => {
-          let newTable = response.data.table
           _.extend(this.ticket, response.data)
           document.getElementById('code').focus()
         },

@@ -138,8 +138,6 @@ const mutations = {
   [UPDATE_TABLE] (state, data) {
     _.forEach(data, (obj) => {
       if (obj.id) {
-        console.log('Table id', obj.id)
-        console.log('Status', obj.status)
         let table = state.tables.all.find(t => t.id === obj.id)
         let indexOld = state.tables.all.indexOf(table)
         state.tables.all.splice(indexOld, 1, obj)

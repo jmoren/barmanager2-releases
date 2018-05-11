@@ -269,26 +269,24 @@
         }
         params.ticketable_id = this.type !== 'Additional' ? entry.item.id : null
 
-        this.$http.post('tickets/' + this.ticket.id + '/entries', { entry: params }).then(
-          response => {
-            var index = this.entries.findIndex(function (entry) {
-              return entry.id === response.data.id
-            })
-            if (index > -1) {
-              this.entries.splice(index, 1)
-            }
-            this.entries.push(response.data)
-            this.toggleEntry('Item')
-            document.getElementById('code').focus()
-          },
-          error => {
-            this.$notify.open({
-              content: error.data || 'Error agregando Item',
-              duration: 3000,
-              type: 'danger'
-            })
+        this.$http.post('tickets/' + this.ticket.id + '/entries', { entry: params })
+        .then(response => {
+          var index = this.entries.findIndex(function (entry) {
+            return entry.id === response.data.id
+          })
+          if (index > -1) {
+            this.entries.splice(index, 1)
           }
-        )
+          this.entries.push(response.data)
+          this.toggleEntry('Item')
+          document.getElementById('code').focus()
+        }).catch(error => {
+          this.$notify.open({
+            content: error.data || 'Error agregando Item',
+            duration: 3000,
+            type: 'danger'
+          })
+        })
       },
       populateData () {
         this.$http.get('items').then(
