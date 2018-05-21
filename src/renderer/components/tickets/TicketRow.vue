@@ -80,11 +80,6 @@
                         <i class="fa fa-floated is-danger" :class="{'fa-trash': !item.canceled, 'fa-commenting-o': item.canceled }"></i>
                       </button>
                     </tooltip>
-                    <tooltip v-if="item.created_by" :content="item.created_by">
-                      <span class="is-small is-light">
-                        <i class="fa fa-floated fa-user"></i>
-                      </span>
-                    </tooltip>
                     <div slot="content">
                       <h1>Seleccione Razon</h1>
                       <hr>
@@ -103,8 +98,8 @@
                   </popover>
                   <tag class="is-small is-light" v-else><i class="fa fa-check is-success fa-floated"></i></tag>
                 </span>
-                <tooltip v-if="item.delivered_at" v-bind:content="item.delivered_at | moment('HH:mm') " placement="top" trigger="hover">
-                  <i class="fa fa-clock-o fa-floated"></i>
+                <tooltip v-if="item.created_by" v-bind:content="item.created_by" placement="top" trigger="hover">
+                  <i class="fa fa-floated fa-user-o"></i>
                 </tooltip>
                 <span>{{ item.item_name }}</span>
               </div>
@@ -119,7 +114,7 @@
                     </a>
                   </tooltip>
                   <div class="button is-small is-light is-not-link" v-else style="cursor: default">
-                    <span>{{ item.delivered_at ? 'Entregado' : '' }}</span>
+                    <span v-if="item.delivered_at">Entregado a las {{item.delivered_at | moment('HH:mm')}}</span>
                     <span v-if="item.canceled && item.delivered_at">/</span>
                     <span>{{ item.canceled ? 'Cancelado' : '' }} </span>
                     <span class="icon is-small"><i class="fa fa-circle" :class="{'is-danger': item.canceled, 'is-success': !item.canceled }"></i></span>
