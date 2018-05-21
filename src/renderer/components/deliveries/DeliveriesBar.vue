@@ -79,6 +79,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import DeliveryComposer from '@/components/deliveries/CreateDelivery'
+const Config = require('electron-config')
+const config = new Config()
 
 export default {
   name: 'deliveriesBar',
@@ -87,7 +89,8 @@ export default {
     return {
       loading: false,
       delivery: [],
-      createPedido: false
+      createPedido: false,
+      interval: config.get('delivery_interval', 7000)
     }
   },
   filters: {
@@ -104,7 +107,7 @@ export default {
   created () {
     this.mainCall = setInterval(() => {
       this.loadDelivery()
-    }, 7000)
+    }, this.interval)
   },
   beforeDestroy () {
     clearInterval(this.mainCall)

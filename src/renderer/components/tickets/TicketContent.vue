@@ -176,7 +176,7 @@
     },
     data () {
       return {
-        inputType: config.get('ticketItemInput', 'Classic'),
+        inputType: config.get('ticket_item_input', 'Classic'),
         type: 'Item',
         items: [],
         promotions: [],

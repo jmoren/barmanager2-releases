@@ -88,6 +88,7 @@
     components: { KitchenRow },
     data () {
       return {
+        interval: config.get('zone_interval', 7000),
         selectedZone: 'cocina',
         tickets: [],
         current: Date.now(),
@@ -169,7 +170,7 @@
         this.fetchTickets()
         this.mainCall = setInterval(() => {
           this.fetchTickets()
-        }, 15000)
+        }, this.interval)
       },
       syncKitchen () {
         this.loading = true

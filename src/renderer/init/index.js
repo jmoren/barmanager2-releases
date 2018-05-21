@@ -30,8 +30,8 @@ export default {
     if (config.get('barcode_last_char', null) === null) {
       config.set('barcode_last_char', '>')
     }
-    if (config.get('ticketItemInput', null) === null) {
-      config.set('ticketItemInput', 'Classic')
+    if (config.get('ticket_item_input', null) === null) {
+      config.set('ticket_item_input', 'Classic')
     }
     if (config.get('map_visible', null) === null) {
       config.set('map_visible', false)
@@ -45,8 +45,14 @@ export default {
     if (config.get('open_payments', null) === null) {
       config.set('open_payments', true)
     }
-    if (config.get('tablesView', null) === null) {
-      config.set('tablesView', 'classic')
+    if (config.get('tables_view', null) === null) {
+      config.set('tables_view', 'classic')
+    }
+    if (config.get('delivery_interval', null) === null) {
+      config.set('delivery_interval', 7000)
+    }
+    if (config.get('zone_interval', null) === null) {
+      config.set('zone_interval', 10000)
     }
   }
 }

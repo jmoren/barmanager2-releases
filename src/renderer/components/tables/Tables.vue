@@ -5,7 +5,7 @@
     </div>
     <div v-else>
       <div class="columns" v-if="current.open">
-        <div class="column is-12"  v-if="tablesView === 'map'">
+        <div class="column is-12" v-if="tablesView === 'map'">
           <div v-bind:style="screenStyle">
             <vue-draggable-resizable
               @activated="onActivated(t)"
@@ -135,7 +135,7 @@ export default {
         position: 'relative'
       },
       selectedTable: { x: 0, y: 0, width: 100, height: 100 },
-      tablesView: config.get('tablesView', 'classic'),
+      tablesView: config.get('tables_view', 'classic'),
       queryOpen: '',
       queryClosed: '',
       last_cash: {},
