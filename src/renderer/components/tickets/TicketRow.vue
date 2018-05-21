@@ -80,6 +80,11 @@
                         <i class="fa fa-floated is-danger" :class="{'fa-trash': !item.canceled, 'fa-commenting-o': item.canceled }"></i>
                       </button>
                     </tooltip>
+                    <tooltip v-if="item.created_by" :content="item.created_by">
+                      <span class="is-small is-light">
+                        <i class="fa fa-floated fa-user"></i>
+                      </span>
+                    </tooltip>
                     <div slot="content">
                       <h1>Seleccione Razon</h1>
                       <hr>

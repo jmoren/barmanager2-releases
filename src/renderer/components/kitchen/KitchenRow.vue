@@ -37,7 +37,10 @@
                   <i :class="{ 'fa fa-expand': !rowExpanded, 'fa fa-compress': rowExpanded }"></i>
                 </span>
               </a>
-              <div class="is-pulled-right button is-white is-not-link">
+              <div v-if="ticket.delivery_at" class="is-pulled-right button is-white is-not-link">
+                <div>Para las {{ticket.delivery_at | moment('HH:mm')}}</div>
+              </div>
+              <div v-if="!ticket.delivery_at" class="is-pulled-right button is-white is-not-link">
                 Pedido: {{entry.items[0].created_at | moment("from") }}
               </div>
             </div>

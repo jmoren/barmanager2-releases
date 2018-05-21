@@ -4,8 +4,8 @@
       <div class="ticket-form">
         <div class="columns">
           <div class="column is-3">
-            <a class="button is-fullwidth" v-shortkey.once="['ctrl', '1']" 
-                :class="{'is-disabled': ticket.closed, 'is-primary': type === 'Item' }" @shortkey="toggleEntry('Item')" 
+            <a class="button is-fullwidth" v-shortkey.once="['ctrl', '1']"
+                :class="{'is-disabled': ticket.closed, 'is-primary': type === 'Item' }" @shortkey="toggleEntry('Item')"
                 @click.prevent="toggleEntry('Item');">
               <span>Item</span>
             </a>
@@ -29,7 +29,7 @@
         </div>
         <hr>
         <div v-if="type === 'Item'">
-          <ticket-item-form v-if="inputType !== 'Tactil'" 
+          <ticket-item-form v-if="inputType !== 'Tactil'"
             :items="items" :status="ticket.closed" @save-entry="entry => addEntry(entry)"/>
           <div v-else>
             <p  style="height: 65px"></p>
@@ -71,9 +71,14 @@
       </div>
       <div class="resume">
         <div class="columns resume-header print">
-          <div class="column is-4">TOTAL $ {{ total | withDecimals }}</div>
+          <div class="column is-3">TOTAL $ {{ total | withDecimals }}</div>
           <div class="column is-4">PENDIENTE $ {{(pending || 0) | withDecimals}}</div>
-          <div class="column is-4" v-if="!ticket.table_id">
+          <div class="column is-5" v-if="!ticket.table_id">
+            <div class="control has-addons is-pulled-left not-print">
+              <span class="button is-primary is-not-link"><i class="fa fa-clock-o"></i></span>
+              <input type="time" v-model="delivery_at" class="input" placeholder="Hora de entrega"
+              @keydown.enter="setDeliveryTime()">
+            </div>
             <div class="control has-addons is-pulled-right not-print">
               <span class="button is-primary is-not-link"><i class="fa fa-dollar"></i></span>
               <input type="number" step="0.01" v-model="pay_with" class="input" placeholder="Paga el delivery con"
@@ -94,7 +99,7 @@
       </div>
     </div>
     <div class="column is-3 payments" v-if="openPayments">
-      <ticket-payment :is-open="false" 
+      <ticket-payment :is-open="false"
         :ticket="ticket" :total="total" @ticket-paid="setPaid" @ticket-not-paid="setNotPaid"></ticket-payment>
     </div>
     <b-aside :is-show="isShow" :width="500" :show-footer="false" placement="right" title="Favoritos" @close="isShow=false">
@@ -138,6 +143,7 @@
 
 <script>
   import Vue from 'vue'
+  import moment from 'moment'
   import Loader from '@/components/utils/Loader'
   import TicketRow from './TicketRow'
   import TicketPayment from './TicketPayment'
@@ -179,7 +185,8 @@
         loading: false,
         pending: 0,
         pay_with: this.ticket.pay_with,
-        itemsToAdd: []
+        itemsToAdd: [],
+        delivery_at: moment(this.ticket.delivery_at).format('HH:mm:ss')
       }
     },
     created () {
@@ -307,6 +314,17 @@
       setNotPaid (value) {
         this.$emit('ticket-not-paid', value)
         this.pending = value
+      },
+      setDeliveryTime () {
+        this.$http.put('tickets/' + this.ticket.id, { ticket: { delivery_at: this.delivery_at } }).then(
+          response => {
+            console.log('updated')
+          },
+          (error) => {
+            console.log('not updated')
+            this.alert('danger', error.data)
+          }
+        )
       },
       setPayWith (resetValue) {
         if (this.ticket.table_id) {

@@ -188,6 +188,17 @@ export default {
   created () {
     this.loadLastCash()
   },
+  mounted () {
+    this.$http.get('tables').then(
+      response => {
+        this.$store.dispatch('setTables', response.data)
+      },
+      error => {
+        console.log(error)
+        this.alert('danger', 'Error cargando mesas.')
+      }
+    )
+  },
   methods: {
     onActivated (table) {
       this.selectedTable = table
