@@ -1,5 +1,5 @@
 <template>
-  <div id="login">
+  <div id="login" v-shortkey.once="['ctrl', 's']" @shortkey="settingsLink()">
     <div class="login-content">
       <h1>Bienvenido</h1>
       <alert type="danger" v-if="error">{{ error.error.user_authentication[0] }}</alert>
@@ -11,7 +11,7 @@
           </div>
           <div class="control has-icon has-icon-right">
           <i class="fa fa-lock"></i>
-            <input type="password" placeholder="Password" @keydown.enter.prevent="submit()" v-model="credentials.password" class="input is-medium">  
+            <input type="password" placeholder="Password" @keydown.enter.prevent="submit()" v-model="credentials.password" class="input is-medium">
           </div>
           <hr>
           <div class="columns">
@@ -24,6 +24,9 @@
           <Loader :hide-text="true"></Loader>
         </div>
       </div>
+      <router-link v-if="showSettingsLink" :to="{ name: 'AdminSettings' }" class="button is-fullwidth is-medium is-primary">
+        Settings
+      </router-link>
       <small>BarManager 2.0 <i class="fa fa-copyright fa-floated"></i>  2017</small>
     </div>
   </div>
@@ -37,6 +40,7 @@
     components: { Loader },
     data () {
       return {
+        showSettingsLink: false,
         credentials: {
           email: '',
           password: ''
@@ -46,6 +50,9 @@
       }
     },
     methods: {
+      settingsLink () {
+        this.showSettingsLink = true
+      },
       submit () {
         this.loading = true
         auth.login(this, this.credentials, '/')

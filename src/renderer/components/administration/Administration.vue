@@ -62,7 +62,7 @@ export default {
     }
   },
   beforeRouteEnter (to, from, next) {
-    if (['manager', 'admin'].indexOf(Auth.user.profile.role) === -1) {
+    if ((['manager', 'admin'].indexOf(Auth.user.profile.role) === -1) && (to.name !== 'AdminSettings')) {
       next(vm => vm.$router.push({ name: 'NotFound' }))
     } else {
       next()
