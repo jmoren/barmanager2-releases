@@ -17,8 +17,6 @@ const winURL = process.env.NODE_ENV === 'development'
   : `file://${__dirname}/index.html`
 
 function createWindow () {
-  autoUpdater.checkForUpdatesAndNotify()
-
   /**
    * Initial window options
    */
@@ -33,6 +31,7 @@ function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+  autoUpdater.checkForUpdatesAndNotify()
 }
 
 app.on('ready', createWindow)

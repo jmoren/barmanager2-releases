@@ -1,7 +1,7 @@
 {
   "name": "barmanager",
-  "version": "2.0.1",
-  "author": "Jairo de Morais & Jorge Moreno <jairodemorais@gmail.com>",
+  "version": "2.1.2",
+  "author": "Jorge Moreno <jmoren@gmail.com>",
   "description": "Adminsitra tu negocio de manera facil",
   "license": null,
   "main": "./dist/electron/main.js",
@@ -54,7 +54,16 @@
       "icon": "build/icons/bar.icns"
     },
     "win": {
-      "icon": "build/icons/bar.ico"
+      "icon": "build/icons/bar.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
     },
     "linux": {
       "icon": "build/icons"
