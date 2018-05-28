@@ -50,8 +50,9 @@
                     <button class="button is-primary">{{ user.profile.name }}</button>
                     <div slot="content">
                       <div class="columns" style="margin-bottom: 0px;">
-                        <div class="column is-12 has-text-centered">
-                          <h2><b>{{ mapRoles[user.profile.role] }}</b></h2>
+                        <div class="column is-12">
+                          <div style="float: left">Rol: <b>{{ mapRoles[user.profile.role] }}</b></div>
+                          <div style="float: right">Version: <b>{{ version }}</b></div>
                         </div>
                       </div>
                       <div>
@@ -229,7 +230,7 @@
   import TableAutocomplete from '@/components/utils/TableAutocomplete'
   import alert from '../../mixins/Alert'
   import deliveriesBar from '@/components/deliveries/DeliveriesBar'
-
+  const appPackage = require('../../../../package.json')
   export default {
     name: 'PrivateApp',
     components: { TableAutocomplete, deliveriesBar },
@@ -245,7 +246,8 @@
           manager: 'Manager',
           admin: 'Admin',
           cooker: 'Cocinero'
-        }
+        },
+        version: appPackage.version
       }
     },
     computed: {

@@ -31,18 +31,18 @@
         </template>
       </table-toolbar>
       <column label="ID" field="id" sorter="custom">
-        <template scope="row">
+        <template slot-scope="row">
           <router-link :to="{ name: 'AdminTable', params: { id: row.id } }"># {{ row.id }}</router-link>
         </template>
       </column>
       <column label="Color" field="color" sorter="custom">
-        <template scope="row">
+        <template slot-scope="row">
           <i class="fa fa-circle" :class="row.color"></i>
         </template>
       </column>
       <column label="Descripcion" field="description" sorter="custom"></column>
       <column label="">
-        <template scope="row">
+        <template slot-scope="row">
           <div class="control has-addons">
             <a @click.prevent="removeTable(row)" class="button is-light">
                <span class="icon is-small"><i class="fa fa-trash"></i></span>

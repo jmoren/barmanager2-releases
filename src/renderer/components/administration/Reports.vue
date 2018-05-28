@@ -67,19 +67,20 @@
       },
       generateReportBy () {
         if (this.group_entity !== 'cancels') {
-          this.$http.get('admin/reports/sells_by?from=' + this.range.from + '&to=' + this.range.to + '&group_entity=' + this.group_entity).then(
-            response => {
-              this.data_sells = response.data
-            },
-            error => {
-              console.log(error)
-            }
-          )
+          this.$http.get('admin/reports/sells_by?from=' + this.range.from + '&to=' + this.range.to + '&group_entity=' + this.group_entity)
+            .then(
+              response => {
+                this.data_sells = response.data
+              },
+              error => {
+                console.log(error)
+              }
+            )
         } else {
-          this.$http.get('admin/reports/canceled_products?from=' + this.range.from + '&to=' + this.range.to).then(
-          response => {
-            this.data = response.data.values
-          })
+          this.$http.get('admin/reports/canceled_products?from=' + this.range.from + '&to=' + this.range.to)
+            .then(response => {
+              this.data = response.data.values
+            })
         }
       }
     }
