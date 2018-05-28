@@ -27,7 +27,7 @@
       <router-link v-if="showSettingsLink" :to="{ name: 'AdminSettings' }" class="button is-fullwidth is-medium is-primary">
         Settings
       </router-link>
-      <small>BarManager 2.0 <i class="fa fa-copyright fa-floated"></i>  2017</small>
+      <small>BarManager {{ version }} <i class="fa fa-copyright fa-floated"></i>  2017</small>
     </div>
   </div>
 </template>
@@ -35,6 +35,8 @@
 <script>
   import auth from '../../auth'
   import Loader from '@/components/utils/Loader'
+  const appPackage = require('../../../../package.json')
+
   export default {
     name: 'Login',
     components: { Loader },
@@ -46,7 +48,8 @@
           password: ''
         },
         error: '',
-        loading: false
+        loading: false,
+        version: appPackage.version
       }
     },
     methods: {
