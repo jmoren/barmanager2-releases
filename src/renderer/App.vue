@@ -8,7 +8,6 @@
   import ActionCable from 'actioncable'
   const Config = require('electron-config')
   const config = new Config()
-
   const WEBSOCKET_HOST = config.get('websocket', 'ws://localhost:3000/cable')
 
   export default {
@@ -17,10 +16,10 @@
       return {
         cable: ActionCable.createConsumer(WEBSOCKET_HOST),
         channel: {}
-
       }
     },
     created () {
+      this.vars = process.env
       this.outdated = false
       this.channel = this.cable.subscriptions.create(
         { channel: 'WebNotificationsChannel' },
