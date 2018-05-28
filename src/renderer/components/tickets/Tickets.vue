@@ -3,6 +3,26 @@
     <h1 class="header">
       <i class="fa fa-tags fa-floated"></i>
       Tickets
+      <div class="control has-addons is-pulled-right">
+        <div class="control is-grouped" style="margin-right: 20px;">
+          <div class="control is-expanded">
+            <input type="text" class="input" v-model="filters.query" placeholder="Nro ticket">
+          </div>
+          <div class="control has-addons">
+            <tooltip content="Estado del ticket">
+              <radio-group v-model="filters.status">
+                <radio-button val="null">Todos</radio-button>
+                <radio-button val="open">Abierto</radio-button>
+                <radio-button val="closed">Cerrado</radio-button>
+              </radio-group>
+            </tooltip>
+          </div>
+          <div class="control has-addons">
+            <a class="button is-success" @click.prevent="fetchTickets()"><i class="fa fa-filter"></i></a>
+            <a class="button is-light" @click.prevent="clearFilters"><i class="fa fa-times"></i></a>
+          </div>
+        </div>
+      </div>
     </h1>
     <hr>
     <div v-if="loading">
@@ -67,6 +87,7 @@ export default {
   },
   data () {
     return {
+      filters: { query: '', status: null },
       tickets: [],
       meta: {},
       loading: false
@@ -76,6 +97,10 @@ export default {
     this.fetchTickets(1)
   },
   methods: {
+    clearFilters () {
+      this.filters = { query: '', status: null }
+      this.fetchTickets(1)
+    },
     fetchTickets (page) {
       let url = 'tickets?page=' + (page || 1)
 
@@ -84,6 +109,14 @@ export default {
       }
       if (typeof (this.$route.params.not_paid) === 'boolean') {
         url = url + '&not_paid=' + this.$route.params.not_paid
+      }
+
+      if (this.filters.status !== null) {
+        url = url + '&status=' + this.filters.status
+      }
+
+      if (this.filters.query !== '') {
+        url = url + '&number=' + parseInt(this.filters.query.slice(0, -2), 10)
       }
 
       this.$http.get(url).then(

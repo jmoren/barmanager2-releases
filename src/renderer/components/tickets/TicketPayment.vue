@@ -55,10 +55,17 @@
                 </tooltip>
                 <span v-else><i class="fa fa-dollar fa-floated"></i></span>
               </td>
-              <td><tooltip v-bind:content="payment.type"><tag>{{ payment.type[0] }}</tag></tooltip></td>
+              <td>
+                <div class="select">
+                  <select v-model="payment.type" @change="updatePayment(payment)">
+                    <option value="Tarjeta">Tarjeta</option>
+                    <option value="Efectivo">Efectivo</option>
+                  </select>
+                </div>
+              </td>
               <td><b>${{ payment.amount }}</b></td>
               <td>
-                <tooltip content="Poner pago a favor">
+                <tooltip content="Poner pago a favor" v-if="!ticket.closed">
                   <a @click.prevent="moveToFavor(payment)" class="button is-light is-small" v-if="ticket.client_id">
                     <span class="icon is-small"><i class="fa fa-arrow-right"></i></span>
                   </a>
@@ -70,7 +77,7 @@
               <td><tooltip v-bind:content="payment.type"><tag>{{ payment.type[0] }}</tag></tooltip></td>
               <td><b>${{ payment.amount }}</b></td>
               <td>
-                <tooltip content="Asignar saldo a favor a este ticket">
+                <tooltip content="Asignar saldo a favor a este ticket" v-if="!ticket.closed">
                   <a @click.prevent="applyPayment(payment)" class="button is-light is-small">
                     <span class="icon is-small"><i class="fa fa-plus"></i></span>
                   </a>
@@ -174,6 +181,24 @@
       }
     },
     methods: {
+      updatePayment (payment) {
+        let params = { payment: { id: payment.id, type: payment.type } }
+
+        this.$http.put('tickets/' + this.ticket.id + '/payments/' + payment.id, params).then(
+          response => {
+            this.$notify.open({
+              type: 'success',
+              content: 'Pago actualizado correctamente'
+            })
+          },
+          error => {
+            this.$notify.open({
+              type: 'danger',
+              content: error.body.partial_daily_cash[0]
+            })
+          }
+        )
+      },
       loadPayments () {
         this.loading = true
         this.$http.get('tickets/' + this.ticket.id + '/payments').then(

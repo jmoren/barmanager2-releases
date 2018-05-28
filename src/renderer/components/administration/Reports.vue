@@ -7,9 +7,11 @@
         <span class="select is-fullwidth">
           <select v-model="group_entity">
             <option >Seleccione una opcion</option>
+            <option value="cancels">Cancelados</option>
             <option value="table">Mesa</option>
             <option value="user">Usuario</option>
             <option value="client">Cliente</option>
+            <option value="products">Producto</option>
           </select>
         </span>
       </div>
@@ -22,12 +24,12 @@
         </button>
       </div>
     </div>
-    <div class="box">
+    <div class="box" v-if="group_entity === 'cancels'">
       <h4>Reporte de Cancelamiento</h4>
       <hr>
       <column-chart :stacked="true" :data="data"></column-chart>
     </div>
-    <div class="box" v-if="group_entity">
+    <div class="box" v-else>
       <h4>Reporte de Ventas: <span>Por <b>{{ entities[group_entity] }}</b></span></h4>
       <hr>
       <bar-chart :stacked="true" label="Tickets" :data="data_sells"></bar-chart>
@@ -43,7 +45,7 @@
       return {
         data: [],
         data_sells: [],
-        group_entity: undefined,
+        group_entity: 'cancels',
         range: { from: '', to: '' },
         entities: { table: 'Mesas', client: 'Cliente', user: 'Usuario' },
         dateOptions: {
@@ -61,17 +63,10 @@
     },
     methods: {
       loadReports () {
-        this.fetchValues()
         this.generateReportBy()
       },
-      fetchValues () {
-        this.$http.get('admin/reports/canceled_products?from=' + this.range.from + '&to=' + this.range.to).then(
-          response => {
-            this.data = response.data.values
-          })
-      },
       generateReportBy () {
-        if (this.group_entity) {
+        if (this.group_entity !== 'cancels') {
           this.$http.get('admin/reports/sells_by?from=' + this.range.from + '&to=' + this.range.to + '&group_entity=' + this.group_entity).then(
             response => {
               this.data_sells = response.data
@@ -80,6 +75,11 @@
               console.log(error)
             }
           )
+        } else {
+          this.$http.get('admin/reports/canceled_products?from=' + this.range.from + '&to=' + this.range.to).then(
+          response => {
+            this.data = response.data.values
+          })
         }
       }
     }

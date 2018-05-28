@@ -142,272 +142,272 @@
 </template>
 
 <script>
-  import Vue from 'vue'
-  import moment from 'moment'
-  import Loader from '@/components/utils/Loader'
-  import TicketRow from './TicketRow'
-  import TicketPayment from './TicketPayment'
-  import TicketItemForm from './TicketItemForm'
-  import TicketPromoForm from './TicketPromoForm'
-  import TicketAdditionalForm from './TicketAdditionalForm'
-  import TicketTactilForm from './TicketTactilForm'
-  import _ from 'lodash'
-  const Config = require('electron-config')
-  const config = new Config()
+import Vue from 'vue'
+import moment from 'moment'
+import Loader from '@/components/utils/Loader'
+import TicketRow from './TicketRow'
+import TicketPayment from './TicketPayment'
+import TicketItemForm from './TicketItemForm'
+import TicketPromoForm from './TicketPromoForm'
+import TicketAdditionalForm from './TicketAdditionalForm'
+import TicketTactilForm from './TicketTactilForm'
+import _ from 'lodash'
+const Config = require('electron-config')
+const config = new Config()
 
-  export default {
-    name: 'TicketContent',
-    props: ['ticket', 'reasons', 'kitchenView', 'openPayments'],
-    components: {
-      TicketRow,
-      TicketPayment,
-      TicketItemForm,
-      TicketPromoForm,
-      TicketAdditionalForm,
-      TicketTactilForm,
-      Loader
+export default {
+  name: 'TicketContent',
+  props: ['ticket', 'reasons', 'kitchenView', 'openPayments'],
+  components: {
+    TicketRow,
+    TicketPayment,
+    TicketItemForm,
+    TicketPromoForm,
+    TicketAdditionalForm,
+    TicketTactilForm,
+    Loader
+  },
+  watch: {
+    '$route': 'focusCode',
+    'ticket.closed': 'fetchEntries',
+    total () {
+      this.setPayWith(true)
+    }
+  },
+  data () {
+    return {
+      inputType: config.get('ticket_item_input', 'Classic'),
+      type: 'Item',
+      items: [],
+      promotions: [],
+      entries: [],
+      isShow: false,
+      loading: false,
+      pending: 0,
+      pay_with: this.ticket.pay_with,
+      itemsToAdd: [],
+      delivery_at: moment(this.ticket.delivery_at).format('HH:mm:ss')
+    }
+  },
+  created () {
+    this.pending = this.ticket.pending
+    this.populateData()
+    this.fetchEntries()
+    this.focusCode()
+  },
+  computed: {
+    getCategories () {
+      const rawCats = this.items.map(item => item.category)
+      return _.uniqBy(rawCats, function (cat) {
+        return cat.id
+      })
     },
-    watch: {
-      '$route': 'focusCode',
-      'ticket.closed': 'fetchEntries',
-      total () {
-        this.setPayWith(true)
-      }
+    favoriteData () {
+      let data = {}
+      data.promotions = this.promotions.filter(function (promotion) { return promotion.favorite })
+      data.items = this.items.filter(function (item) { return item.favorite })
+      return data
     },
-    data () {
-      return {
-        inputType: config.get('ticket_item_input', 'Classic'),
-        type: 'Item',
-        items: [],
-        promotions: [],
-        entries: [],
-        isShow: false,
-        loading: false,
-        pending: 0,
-        pay_with: this.ticket.pay_with,
-        itemsToAdd: [],
-        delivery_at: moment(this.ticket.delivery_at).format('HH:mm:ss')
-      }
-    },
-    created () {
-      this.pending = this.ticket.pending
-      this.populateData()
-      this.fetchEntries()
-      this.focusCode()
-    },
-    computed: {
-      getCategories () {
-        const rawCats = this.items.map(item => item.category)
-        return _.uniqBy(rawCats, function (cat) {
-          return cat.id
-        })
-      },
-      favoriteData () {
-        let data = {}
-        data.promotions = this.promotions.filter(function (promotion) { return promotion.favorite })
-        data.items = this.items.filter(function (item) { return item.favorite })
-        return data
-      },
-      total () {
-        this.ticket.total = this.entries.filter((e) => {
-          return !e.canceled
-        }).reduce(function (total, entry) {
-          return parseFloat(total) + parseFloat(entry.subtotal)
-        }, 0.0)
+    total () {
+      this.ticket.total = this.entries.filter((e) => {
+        return !e.canceled
+      }).reduce(function (total, entry) {
+        return parseFloat(total) + parseFloat(entry.subtotal)
+      }, 0.0)
 
-        return this.ticket.total
-      },
-      totalLines () {
-        return this.entries.filter((e) => {
-          return !e.canceled
-        }).length
-      },
-      totalCanceledLines () {
-        return this.entries.filter((e) => {
-          return e.canceled
-        }).length
-      }
+      return this.ticket.total
     },
-    filters: {
-      withDecimals: function (value) {
-        return parseFloat(value).toFixed(2)
-      }
+    totalLines () {
+      return this.entries.filter((e) => {
+        return !e.canceled
+      }).length
     },
-    methods: {
-      openTactil () {
-        this.$refs.tactil.openForm()
-      },
-      fetchEntries () {
-        if (typeof (this.ticket.id) === 'undefined') {
-          return
+    totalCanceledLines () {
+      return this.entries.filter((e) => {
+        return e.canceled
+      }).length
+    }
+  },
+  filters: {
+    withDecimals: function (value) {
+      return parseFloat(value).toFixed(2)
+    }
+  },
+  methods: {
+    openTactil () {
+      this.$refs.tactil.openForm()
+    },
+    fetchEntries () {
+      if (typeof (this.ticket.id) === 'undefined') {
+        return
+      }
+      this.loading = true
+      this.$http.get('tickets/' + this.ticket.id + '/entries').then(
+        response => {
+          this.entries = response.data
+          this.loading = false
         }
-        this.loading = true
-        this.$http.get('tickets/' + this.ticket.id + '/entries').then(
-          response => {
-            this.entries = response.data
-            this.loading = false
+      )
+    },
+    toggleEntry (value) {
+      this.type = value
+      if (this.inputType === 'Tactil' && this.type === 'Item') {
+        this.openTactil()
+      } else {
+        this.focusCode()
+      }
+    },
+    focusCode () {
+      Vue.nextTick(() => {
+        let elem = document.getElementById('code')
+        if (elem) {
+          elem.focus()
+        }
+      })
+    },
+    addEntry (entry) {
+      let params = {
+        ticketable_type: this.type,
+        subtotal: entry.subtotal,
+        quantity: entry.quantity,
+        comment: entry.comment,
+        ticket_id: this.ticket.id,
+        additional_zone: entry.zone
+      }
+      params.ticketable_id = this.type !== 'Additional' ? entry.item.id : null
+
+      this.$http.post('tickets/' + this.ticket.id + '/entries', { entry: params })
+        .then(response => {
+          var index = this.entries.findIndex(function (entry) {
+            return entry.id === response.data.id
+          })
+          if (index > -1) {
+            this.entries.splice(index, 1)
           }
-        )
-      },
-      toggleEntry (value) {
-        this.type = value
-        if (this.inputType === 'Tactil' && this.type === 'Item') {
-          this.openTactil()
+          this.entries.push(response.data)
+          this.toggleEntry('Item')
+          document.getElementById('code').focus()
+        }).catch(error => {
+          this.$notify.open({
+            content: error.data || 'Error agregando Item',
+            duration: 3000,
+            type: 'danger'
+          })
+        })
+    },
+    populateData () {
+      this.$http.get('items').then(
+        response => {
+          this.items = response.data
+        }
+      )
+      this.$http.get('promotions').then(
+        response => {
+          this.promotions = response.data
+        }
+      )
+    },
+    setPaid (value) {
+      this.$emit('ticket-paid', value)
+      this.pending = value
+    },
+    setNotPaid (value) {
+      this.$emit('ticket-not-paid', value)
+      this.pending = value
+    },
+    setDeliveryTime () {
+      this.$http.put('tickets/' + this.ticket.id, { ticket: { delivery_at: this.delivery_at } }).then(
+        response => {
+          console.log('updated')
+        },
+        (error) => {
+          console.log('not updated')
+          this.alert('danger', error.data)
+        }
+      )
+    },
+    setPayWith (resetValue) {
+      if (this.ticket.table_id) {
+        return false
+      } else {
+        if (resetValue) {
+          if (parseFloat(this.pay_with) > 0) {
+            this.pay_with = 0
+            this.$emit('update-pay', this.pay_with)
+          }
         } else {
-          this.focusCode()
-        }
-      },
-      focusCode () {
-        Vue.nextTick(() => {
-          let elem = document.getElementById('code')
-          if (elem) {
-            elem.focus()
-          }
-        })
-      },
-      addEntry (entry) {
-        let params = {
-          ticketable_type: this.type,
-          subtotal: entry.subtotal,
-          quantity: entry.quantity,
-          comment: entry.comment,
-          ticket_id: this.ticket.id,
-          additional_zone: entry.zone
-        }
-        params.ticketable_id = this.type !== 'Additional' ? entry.item.id : null
-
-        this.$http.post('tickets/' + this.ticket.id + '/entries', { entry: params })
-          .then(response => {
-            var index = this.entries.findIndex(function (entry) {
-              return entry.id === response.data.id
-            })
-            if (index > -1) {
-              this.entries.splice(index, 1)
-            }
-            this.entries.push(response.data)
-            this.toggleEntry('Item')
-            document.getElementById('code').focus()
-          }).catch(error => {
+          if (parseFloat(this.total) > 0 &&
+             (parseFloat(this.pay_with) < parseFloat(this.total) || parseFloat(this.pay_with) < parseFloat(this.pending))) {
             this.$notify.open({
-              content: error.data || 'Error agregando Item',
+              content: 'El pago no puede ser menor al total o pendiente',
               duration: 3000,
               type: 'danger'
             })
-          })
-      },
-      populateData () {
-        this.$http.get('items').then(
-          response => {
-            this.items = response.data
-          }
-        )
-        this.$http.get('promotions').then(
-          response => {
-            this.promotions = response.data
-          }
-        )
-      },
-      setPaid (value) {
-        this.$emit('ticket-paid', value)
-        this.pending = value
-      },
-      setNotPaid (value) {
-        this.$emit('ticket-not-paid', value)
-        this.pending = value
-      },
-      setDeliveryTime () {
-        this.$http.put('tickets/' + this.ticket.id, { ticket: { delivery_at: this.delivery_at } }).then(
-          response => {
-            console.log('updated')
-          },
-          (error) => {
-            console.log('not updated')
-            this.alert('danger', error.data)
-          }
-        )
-      },
-      setPayWith (resetValue) {
-        if (this.ticket.table_id) {
-          return false
-        } else {
-          if (resetValue) {
-            if (parseFloat(this.pay_with) > 0) {
-              this.pay_with = 0
-              this.$emit('update-pay', this.pay_with)
-            }
           } else {
-            if (parseFloat(this.total) > 0 &&
-               (parseFloat(this.pay_with) < parseFloat(this.total) || parseFloat(this.pay_with) < parseFloat(this.pending))) {
-              this.$notify.open({
-                content: 'El pago no puede ser menor al total o pendiente',
-                duration: 3000,
-                type: 'danger'
-              })
-            } else {
-              this.$emit('update-pay', this.pay_with)
-            }
+            this.$emit('update-pay', this.pay_with)
           }
         }
-      },
-      sendBulk () {
-        this.$http.post('tickets/' + this.ticket.id + '/entries/bulk', { bulk: { entries: this.itemsToAdd } }).then(
-          response => {
-            _.forEach(response.data.entries, (e) => {
-              this.entries.push(e)
-            })
-            this.$notify.open({
-              content: `${response.data.meta.total} item agregados`,
-              duration: 3000,
-              type: 'success',
-              placement: 'top-center'
-            })
-            this.isShow = false
-            this.itemsToAdd = []
-            let inputs = document.getElementsByClassName('quantity')
-            _.forEach(inputs, (input) => {
-              input.value = ''
-            })
-          },
-          error => {
-            this.isShow = false
-            this.$notify.open({
-              content: error.data || 'Error agregando Items',
-              duration: 3000,
-              type: 'danger',
-              placement: 'top-center'
-            })
-          }
-        )
-      },
-      addItemBulk (evt, item) {
-        let quantity = evt.target.value
-        if (quantity > 0) {
-          let subtotal = parseInt(quantity) * parseFloat(item.price)
-          let params = {
-            ticketable_type: item.type,
-            subtotal: subtotal,
-            quantity: quantity,
-            ticket_id: this.ticket.id,
-            additional_kitchen: item.kitchen,
-            ticketable_id: item.id
-          }
+      }
+    },
+    sendBulk () {
+      this.$http.post('tickets/' + this.ticket.id + '/entries/bulk', { bulk: { entries: this.itemsToAdd } }).then(
+        response => {
+          _.forEach(response.data.entries, (e) => {
+            this.entries.push(e)
+          })
+          this.$notify.open({
+            content: `${response.data.meta.total} item agregados`,
+            duration: 3000,
+            type: 'success',
+            placement: 'top-center'
+          })
+          this.isShow = false
+          this.itemsToAdd = []
+          let inputs = document.getElementsByClassName('quantity')
+          _.forEach(inputs, (input) => {
+            input.value = ''
+          })
+        },
+        error => {
+          this.isShow = false
+          this.$notify.open({
+            content: error.data || 'Error agregando Items',
+            duration: 3000,
+            type: 'danger',
+            placement: 'top-center'
+          })
+        }
+      )
+    },
+    addItemBulk (evt, item) {
+      let quantity = evt.target.value
+      if (quantity > 0) {
+        let subtotal = parseInt(quantity) * parseFloat(item.price)
+        let params = {
+          ticketable_type: item.type,
+          subtotal: subtotal,
+          quantity: quantity,
+          ticket_id: this.ticket.id,
+          additional_kitchen: item.kitchen,
+          ticketable_id: item.id
+        }
 
-          let exists = this.itemsToAdd.filter((e) => e.ticketable_id === item.id)[0]
-          if (exists) {
-            _.extend(exists, params)
-          } else {
-            this.itemsToAdd.push(params)
-          }
+        let exists = this.itemsToAdd.filter((e) => e.ticketable_id === item.id)[0]
+        if (exists) {
+          _.extend(exists, params)
         } else {
-          let exists = this.itemsToAdd.filter((e) => e.ticketable_id === item.id)[0]
-          if (exists) {
-            let index = this.itemsToAdd.indexOf(exists)
-            this.itemsToAdd.splice(index, 1)
-          }
+          this.itemsToAdd.push(params)
+        }
+      } else {
+        let exists = this.itemsToAdd.filter((e) => e.ticketable_id === item.id)[0]
+        if (exists) {
+          let index = this.itemsToAdd.indexOf(exists)
+          this.itemsToAdd.splice(index, 1)
         }
       }
     }
   }
+}
 </script>
 
 <style lang="css">
