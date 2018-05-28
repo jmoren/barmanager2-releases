@@ -72,17 +72,17 @@
       <div class="resume">
         <div class="columns resume-header print">
           <div class="column is-3">TOTAL $ {{ total | withDecimals }}</div>
-          <div class="column is-4">PENDIENTE $ {{(pending || 0) | withDecimals}}</div>
-          <div class="column is-5" v-if="!ticket.table_id">
-            <div class="control has-addons is-pulled-left not-print">
-              <span class="button is-primary is-not-link"><i class="fa fa-clock-o"></i></span>
-              <input type="time" v-model="delivery_at" class="input" placeholder="Hora de entrega"
-              @keydown.enter="setDeliveryTime()">
-            </div>
+          <div class="column is-3">PENDIENTE $ {{(pending || 0) | withDecimals}}</div>
+          <div class="column is-6" v-if="!ticket.table_id">
             <div class="control has-addons is-pulled-right not-print">
               <span class="button is-primary is-not-link"><i class="fa fa-dollar"></i></span>
               <input type="number" step="0.01" v-model="pay_with" class="input" placeholder="Paga el delivery con"
               @keydown.enter="setPayWith()">
+            </div>
+            <div class="control has-addons is-pulled-left not-print">
+              <span class="button is-primary is-not-link"><i class="fa fa-clock-o"></i></span>
+              <input type="time" v-model="delivery_at" class="input" placeholder="Hora de entrega"
+              @keydown.enter="setDeliveryTime()">
             </div>
           </div>
         </div>
