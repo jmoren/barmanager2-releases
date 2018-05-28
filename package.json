@@ -1,7 +1,7 @@
 {
   "name": "barmanager",
-  "version": "0.0.0",
-  "author": "Jairo de Morais <jairodemorais@gmail.com>",
+  "version": "2.0.0",
+  "author": "Jairo de Morais & Jorge Moreno <jairodemorais@gmail.com>",
   "description": "Adminsitra tu negocio de manera facil",
   "license": null,
   "main": "./dist/electron/main.js",
@@ -28,11 +28,13 @@
     "files": [
       "dist/electron/**/*"
     ],
-    "publish": [{
-      "provider": "github",
-      "owner": "jairodemorais",
-      "repo": "electron-barmanager"
-    }],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "jmoren",
+        "repo": "barmanager2-releases"
+      }
+    ],
     "dmg": {
       "contents": [
         {
