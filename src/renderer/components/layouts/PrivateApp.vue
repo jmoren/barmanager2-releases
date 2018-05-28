@@ -192,7 +192,7 @@
         </div>
       </div>
     </section>
-    <div class="main columns">
+    <div class="main columns" style="height: 850px; overflow: scroll;">
       <div v-show="isOpen === 'delivery'" class="not-print shadow-border column is-3">
         <deliveries-bar></deliveries-bar>
       </div>
@@ -221,10 +221,14 @@
         <router-view></router-view>
       </div>
     </div>
+    <div id="updater">
+      {{ message.message }}
+    </div>
   </div>
 </template>
 
 <script>
+  import { ipcRenderer } from 'electron'
   import Auth from '../../auth'
   import { mapGetters } from 'vuex'
   import TableAutocomplete from '@/components/utils/TableAutocomplete'
@@ -247,7 +251,8 @@
           admin: 'Admin',
           cooker: 'Cocinero'
         },
-        version: appPackage.version
+        version: appPackage.version,
+        message: {}
       }
     },
     computed: {
@@ -268,6 +273,12 @@
       this.loadPartialDailyCash()
       this.loadUsers()
       this.loadReasons()
+      ipcRenderer.send('ready-to-messages', {})
+
+      ipcRenderer.on('message', (event, message) => {
+        console.log(message)
+        this.message = message
+      })
     },
     methods: {
       goBack () {
@@ -417,5 +428,15 @@
   @media print {
     .not-print { display: none; }
     .print { display: block; }
+  }
+  #updater {
+    position: absolute;
+    height: 2em;
+    bottom: 0px;
+    line-height: 2em;
+    padding: 0px 10px;
+    background: #3c81df;
+    color: #fff;
+    width: 100%;
   }
 </style>
