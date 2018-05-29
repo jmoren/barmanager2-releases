@@ -92,31 +92,14 @@
         <ticket-content :open-payments="openPayments" :ticket="ticket" :reasons="reasons" @update-pay="value => updatePayWith(value)" @ticket-paid="setPaid"
           @ticket-not-paid="setNotPaid" :kitchenView="kitchenView">
         </ticket-content>
-      </div>
-      <div id="ticket-footer">
-        <div class="columns ticket">
-          <div class="column is-9">
-            <div class="content">
-              <div class="print print-center">
-                <div class="print"><br /><p>TICKET NO VALIDO COMO FACTURA.</p></div>
-                <barcode :tag="'img'" :value="ticket.number" :options="{ format: barcode.format, lastChar: barcode.lastChar, displayValue: true, height: barcode.height, width: barcode.width, background: 'transparent' }"></barcode>
-              </div>
-              <div class="not-print" v-if="ticket.user">
-                <div class="control has-addons">
-                  <input class="input" style="width:200px" type="text" value="Ud ha sido atendido por: " disabled  readonly="readonly">
-                  <div class="select">
-                    <select v-model="ticket.user_id" @change="updateTicket()">
-                      <option v-for="user in users" :key="user.id" :value="user.id" :disabled="user.id == currentUser.profile.id">
-                        {{ user.name }}
-                      </option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="column is-3 not-print">
-            <div class="content">{{ date | moment('DD, MMMM YYYY, HH:mm') | uppercase }}</div>
+        <div class="control has-addons" style="padding: 0 5px;">
+          <input class="input" style="width:200px" type="text" value="Ud ha sido atendido por: " disabled  readonly="readonly">
+          <div class="select">
+            <select v-model="ticket.user_id" @change="updateTicket()">
+              <option v-for="user in users" :key="user.id" :value="user.id" :disabled="user.id == currentUser.profile.id">
+                {{ user.name }}
+              </option>
+            </select>
           </div>
         </div>
       </div>

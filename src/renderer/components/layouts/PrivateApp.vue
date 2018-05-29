@@ -186,17 +186,17 @@
         </div>
       </div>
     </section>
-    <div class="main columns" style="height: 850px; overflow: scroll;">
-      <div v-show="isOpen === 'delivery'" class="not-print shadow-border column is-3">
-        <deliveries-bar></deliveries-bar>
-      </div>
-      <div v-show="isOpen === 'tables'" class="not-print shadow-border column is-3">
-        <div class="column is-12" style="height: 870px;">
-          <h2 class="header" style="height: 45px;">
-            Mesas abiertas
-          </h2>
-          <hr>
-          <div style="height: 760px; overflow: auto">
+    <div class="main columns" style="height: 850px;">
+      <div style="height: 870px; overflow: scroll;" v-show="isOpen" class="not-print shadow-border column is-3">
+        <div v-show="isOpen === 'delivery'" style="height: 100%;">
+          <deliveries-bar></deliveries-bar>
+        </div>
+        <div v-show="isOpen === 'tables'" style="height: 100%;">
+          <div class="column is-12">
+            <h2 class="header" style="height: 30px;">
+              Mesas abiertas
+            </h2>
+            <hr>
             <div class="columns is-multiline">
               <div v-for="table in openTables" style="margin-bottom: 10px;" class="column  is-12">
                 <router-link class="open-table-button button is-fullwidth is-medium is-light"
@@ -211,8 +211,10 @@
           </div>
         </div>
       </div>
-      <div class="main-window" :class="isOpen !== '' ? 'column is-9' : 'column is-12'">
-        <router-view></router-view>
+      <div style="height: 870px; overflow: scroll;" :class="!isOpen ? 'column is-12' : 'column is-9'">
+        <div class="main-window">
+          <router-view></router-view>
+        </div>
       </div>
     </div>
     <div id="updater">
@@ -245,7 +247,7 @@
       return {
         loading: false,
         user: Auth.user,
-        isOpen: '',
+        isOpen: null,
         clientCode: '',
         mapRoles: {
           user: 'Usuario',
@@ -291,7 +293,7 @@
       },
       toggleSideBar (name) {
         if (this.isOpen === name) {
-          this.isOpen = ''
+          this.isOpen = null
         } else {
           this.isOpen = name
         }
@@ -424,7 +426,7 @@
 
   .main.columns { top: 55px; left: 10px; right: 10px; position: absolute; height: 100%; width: 100%; }
   .main.columns .shadow-border { box-shadow: 0px 0px 15px #ccc; height: 95%; overflow: auto; margin-right: 10px;}
-  .main.columns .main-window { padding: 30px 15px !important; }
+  .main.columns .main-window { padding: 5px 0px !important; }
 
   .pac-container {
     z-index: 100000 !important;

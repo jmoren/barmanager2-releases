@@ -423,7 +423,7 @@ export default {
   .ticket-form hr:last-child { margin-bottom: 5px; }
   .ticket-sub-header { padding: 10px 5px; font-weight: bold; font-size: 18px; border-bottom: solid 1px #eee; margin-bottom: 10px; }
   .ticket .resume { margin: 30px 15px 0px 15px; }
-  .ticket .resume .resume-header { padding: 5px 0px; background: #F3F4F4; border-bottom: solid 1px #ccc; font-size: 20px; font-weight: 400; }
+  .ticket .resume .resume-header { padding: 5px 0px; background: #F3F4F4; border-bottom: solid 1px #ccc; font-size: 17px; height: 60px; font-weight: 400; }
   .ticket .resume .resume-sub-row { padding: 5px 0px; background: #F6F6F6; font-size: 15px; font-weight: 100; }
 
   tr.is-closed { opacity: 0.8 }
