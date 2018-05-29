@@ -56,7 +56,6 @@ autoUpdater.on('download-progress', progressObj => {
 
 function startListenerUpdater () {
   ipcMain.on('ready-to-messages', () => {
-    console.log('Started messages')
     if (process.env.NODE_ENV === 'development') {
       sendStatusToWindow('available', 'Buscando actualizaciones')
     } else {
@@ -65,7 +64,6 @@ function startListenerUpdater () {
   })
   ipcMain.on('install', () => {
     if (process.env.NODE_ENV === 'development') {
-      console.log('Check from frontend')
       sendStatusToWindow('available', 'No se puede actualizar en modo dev')
     } else {
       autoUpdater.quitAndInstall()

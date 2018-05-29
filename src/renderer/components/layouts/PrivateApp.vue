@@ -46,15 +46,9 @@
                   </table-autocomplete>
                 </div>
                 <div class="nav-item">
-                  <popover title="Mi Cuenta" placement="bottom" :width="300" trigger="click">
+                  <popover :title="'Mi Cuenta - Rol: ' + mapRoles[user.profile.role]" placement="bottom" :width="300" trigger="click">
                     <button class="button is-primary">{{ user.profile.name }}</button>
                     <div slot="content">
-                      <div class="columns" style="margin-bottom: 0px;">
-                        <div class="column is-12">
-                          <div style="float: left">Rol: <b>{{ mapRoles[user.profile.role] }}</b></div>
-                          <div style="float: right">Version: <b>{{ version }}</b></div>
-                        </div>
-                      </div>
                       <div>
                         <div style="margin: 0px;" >
                           <router-link :to="{ name: 'Profile' }" class="button is-fullwidth is-light">
@@ -222,7 +216,7 @@
       </div>
     </div>
     <div id="updater">
-      {{ message.message }}
+      v{{ version }} - {{ message.message }}
       <span v-if="message.event === 'available'">
         - <a style="color: #fff" @click="installUpdate()">Instalar</a>
       </span>
