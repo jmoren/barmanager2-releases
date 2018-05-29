@@ -216,10 +216,15 @@
       </div>
     </div>
     <div id="updater">
-      v{{ version }} - {{ message.message }}
-      <span v-if="message.event === 'done'">
-        - <a style="color: #fff" @click="installUpdate()">Instalar</a>
-      </span>
+      <div style="padding: 0px 10px;" v-if="message.event !== 'done'">
+        v{{ version }} - {{ message.message }}
+      </div>
+      <div v-else>
+        <a class="button is-primary" style="margin: 3px 0px; font-size: 15px;" @click="installUpdate()">
+          <span>Instalar</span>
+          <span class="icon"><i style="font-size: 15px;" class="fa fa-check"></i></span>
+        </a>
+      </div>
     </div>
   </div>
 </template>
@@ -431,10 +436,9 @@
   }
   #updater {
     position: absolute;
-    height: 2em;
+    height: 2.5em;
     bottom: 0px;
-    line-height: 2em;
-    padding: 0px 10px;
+    line-height: 2.5em;
     background: #3c81df;
     color: #fff;
     width: 100%;

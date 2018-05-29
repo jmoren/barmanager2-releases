@@ -46,7 +46,7 @@ autoUpdater.on('update-not-available', info => {
 autoUpdater.on('error', err => {
   sendStatusToWindow('error', 'Error in auto-updater. ' + err)
 })
-autoUpdater.on('update-downloaded', err => {
+autoUpdater.on('update-downloaded', () => {
   sendStatusToWindow('done')
 })
 
@@ -60,7 +60,7 @@ autoUpdater.on('download-progress', progressObj => {
 function startListenerUpdater () {
   ipcMain.on('ready-to-messages', () => {
     if (process.env.NODE_ENV === 'development') {
-      sendStatusToWindow('available', 'Buscando actualizaciones')
+      sendStatusToWindow('done')
     } else {
       autoUpdater.checkForUpdates()
     }
@@ -79,7 +79,7 @@ const menuTemplate = [
     label: 'Info',
     submenu: [
       {
-        label: 'Actualizaciones',
+        label: 'Actualizar',
         click: () => {
           autoUpdater.checkForUpdates()
         }
