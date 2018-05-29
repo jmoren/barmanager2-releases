@@ -1,6 +1,6 @@
 {
   "name": "barmanager",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "author": "Jorge Moreno <jmoren@gmail.com>",
   "description": "Adminsitra tu negocio de manera facil",
   "license": null,
@@ -17,7 +17,8 @@
     "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
     "postinstall": "npm run lint:fix",
-    "publish": "build --mac --win -p always"
+    "publish:mac": "build --mac -p always",
+    "publish:win": "build --win -p always"
   },
   "build": {
     "productName": "barmanager",

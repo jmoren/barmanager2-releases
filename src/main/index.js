@@ -42,7 +42,7 @@ autoUpdater.on('update-available', info => {
   autoUpdater.confirm()
 })
 autoUpdater.on('update-not-available', info => {
-  sendStatusToWindow('notAvailable', '')
+  sendStatusToWindow('notAvailable', 'No hay una nueva version disponible')
 })
 autoUpdater.on('error', err => {
   sendStatusToWindow('error', 'Error in auto-updater. ' + err)
