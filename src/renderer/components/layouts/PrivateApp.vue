@@ -223,6 +223,9 @@
     </div>
     <div id="updater">
       {{ message.message }}
+      <span v-if="message.event === 'available'">
+        - <a style="color: #fff" @click="installUpdate()">Instalar</a>
+      </span>
     </div>
   </div>
 </template>
@@ -281,6 +284,9 @@
       })
     },
     methods: {
+      installUpdate () {
+        ipcRenderer.send('install')
+      },
       goBack () {
         this.$router.go(-1)
       },
