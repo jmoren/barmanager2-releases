@@ -186,7 +186,7 @@
         </div>
       </div>
     </section>
-    <div class="main columns" style="height: 850px;">
+    <div class="main columns" style="height: 850px; padding: 5px;">
       <div style="height: 870px; overflow: scroll;" v-show="isOpen" class="not-print shadow-border column is-3">
         <div v-show="isOpen === 'delivery'" style="height: 100%;">
           <deliveries-bar></deliveries-bar>
@@ -219,9 +219,9 @@
     </div>
     <div id="updater">
       <div style="padding: 0px 10px;" v-if="message.event !== 'done'">
-        v{{ version }} - {{ message.message }}
+        v{{ version }} <span class="not-print">- {{ message.message }}</span>
       </div>
-      <div v-else>
+      <div v-else class="not-print">
         <a class="button is-primary" style="margin: 3px 0px; font-size: 15px;" @click="installUpdate()">
           <span>Instalar</span>
           <span class="icon"><i style="font-size: 15px;" class="fa fa-check"></i></span>
@@ -410,6 +410,9 @@
 </script>
 
 <style>
+  @media print {
+    .not-print, .hero.is-primary.is-fixed, .popover, .notifications { display: none !important; }
+  }
   #app {
     font-family: Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
