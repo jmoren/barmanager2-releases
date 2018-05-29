@@ -18,7 +18,8 @@
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
     "postinstall": "npm run lint:fix",
     "publish:mac": "build --mac -p always",
-    "publish:win": "build --win -p always"
+    "publish:win": "build --win -p always",
+    "publish": "build --mac --win -p always"
   },
   "build": {
     "productName": "barmanager",
