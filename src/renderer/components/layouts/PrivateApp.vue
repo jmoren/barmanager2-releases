@@ -217,7 +217,7 @@
     </div>
     <div id="updater">
       v{{ version }} - {{ message.message }}
-      <span v-if="message.event === 'available'">
+      <span v-if="message.event === 'done'">
         - <a style="color: #fff" @click="installUpdate()">Instalar</a>
       </span>
     </div>

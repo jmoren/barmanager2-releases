@@ -46,6 +46,9 @@ autoUpdater.on('update-not-available', info => {
 autoUpdater.on('error', err => {
   sendStatusToWindow('error', 'Error in auto-updater. ' + err)
 })
+autoUpdater.on('update-downloaded', err => {
+  sendStatusToWindow('done')
+})
 
 autoUpdater.on('download-progress', progressObj => {
   let percent = `${Math.floor(progressObj.percent)} %`
