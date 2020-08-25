@@ -78,7 +78,7 @@
     "eventsource-polyfill": "^0.9.6",
     "friendly-errors-webpack-plugin": "^1.6.1",
     "fs": "0.0.1-security",
-    "highcharts": "^5.0.12",
+    "highcharts": "^7.2.2",
     "uglify-es": "github:mishoo/UglifyJS2#harmony",
     "vee-validate": "^2.0.0-rc.6",
     "vue": "^2.3.3",
